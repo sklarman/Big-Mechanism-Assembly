@@ -16,20 +16,20 @@
      xml:base="http://purl.bioontology.org/net/brunel/paf"
      xmlns:bmpaf="http://purl.bioontology.org/net/brunel/paf#"
      xmlns:bmp="http://purl.bioontology.org/net/brunel/p#"
-     xmlns:dc="http://purl.org/dc/elements/1.1/"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
     <owl:Ontology rdf:about="http://purl.bioontology.org/net/brunel/paf">
         <dc:contributor rdf:datatype="&xsd;anyURI">http://klarman.synthasite.com/</dc:contributor>
         <dc:creator rdf:datatype="&xsd;anyURI">http://www.brunel.ac.uk/people/larisa-soldatova</dc:creator>
         <owl:versionInfo>2016-03-15</owl:versionInfo>
-        <dc:title>Probabilistic Annotation Framework Ontology</dc:title>
         <dc:description xml:lang="en">Probabilistic Annotation Framework (PAF) Ontology has been developed in the context of the DARPA&apos;s Big Mechanism research program. It provides a semantic interface for capturing information on molecular interactions extracted from scientific texts. Conceptually, PAF ontology supports 3 layers of representation:
 1) Domain knowledge: molecular interactions, their participants, structure, and (possibly) formal relationships to some external biological models.
 2) Textual evidence: sentences extracted from text, speaking about those interactions, and their provenance-related information.
 3) Probabilisitic information associated with different aspects of the representation (see the imported Probabilities Ontology).</dc:description>
+        <dc:title>Probabilistic Annotation Framework Ontology</dc:title>
         <dc:subject xml:lang="en">biological events</dc:subject>
         <dc:subject xml:lang="en">molecular biology</dc:subject>
         <dc:subject xml:lang="en">text mining</dc:subject>
@@ -164,6 +164,15 @@ Embedded bodies SHOULD be instances of cnt:ContentAsText and embed their content
 
 There is no OA class provided for &quot;Body&quot; as a body might be a target of a different annotation. However, there SHOULD be 1 or more content-based classes associated with the body resources of an Annotation, and the dctypes: vocabulary is recommended for this purpose, for instance dctypes:Text to declare textual content.</hasDefinition>
         <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/oa#"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf#hasCellLine -->
+
+    <owl:ObjectProperty rdf:about="&bmpaf;hasCellLine">
+        <rdfs:label>has cell line</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain cell lines. Hence a statment should be by defeault connected to some cell line via &quot;has cell line&quot; property.</rdfs:comment>
     </owl:ObjectProperty>
     
 
@@ -347,11 +356,38 @@ There is no OA class provided for &quot;Target&quot; as a target might be a body
     
 
 
+    <!-- http://purl.bioontology.org/net/brunel/paf/hasCellType -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/paf/hasCellType">
+        <rdfs:label>has cell type</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain cell types. Hence a statment should be by defeault connected to some cell type via &quot;has cell type&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://purl.bioontology.org/net/brunel/paf/hasComponent -->
 
     <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/paf/hasComponent">
         <rdfs:label>has component</rdfs:label>
         <rdfs:comment>Complex chemicals conist of (simple) components. </rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf/hasTissueType -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/paf/hasTissueType">
+        <rdfs:label>has tissue type</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain tissue types. Hence a statment should be by defeault connected to some tissue type via &quot;has tissue type&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf/inOragnism -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/paf/inOragnism">
+        <rdfs:label>in organism</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain organisms. Hence a statment should be by defeault connected to some organism via &quot;in organism&quot; property.</rdfs:comment>
     </owl:ObjectProperty>
     
 
@@ -394,6 +430,23 @@ There is no OA class provided for &quot;Target&quot; as a target might be a body
     
 
 
+    <!-- http://purl.bioontology.org/net/brunel/paf#hasHindex -->
+
+    <owl:DatatypeProperty rdf:about="&bmpaf;hasHindex">
+        <rdfs:label>has H-index</rdfs:label>
+        <rdfs:comment>a journal has an H index</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf#hasISSN -->
+
+    <owl:DatatypeProperty rdf:about="&bmpaf;hasISSN">
+        <rdfs:label>has ISSN</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- http://purl.bioontology.org/net/brunel/paf#hasIndexCardId -->
 
     <owl:DatatypeProperty rdf:about="&bmpaf;hasIndexCardId">
@@ -423,8 +476,8 @@ There is no OA class provided for &quot;Target&quot; as a target might be a body
 
     <owl:DatatypeProperty rdf:about="&bmpaf;hasSJRscore">
         <rdfs:label>has SJR score</rdfs:label>
-        <hasDefinition>https://en.wikipedia.org/wiki/SCImago_Journal_Rank</hasDefinition>
         <rdfs:comment>A journal has its SJR score</rdfs:comment>
+        <hasDefinition>https://en.wikipedia.org/wiki/SCImago_Journal_Rank</hasDefinition>
     </owl:DatatypeProperty>
     
 
@@ -457,7 +510,7 @@ There is no OA class provided for &quot;Target&quot; as a target might be a body
     <!-- http://purl.bioontology.org/net/brunel/paf#hasSubmitterId -->
 
     <owl:DatatypeProperty rdf:about="&bmpaf;hasSubmitterId">
-        <rdfs:label>has submitter id</rdfs:label>
+        <rdfs:label>has submitter ID</rdfs:label>
         <rdfs:comment>a submitter has an id</rdfs:comment>
     </owl:DatatypeProperty>
     
@@ -564,6 +617,15 @@ This &quot;aboutness&quot; may be further clarified or extended to notions such 
         <rdfs:subClassOf rdf:resource="&bmpaf;MolecularInteraction"/>
         <hasDefinition>The selective, non-covalent, often stoichiometric, interaction of a molecule with one or more specific sites on another molecule.</hasDefinition>
         <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/GO_0005488"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf#CellLine -->
+
+    <owl:Class rdf:about="&bmpaf;CellLine">
+        <rdfs:label>cell line</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;MaterialEntity"/>
     </owl:Class>
     
 
@@ -768,8 +830,8 @@ This &quot;aboutness&quot; may be further clarified or extended to notions such 
     <owl:Class rdf:about="&bmpaf;GeneExpression">
         <rdfs:label>gene expression</rdfs:label>
         <rdfs:subClassOf rdf:resource="&bmpaf;Event"/>
-        <rdfs:isDefinedBy>http://purl.obolibrary.org/obo/GO_0010467</rdfs:isDefinedBy>
         <rdfs:comment>The process in which a gene&apos;s sequence is converted into a mature gene product or products (proteins or RNA). This includes the production of an RNA transcript as well as any processing to produce a mature RNA product or an mRNA (for protein-coding genes) and the translation of that mRNA into protein. Protein maturation is included when required to form an active form of a product from an inactive precursor form.</rdfs:comment>
+        <rdfs:isDefinedBy>http://purl.obolibrary.org/obo/GO_0010467</rdfs:isDefinedBy>
     </owl:Class>
     
 
@@ -788,6 +850,15 @@ This &quot;aboutness&quot; may be further clarified or extended to notions such 
 
     <owl:Class rdf:about="&bmpaf;Human">
         <rdfs:label xml:lang="en">human</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;Annotator"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf#HumanComputer -->
+
+    <owl:Class rdf:about="&bmpaf;HumanComputer">
+        <rdfs:label>human with computer</rdfs:label>
         <rdfs:subClassOf rdf:resource="&bmpaf;Annotator"/>
     </owl:Class>
     
@@ -1181,6 +1252,13 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
         <rdfs:subClassOf rdf:resource="&bmpaf;PetriNetModelComponent"/>
         <rdfs:subClassOf>
             <owl:Restriction>
+                <owl:onProperty rdf:resource="&bmpaf;transitionFrom"/>
+                <owl:onClass rdf:resource="&bmpaf;Place"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
                 <owl:onProperty rdf:resource="&bmpaf;petriNetLabel"/>
                 <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
             </owl:Restriction>
@@ -1188,13 +1266,6 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&bmpaf;transitionTo"/>
-                <owl:onClass rdf:resource="&bmpaf;Place"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="&bmpaf;transitionFrom"/>
                 <owl:onClass rdf:resource="&bmpaf;Place"/>
                 <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
             </owl:Restriction>
@@ -1209,8 +1280,8 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
         <rdfs:label xml:lang="en">translocation</rdfs:label>
         <rdfs:subClassOf rdf:resource="&bmpaf;MolecularInteraction"/>
         <rdfs:subClassOf rdf:resource="&bmpaf;ProteinModification"/>
-        <rdfs:isDefinedBy>MI:0593</rdfs:isDefinedBy>
         <rdfs:comment>MI parent class: cross-reference type?</rdfs:comment>
+        <rdfs:isDefinedBy>MI:0593</rdfs:isDefinedBy>
         <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/GO_0021802"/>
     </owl:Class>
     
@@ -1226,6 +1297,42 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
     
 
 
+    <!-- http://purl.bioontology.org/net/brunel/paf/CellType -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/paf/CellType">
+        <rdfs:label>cell type</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf/ChemicalFamily -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/paf/ChemicalFamily">
+        <rdfs:label>chemical family</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf/Organism -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/paf/Organism">
+        <rdfs:label>organism</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/paf/TissueType -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/paf/TissueType">
+        <rdfs:label>tissue type</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bmpaf;MaterialEntity"/>
+    </owl:Class>
+    
+
+
     <!-- http://www.w3.org/2002/07/owl#Thing -->
 
     <rdf:Description rdf:about="&owl;Thing">
@@ -1237,5 +1344,5 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
 
 
 
-<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+<!-- Generated by the OWL API (version 3.5.1) http://owlapi.sourceforge.net -->
 
