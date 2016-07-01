@@ -83,8 +83,8 @@ generateNthreads(N) :-
 
 selectNextEvent(Event) :- 
     QueryTriples = [
-        ['?ev', rdf:'type', bmpaf:'Event'],
-        ['?st', bmpaf:'represents', '?ev'],
+        ['?ev', rdf:'type', panda:'Event'],
+        ['?st', panda:'represents', '?ev'],
         ['?probInput', dc:'subject', '?st'],
         not([
             ['?probComp', dc:'subject', '?ev'],
@@ -100,8 +100,8 @@ selectNextEvent(Event) :-
 
 selectNextEvent(Event) :-
     QueryTriples = [
-        ['?ev', rdf:'type', bmpaf:'Event'],
-        ['?ev', bmpaf:'hasRelatedExperimentalResults', '?res'],
+        ['?ev', rdf:'type', panda:'Event'],
+        ['?ev', panda:'hasRelatedExperimentalResults', '?res'],
         not([
             ['?probComp', dc:'subject', '?ev'],
             ['?probComp', rdf:'type', prov:'Entity'],
@@ -135,7 +135,7 @@ single_run(Ev) :-
     readOutput(OutputFile, Output),
     outputStream(OutputStream),
     write(OutputStream, Output),
-    createProbabilityInferenceGraph(Ev),
+    createUncertaintyInferenceGraph(Ev),
     atomic_list_concat(['cmd /C del ', InputFile, ' ', OutputFile], DelCom),
     shell(DelCom).
     
@@ -165,50 +165,50 @@ codeRepresentingStatement(Ev, Stream) :-
     representingStatement(Ev, Stat, Value, Doc),
     atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, "')."], DataLine),
     writeln(Stream, DataLine),
-    findall(_, extractionProbability(Stat, Stream), _),
-    findall(_, textualProbability(Stat, Stream), _),
-    findall(_, provenanceProbability(Stat, Doc, Stream), _),
-    findall(_, experimentProbability(Ev, Stream), _).
+    findall(_, extractionUncertainty(Stat, Stream), _),
+    findall(_, textualUncertainty(Stat, Stream), _),
+    findall(_, provenanceUncertainty(Stat, Doc, Stream), _),
+    findall(_, experimentUncertainty(Ev, Stream), _).
     
 representingStatement(Ev, Stat, Value, Doc) :-  
     QueryTriples = [
-        [Ev, bmpaf:'isRepresentedBy', '?stat'],
-        ['?stat',  bmpaf:'hasTruthValue', '?value'],
-        ['?stat', bmpaf:'isExtractedFrom', '?doc']
+        [Ev, panda:'isRepresentedBy', '?stat'],
+        ['?stat',  panda:'hasTruthValue', '?value'],
+        ['?stat', panda:'isExtractedFrom', '?doc']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?stat ?value ?doc', [Stat, Value, Doc]).
     
-provenanceProbability(Stat, Doc, Stream) :-
+provenanceUncertainty(Stat, Doc, Stream) :-
     QueryTriples = [
-        [Stat, bmp:'hasProvenanceProbability', '?prob'],
-        ['?prob',   bmp:'hasProbabilityLevel', '?level']
+        [Stat, uo:'hasProvenanceUncertainty', '?prob'],
+        ['?prob',   uo:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [No]),
     atomic_list_concat(["provenanceProb('", Doc, "',", No, ")."], DataLine),
     writeln(Stream, DataLine).    
 
-textualProbability(Stat, Stream) :-
+textualUncertainty(Stat, Stream) :-
     QueryTriples = [
-        [Stat, bmp:'hasTextualProbability', '?prob'],
-        ['?prob',   bmp:'hasProbabilityLevel', '?level']
+        [Stat, uo:'hasTextualUncertainty', '?prob'],
+        ['?prob',   uo:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
     atomic_list_concat(["textProb('", Stat, "',", Level, ")."], DataLine),
     writeln(Stream, DataLine).
 
-extractionProbability(Stat, Stream) :-
+extractionUncertainty(Stat, Stream) :-
     QueryTriples = [
-        [Stat, bmp:'hasExtractionAccurracy', '?prob'],
-        ['?prob',   bmp:'hasProbabilityLevel', '?level']
+        [Stat, uo:'hasExtractionAccurracy', '?prob'],
+        ['?prob',   uo:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
     atomic_list_concat(["extractionProb('", Stat, "',", Level, ")."], DataLine),
     writeln(Stream, DataLine).
 
-experimentProbability(Ev, Stream) :-
+experimentUncertainty(Ev, Stream) :-
     QueryTriples = [
-        [Ev, bmpaf:'hasRelatedExperimentalResults', '?exp'],
-        ['?exp',   bmpaf:'hasTruthValue', '?value']
+        [Ev, panda:'hasRelatedExperimentalResults', '?exp'],
+        ['?exp',   panda:'hasTruthValue', '?value']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?value', [Value]),
     atomic_list_concat(["experimentProb('", Ev, "',", Value, ")."], DataLine),
@@ -251,24 +251,24 @@ relationType2RDF('conflict', 'http://purl.bioontology.org/net/brunel/p#TotalConf
 relationType2RDF('negCorroboration', 'http://purl.bioontology.org/net/brunel/p#NegativeCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasNegativeCorroboration').
 relationType2RDF('posCorroboration', 'http://purl.bioontology.org/net/brunel/p#PositiveCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasPositiveCorroboration').
 relationType2RDF('corroboration', 'http://purl.bioontology.org/net/brunel/p#TotalCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasTotalCorroboration').
-relationType2RDF('internalInconsistency', 'http://purl.bioontology.org/net/brunel/p#ProbabilityRelevantToEvidenceInconsistency', 'http://purl.bioontology.org/net/brunel/p#hasInternalInconsistency').
+relationType2RDF('internalInconsistency', 'http://purl.bioontology.org/net/brunel/p#UncertaintyRelevantToEvidenceInconsistency', 'http://purl.bioontology.org/net/brunel/p#hasInternalInconsistency').
     
 resultTriples(Triples) :- 
 findall(Triple, (
                 probFact(Type, Ev, P),
                 relationType2RDF(Type, Class, Property),
-                createFreshObject(Class, Probability),
-                resultTriple(Ev, Class, Probability, Property, P, Triple)), 
+                createFreshObject(Class, Uncertainty),
+                resultTriple(Ev, Class, Uncertainty, Property, P, Triple)), 
         Triples).
     
-resultTriple(Ev, _, Probability, Property, _, [Ev, Property, Probability]).
-resultTriple(_, Class, Probability, _, _, [Probability, rdf:'type', Class]).
-resultTriple(_, _, Probability, _, P, [Probability, bmp:'hasProbabilityLevel', literal(P)]).
-resultTriple(_, _, Probability, _, P, [Probability, rdfs:'label', literal(P)]).
+resultTriple(Ev, _, Uncertainty, Property, _, [Ev, Property, Uncertainty]).
+resultTriple(_, Class, Uncertainty, _, _, [Uncertainty, rdf:'type', Class]).
+resultTriple(_, _, Uncertainty, _, P, [Uncertainty, uo:'hasUncertaintyLevel', literal(P)]).
+resultTriple(_, _, Uncertainty, _, P, [Uncertainty, rdfs:'label', literal(P)]).
 
 
-createProbabilityInferenceGraph(Event) :-
-    createFreshObject('probability_inference_graph', Graph),
+createUncertaintyInferenceGraph(Event) :-
+    createFreshObject('uncertainty_inference_graph', Graph),
     createFreshObject('problog_reasoning', Activity),
     date(date(Y, M, D)),
     atomic_list_concat([Y, M, D], '-', Date),
@@ -302,14 +302,14 @@ createProbabilityInferenceGraph(Event) :-
 
 selectUsedEntitites(Event, Stat) :- 
     QueryTriples = [
-                ['?st', bmpaf:'represents', Event],
+                ['?st', panda:'represents', Event],
                 ['?prob', dc:'subject', '?st'],
                 ['?prob', rdf:'type', prov:'Entity']
                 ],
     sparqlSelectQueryGlobal(QueryTriples, '?prob', [Stat]).
     
 selectUsedEntitites(Event, Exp) :- 
-    QueryTriples = [[Event, bmpaf:'hasRelatedExperimentalResults', '?exp']],
+    QueryTriples = [[Event, panda:'hasRelatedExperimentalResults', '?exp']],
     sparqlSelectQueryGlobal(QueryTriples, '?exp', [Exp]).
     
 selectReplaced(Event, Replaced) :-

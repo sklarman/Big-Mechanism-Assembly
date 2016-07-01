@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <group id="Folder Repository, directory=file:////acfs4/cssf/csstssk/Desktop/GitHub/Big-Mechanism-Assembly/, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1467386544570" name="http://purl.bioontology.org/net/brunel/p" uri="UO.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1467386544570" name="http://purl.bioontology.org/net/brunel/panda" uri="PANDA.owl"/>
-    </group>
-</catalog>

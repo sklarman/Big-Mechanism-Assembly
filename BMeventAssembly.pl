@@ -4,8 +4,6 @@
 
 :- ['BMsemWebTools.pl'].
 
-%:- rdf_load('PAF.owl', [graph(pafOnto)]).
-%:- rdf_load('P.owl', [graph(pOnto)]).
 %:- rdf_load('datasetNactem20160101.rdf', [graph(graph)]).
 %:- rdf_load('journals-scimagojr-xlsx.rdf', [graph(graph2)]).
 %:- rdf_load('C:/chebi.owl', [graph(chebi)]).
@@ -147,11 +145,11 @@ cardElement(Key = Value, Branch) :-
 createRDF(BaseName) :- 
     nl, write('Processing index card: \t'), writeln(BaseName),
     createIndexCardGraph(GraphURI), 
-    createFreshObject(bmpaf:'IndexCard', IndexCard), !,
-    createIdObject(Event, bmpaf:'Event', '/extracted_information', GroundingProbList),
-    createFreshObject(bmpaf:'Statement', Statement),
-    createIdObject(Submitter, bmpaf:'Submitter', '', []),
-    createIdObject(Article, bmpaf:'JournalArticle', '', []),
+    createFreshObject(panda:'IndexCard', IndexCard), !,
+    createIdObject(Event, panda:'Event', '/extracted_information', GroundingProbList),
+    createFreshObject(panda:'Statement', Statement),
+    createIdObject(Submitter, panda:'Submitter', '', []),
+    createIdObject(Article, panda:'JournalArticle', '', []),
     retriveKeyValue(readingStarted, StartTime),
     retriveKeyValue(readingStopped, StopTime),
     retriveKeyValue(truthValue, TruthValue),
@@ -162,31 +160,31 @@ createRDF(BaseName) :-
     getLabel(Event, EventGraph, EventLabel),
     atomic_list_concat(['{', EventLabel, '} ', TruthValue, ' in ', PMCid, ' (by ', SubmitLab ,')'], StatLabel),
     BasicTriples = [
-        [IndexCard, rdf:'type', bmpaf:'IndexCard'],
-        [IndexCard, bmpaf:'hasStartTime', literal(StartTime)],
-        [IndexCard, bmpaf:'hasStopTime', literal(StopTime)],
-        [IndexCard, bmpaf:'hasIndexCardId', literal(BaseName)],
-        [IndexCard, bmpaf:'hasAnnotator', ReaderType],
-        [IndexCard, bmpaf:'hasSubmitter', Submitter],
-        [IndexCard, bmpaf:'containsStatement', Statement],
-        [Statement, rdf:'type', bmpaf:'Statement'],
-        [Statement, bmpaf:'containedIn', IndexCard],
+        [IndexCard, rdf:'type', panda:'IndexCard'],
+        [IndexCard, panda:'hasStartTime', literal(StartTime)],
+        [IndexCard, panda:'hasStopTime', literal(StopTime)],
+        [IndexCard, panda:'hasIndexCardId', literal(BaseName)],
+        [IndexCard, panda:'hasAnnotator', ReaderType],
+        [IndexCard, panda:'hasSubmitter', Submitter],
+        [IndexCard, panda:'containsStatement', Statement],
+        [Statement, rdf:'type', panda:'Statement'],
+        [Statement, panda:'containedIn', IndexCard],
         [Statement, rdf:'type', prov:'Entity'],
         [Statement, rdfs:'label', literal(StatLabel)],
-        [Statement, bmpaf:'hasTruthValue', literal(TruthValue)],
-        [Statement, bmpaf:'represents', Event],
-        [Event, bmpaf:'isRepresentedBy', Statement],
-        [Statement, bmpaf:'isExtractedFrom', Article]
+        [Statement, panda:'hasTruthValue', literal(TruthValue)],
+        [Statement, panda:'represents', Event],
+        [Event, panda:'isRepresentedBy', Statement],
+        [Statement, panda:'isExtractedFrom', Article]
         ],
-    findall([Statement, bmpaf:'hasTextualEvidence', literal(Evidence)], card('/evidence', Evidence), EvidenceTriples),
+    findall([Statement, panda:'hasTextualEvidence', literal(Evidence)], card('/evidence', Evidence), EvidenceTriples),
     union(BasicTriples, EvidenceTriples, TargetTriples),
     sparqlInsertQuery(TargetTriples, GraphURI),
     write('Created new statement: \t'), writeln(StatLabel),
     log_write('\nCreated: \t'), log_writeln(StatLabel),
-    createInputProbabilityGraph(Statement, ProbGraph),
-    writeln('Creating probability input graph...'),
-    findall(_, probabilityInput(Statement, ProbGraph), _),
-    findall(_, probabilityInput(Statement, GroundingProbList, ProbGraph), _).
+    createInputUncertaintyGraph(Statement, ProbGraph),
+    writeln('Creating uncertainty input graph...'),
+    findall(_, uncertaintyInput(Statement, ProbGraph), _),
+    findall(_, uncertaintyInput(Statement, GroundingProbList, ProbGraph), _).
 
 createIndexCardGraph(Graph) :-
     index_graph(Graph) -> true;     
@@ -203,8 +201,8 @@ createIndexCardGraph(Graph) :-
             sparqlInsertQuery(TargetTriples, Graph),
             asserta(index_graph(Graph))).
 
-createInputProbabilityGraph(Statement, Graph) :-
-    createFreshObject('probability_input_graph', Graph),
+createInputUncertaintyGraph(Statement, Graph) :-
+    createFreshObject('uncertainty_input_graph', Graph),
     date(date(Y, M, D)),
     atomic_list_concat([Y, M, D], '-', Date),
     atomic_list_concat([Graph, '.rdf'], GraphDump),
@@ -227,26 +225,26 @@ createInputProbabilityGraph(Statement, Graph) :-
 %   Entity creation
 %%%%%%%%%%%%%%%%%%%%%%%
 
-createIdObject(Event, bmpaf:'Event', Path, GroundingProbList) :-
+createIdObject(Event, panda:'Event', Path, GroundingProbList) :-
     retriveKeyValue(interactionType, Path, EvTypURI),
-    \+EvTypURI=bmpaf:'AddsModification',
-    \+EvTypURI=bmpaf:'InhibitsModification',
+    \+EvTypURI=panda:'AddsModification',
+    \+EvTypURI=panda:'InhibitsModification',
     event_graph(Graph),
     (retriveKeyValue(participantAtype, Path) -> 
         (atomic_list_concat([Path, '/participant_a'], PartApath),
-        createIdObject(ParticipantA, bmpaf:'Participant', PartApath, GroundingProbListA), 
-        TripleA = [['?x', bmpaf:'hasParticipantA', ParticipantA]],
+        createIdObject(ParticipantA, panda:'Participant', PartApath, GroundingProbListA), 
+        TripleA = [['?x', panda:'hasParticipantA', ParticipantA]],
         getLabel(ParticipantA, Graph, LabelA)); 
         (GroundingProbListA=[], 
-         TripleA =[not([['?x', bmpaf:'hasParticipantA', '?y']])],
+         TripleA =[not([['?x', panda:'hasParticipantA', '?y']])],
          LabelA='-')),
     (retriveKeyValue(participantBtype, Path) -> 
         (atomic_list_concat([Path, '/participant_b'], PartBpath),
-        createIdObject(ParticipantB, bmpaf:'Participant', PartBpath, GroundingProbListB), 
-        TripleB = [['?x', bmpaf:'hasParticipantB', ParticipantB]],
+        createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+        TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
         getLabel(ParticipantB, Graph, LabelB)); 
         (GroundingProbListB=[], 
-        TripleB =[not([['?x', bmpaf:'hasParticipantB', '?z']])],
+        TripleB =[not([['?x', panda:'hasParticipantB', '?z']])],
         LabelB='-')),
     BasicTriples = [
         ['?x', rdf:'type', EvTypURI]],
@@ -255,9 +253,9 @@ createIdObject(Event, bmpaf:'Event', Path, GroundingProbList) :-
     union(BasicTriples, PartTriples, EventTriples),
     (sparqlSelectQuery(EventTriples, Graph, Tuple) -> 
         (Tuple=[Event], log_write('\nMatched '), log_writeln(Event), writeln('Matched existing event...'));
-        (createFreshObject(bmpaf:'Event', Event),
-        paf_graph(PafGraph),
-        getLabel(EvTypURI, PafGraph, EventTypeLabel),
+        (createFreshObject(panda:'Event', Event),
+        panda_graph(Panda),
+        getLabel(EvTypURI, Panda, EventTypeLabel),
         atomic_list_concat([LabelA, EventTypeLabel, LabelB], ' ', EventLabel),
         log_write('\nCreated '), log_writeln(EventLabel),
         write('Created new event: \t'), writeln(EventLabel),
@@ -267,16 +265,16 @@ createIdObject(Event, bmpaf:'Event', Path, GroundingProbList) :-
         sparqlInsertQuery(AllEventTriples, Graph))),
     union(GroundingProbListA, GroundingProbListB, GroundingProbList).
 
-createIdObject(Participant, bmpaf:'Participant', Path, GroundingProbList) :-
+createIdObject(Participant, panda:'Participant', Path, GroundingProbList) :-
     retriveKeyValue(entityType, Path, EntType),
     createIdObject(Participant, EntType, Path, GroundingProbList), !.   
     
 createIdObject(SimpleURI, SimpleType, Path, GroundingProbList) :-
-    member(SimpleType, [bmpaf:'Protein', bmpaf:'Chemical', bmpaf:'Gene']), !,
+    member(SimpleType, [panda:'Protein', panda:'Chemical', panda:'Gene']), !,
     retriveKeyValue(entityId, Path, EntId),
    % retriveKeyValue(entityText, Path, EntText),
     BasicTriples = [
-        ['?x', bmpaf:'hasEntityId', literal(EntId)]
+        ['?x', panda:'hasEntityId', literal(EntId)]
         ],
     event_graph(Graph),
     (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
@@ -287,15 +285,15 @@ createIdObject(SimpleURI, SimpleType, Path, GroundingProbList) :-
         (createIdURI(simple, EntId, SimpleURI),
         (identifierResolution(EntId, Name) ->       
         ExtraTargetTriples=[
-            [SimpleURI, bmpaf:'hasEntityId', literal(EntId)],
-            [SimpleURI, bmpaf:'hasEntityName', literal(Name)],
+            [SimpleURI, panda:'hasEntityId', literal(EntId)],
+            [SimpleURI, panda:'hasEntityName', literal(Name)],
             [SimpleURI, rdfs:'label', literal(Name)]
         ];
         ExtraTargetTriples=[
-            [SimpleURI, bmpaf:'hasEntityId', literal(EntId)]
+            [SimpleURI, panda:'hasEntityId', literal(EntId)]
             ])), 
         BasicTargetTriples = [
-         %   [SimpleURI, bmpaf:'hasEntityText', literal(EntText)],
+         %   [SimpleURI, panda:'hasEntityText', literal(EntText)],
             [SimpleURI, rdf:'type', SimpleType]
             ],
         union(BasicTargetTriples, ExtraTargetTriples, TargetTriples),
@@ -304,27 +302,27 @@ createIdObject(SimpleURI, SimpleType, Path, GroundingProbList) :-
         write('Created new entity: \t'), writeln(EntId)),
     GroundingProbList=[[SimpleURI, 1]].
     
-createIdObject(Submitter, bmpaf:'Submitter', '', []) :-
+createIdObject(Submitter, panda:'Submitter', '', []) :-
     retriveKeyValue(submitter, SubmitterName),
     BasicTriples = [
-        ['?x', bmpaf:'hasSubmitterId', literal(SubmitterName)]
+        ['?x', panda:'hasSubmitterId', literal(SubmitterName)]
         ],
     submitter_graph(Graph),
     (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
         Tuple=[Submitter];
-        (createFreshObject(bmpaf:'Submitter', Submitter),
+        (createFreshObject(panda:'Submitter', Submitter),
         TargetTriples = [
-        [Submitter, bmpaf:'hasSubmitterId', literal(SubmitterName)],
-        [Submitter, rdf:'type', bmpaf:'Submitter'],
+        [Submitter, panda:'hasSubmitterId', literal(SubmitterName)],
+        [Submitter, rdf:'type', panda:'Submitter'],
         [Submitter, rdfs:'label', literal(SubmitterName)]
         ],
         sparqlInsertQuery(TargetTriples, Graph)
         )).
 
-createIdObject(Article, bmpaf:'JournalArticle', '', []) :-
+createIdObject(Article, panda:'JournalArticle', '', []) :-
     retriveKeyValue(pmcId, PmcId),
     BasicTriples = [
-        ['?x', bmpaf:'hasPMCId', literal(PmcId)]
+        ['?x', panda:'hasPMCId', literal(PmcId)]
         ],
     source_graph(Graph),
     (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
@@ -332,29 +330,29 @@ createIdObject(Article, bmpaf:'JournalArticle', '', []) :-
         (
         createIdURI(article, PmcId, Article),
         pubmedJournalTitleYear(PmcId, ISSN, Title, Year),
-        createIdObject(Journal, bmpaf:'Journal', ISSN, []),
+        createIdObject(Journal, panda:'Journal', ISSN, []),
         TargetTriples = [
-            [Article, bmpaf:'hasPMCId', literal(PmcId)],
-            [Article, bmpaf:'hasTitle', literal(Title)],
+            [Article, panda:'hasPMCId', literal(PmcId)],
+            [Article, panda:'hasTitle', literal(Title)],
             [Article, rdfs:'label', literal(Title)],
-            [Article, rdf:'type', bmpaf:'JournalArticle'],
-            [Article, bmpaf:'publishedIn', Journal],
-            [Article, bmpaf:'hasPublicationYear', Year]
+            [Article, rdf:'type', panda:'JournalArticle'],
+            [Article, panda:'publishedIn', Journal],
+            [Article, panda:'hasPublicationYear', Year]
         ],
         sparqlInsertQuery(TargetTriples, Graph)
         )).
 
-createIdObject(Journal, bmpaf:'Journal', ISSN, []) :-
+createIdObject(Journal, panda:'Journal', ISSN, []) :-
     BasicTriples = [
-        ['?x', bmpaf:'hasISSN', literal(ISSN)]
+        ['?x', panda:'hasISSN', literal(ISSN)]
         ],
     journal_graph(Graph),
     (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
         Tuple=[Journal];
-        (createFreshObject(bmpaf:'Journal', Journal),
+        (createFreshObject(panda:'Journal', Journal),
         TargetTriples = [
-        [Journal, rdf:'type', bmpaf:'Journal'],
-        [Journal, bmpaf:'hasISSN', literal(ISSN)]
+        [Journal, rdf:'type', panda:'Journal'],
+        [Journal, panda:'hasISSN', literal(ISSN)]
         ],
         sparqlInsertQuery(TargetTriples, Graph))).
         
@@ -398,7 +396,7 @@ retriveKeyValue(submitter, Submitter) :-
 retriveKeyValue(readerType, ReaderTypeURI)  :-
     (card('/reader_type', ReaderType) -> 
         readerType(ReaderType, ReaderTypeURI);
-        ReaderTypeURI = bmpaf:'Annotator').
+        ReaderTypeURI = panda:'Annotator').
 
 retriveKeyValue(truthValue, TruthValue) :-
     card('/extracted_information/negative_information', NegInf), 
@@ -448,36 +446,36 @@ retriveKeyValue(entityText, Path, EntText) :-
     
 
     
-participantType('protein', bmpaf:'Protein').
-participantType('chemical', bmpaf:'Chemical').
-participantType('protein_family', bmpaf:'ProteinFamily').
-participantType('gene', bmpaf:'Gene').
-participantType('complex', bmpaf:'Complex').
-participantType('event', bmpaf:'Event').
+participantType('protein', panda:'Protein').
+participantType('chemical', panda:'Chemical').
+participantType('protein_family', panda:'ProteinFamily').
+participantType('gene', panda:'Gene').
+participantType('complex', panda:'Complex').
+participantType('event', panda:'Event').
     
-interactionType('binds', bmpaf:'Binding').
-interactionType('increases', bmpaf:'PositiveRegulation').
-interactionType('decreases', bmpaf:'NegativeRegulation').
-interactionType('translocates', bmpaf:'Translocation').
-interactionType('increases_activity', bmpaf:'IncreasesActivity').
-interactionType('decreases_activity', bmpaf:'DecreasesActivity').
-interactionType('gene_expression', bmpaf:'GeneExpression').
-interactionType('adds_modification', bmpaf:'AddsModification').
-interactionType('inhibits_modification', bmpaf:'InhibitsModification').
+interactionType('binds', panda:'Binding').
+interactionType('increases', panda:'PositiveRegulation').
+interactionType('decreases', panda:'NegativeRegulation').
+interactionType('translocates', panda:'Translocation').
+interactionType('increases_activity', panda:'IncreasesActivity').
+interactionType('decreases_activity', panda:'DecreasesActivity').
+interactionType('gene_expression', panda:'GeneExpression').
+interactionType('adds_modification', panda:'AddsModification').
+interactionType('inhibits_modification', panda:'InhibitsModification').
 
-modificationType('phosphorylation', bmpaf:'Phosphorylation').
-modificationType('acetylation', bmpaf:'Acetylation').
-modificationType('farnesylation', bmpaf:'Farnesylation').
-modificationType('glycosylation', bmpaf:'Glycosylation').
-modificationType('hydroxylation', bmpaf:'Hydroxylation').
-modificationType('methylation', bmpaf:'Methylation').
-modificationType('ribosylation', bmpaf:'Ribosylation').
-modificationType('sumoylation', bmpaf:'Sumoylation').
-modificationType('ubiquitination', bmpaf:'Ubiquitination').
+modificationType('phosphorylation', panda:'Phosphorylation').
+modificationType('acetylation', panda:'Acetylation').
+modificationType('farnesylation', panda:'Farnesylation').
+modificationType('glycosylation', panda:'Glycosylation').
+modificationType('hydroxylation', panda:'Hydroxylation').
+modificationType('methylation', panda:'Methylation').
+modificationType('ribosylation', panda:'Ribosylation').
+modificationType('sumoylation', panda:'Sumoylation').
+modificationType('ubiquitination', panda:'Ubiquitination').
 
-readerType('human', bmpaf:'Human'). 
-readerType('machine', bmpaf:'Computer').
-readerType(ReaderType, bmpaf:'HumanComputer') :-
+readerType('human', panda:'Human'). 
+readerType('machine', panda:'Computer').
+readerType(ReaderType, panda:'HumanComputer') :-
      member(ReaderType, ['human_machine', 'human-machine']).
 
 negation(@false, true).
@@ -490,55 +488,55 @@ speculated(@true, 'uncertain').
 %   Input probabilities recording
 %%%%%%%%%%%%%%%%%%%%
 
-probabilityInput(Statement, Graph) :- 
+uncertaintyInput(Statement, Graph) :- 
     retriveKeyValue(textualUncertainty, Value),
-    createFreshObject(bmp:'ProbabilityRelevantToTextualUncertainty', Subject),
+    createFreshObject(uo:'TextualUncertainty', Subject),
     TargetTriples = [
-        [Statement, bmp:'hasTextualProbability', Subject],
-        [Subject, rdf:'type', bmp:'ProbabilityRelevantToTextualUncertainty'],
-        [Subject, bmp:'hasProbabilityLevel', literal(Value)],
+        [Statement, uo:'hasTextualUncertainty', Subject],
+        [Subject, rdf:'type', uo:'TextualUncertainty'],
+        [Subject, uo:'hasUncertaintyLevel', literal(Value)],
         [Subject, rdfs:'label', literal(Value)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
 
-probabilityInput(Statement, Graph) :- 
+uncertaintyInput(Statement, Graph) :- 
     retriveKeyValue(extractionAccurracy, Accurracy),
-    createFreshObject(bmp:'AccuracyOfExtractionFromText', Subject),
+    createFreshObject(uo:'AccuracyOfExtractionFromText', Subject),
     TargetTriples = [
-        [Statement, bmp:'hasExtractionAccurracy', Subject],
-        [Subject, rdf:'type', bmp:'AccuracyOfExtractionFromText'],
-        [Subject, bmp:'hasProbabilityLevel', literal(Accurracy)],
+        [Statement, uo:'hasExtractionAccurracy', Subject],
+        [Subject, rdf:'type', uo:'AccuracyOfExtractionFromText'],
+        [Subject, uo:'hasUncertaintyLevel', literal(Accurracy)],
         [Subject, rdfs:'label', literal(Accurracy)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
 
 
-probabilityInput(Statement, Graph) :- 
+uncertaintyInput(Statement, Graph) :- 
     QueryTriples = [
-        [Statement, bmpaf:'isExtractedFrom', '?x'],
-        ['?x', bmpaf:'publishedIn', '?y'],
-        ['?y', bmpaf:'hasSJRscore', '?s']
+        [Statement, panda:'isExtractedFrom', '?x'],
+        ['?x', panda:'publishedIn', '?y'],
+        ['?y', panda:'hasSJRscore', '?s']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?s', [Score]),
     atom_number(Score, ScoreNumber),
     Prob is sqrt(round((ScoreNumber / 10) * 1000) / 1000),
-    createFreshObject(bmp:'ProbabilityRelevantToDocumentProvenance', Subject),
+    createFreshObject(uo:'UncertaintyRelevantToDocumentProvenance', Subject),
     TargetTriples = [
-        [Statement, bmp:'hasProvenanceProbability', Subject],
-        [Subject, rdf:'type', bmp:'ProbabilityRelevantToDocumentProvenance'],
-        [Subject, bmp:'hasProbabilityLevel', literal(Prob)],
+        [Statement, uo:'hasProvenanceUncertainty', Subject],
+        [Subject, rdf:'type', uo:'UncertaintyRelevantToDocumentProvenance'],
+        [Subject, uo:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
 
-probabilityInput(Statement, GroundingProbList, Graph) :-
+uncertaintyInput(Statement, GroundingProbList, Graph) :-
     findall(P, member([_, P], GroundingProbList), PList),
     listProduct(PList, Prob),
-    createFreshObject(bmp:'ProbabilityRelevantToEntityGrounding', Subject),
+    createFreshObject(uo:'UncertaintyRelevantToEntityGrounding', Subject),
     TargetTriples = [
-        [Statement, bmp:'hasGroundingProbability', Subject],
-        [Subject, rdf:'type', bmp:'ProbabilityRelevantToEntityGrounding'],
-        [Subject, bmp:'hasProbabilityLevel', literal(Prob)],
+        [Statement, uo:'hasGroundingUncertainty', Subject],
+        [Subject, rdf:'type', uo:'UncertaintyRelevantToEntityGrounding'],
+        [Subject, uo:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
