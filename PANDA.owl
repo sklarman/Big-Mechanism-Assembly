@@ -1,0 +1,1369 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY void "http://rdfs.org/ns/void#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY uo "http://purl.bioontology.org/net/brunel/uo#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY panda "http://purl.bioontology.org/net/brunel/panda#" >
+]>
+
+
+<rdf:RDF xmlns="http://purl.bioontology.org/net/brunel/panda#"
+     xml:base="http://purl.bioontology.org/net/brunel/panda"
+     xmlns:panda="http://purl.bioontology.org/net/brunel/panda#"
+     xmlns:uo="http://purl.bioontology.org/net/brunel/uo#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:void="http://rdfs.org/ns/void#">
+    <owl:Ontology rdf:about="http://purl.bioontology.org/net/brunel/panda">
+        <dc:contributor rdf:datatype="&xsd;anyURI">http://klarman.synthasite.com/</dc:contributor>
+        <dc:creator rdf:datatype="&xsd;anyURI">http://www.brunel.ac.uk/people/larisa-soldatova</dc:creator>
+        <owl:versionInfo>2016-03-15</owl:versionInfo>
+        <dc:description xml:lang="en">Probabilistic Knowledge Assembly (PANDA) Ontology has been developed in the context of the DARPA&apos;s Big Mechanism research program. It provides a semantic interface for capturing information on molecular interactions extracted from scientific texts. Conceptually, PAF ontology supports 3 layers of representation:
+1) Domain knowledge: molecular interactions, their participants, structure, and (possibly) formal relationships to some external biological models.
+2) Textual evidence: sentences extracted from text, speaking about those interactions, and their provenance-related information.
+3) Probabilisitic information associated with different aspects of the representation (see the imported Uncertainty Ontology).</dc:description>
+        <dc:title>Probabilistic Knowledge Assembly Ontology </dc:title>
+        <dc:subject xml:lang="en">biological events</dc:subject>
+        <dc:subject xml:lang="en">molecular biology</dc:subject>
+        <dc:subject xml:lang="en">text mining</dc:subject>
+        <owl:imports rdf:resource="http://purl.bioontology.org/net/brunel/uo"/>
+        <void:dataBrowse rdf:resource="http://purl.bioontology.org/net/brunel/panda.graph"/>
+        <void:dataDump rdf:resource="http://purl.bioontology.org/net/brunel/panda.owl"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasDefinition -->
+
+    <owl:AnnotationProperty rdf:about="&panda;hasDefinition">
+        <rdfs:label xml:lang="en">has definition</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/contributor -->
+
+    <owl:AnnotationProperty rdf:about="&dc;contributor"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/creator -->
+
+    <owl:AnnotationProperty rdf:about="&dc;creator"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/subject -->
+
+    <owl:AnnotationProperty rdf:about="&dc;subject"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#containedIn -->
+
+    <owl:ObjectProperty rdf:about="&panda;containedIn">
+        <rdfs:label>contained in</rdfs:label>
+        <rdfs:comment>a statment is contained in an index card
+</rdfs:comment>
+        <owl:inverseOf rdf:resource="&panda;containsStatement"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#containsStatement -->
+
+    <owl:ObjectProperty rdf:about="&panda;containsStatement">
+        <rdfs:label>contains statement</rdfs:label>
+        <rdfs:comment>An index card contains a statement</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#contradicts -->
+
+    <owl:ObjectProperty rdf:about="&panda;contradicts">
+        <rdfs:label xml:lang="en">contradicts</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;relationToModel"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#corroborates -->
+
+    <owl:ObjectProperty rdf:about="&panda;corroborates">
+        <rdfs:label xml:lang="en">corroborates</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;relationToModel"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#evidence -->
+
+    <owl:ObjectProperty rdf:about="&panda;evidence">
+        <rdfs:label xml:lang="en">evidence</rdfs:label>
+        <hasDefinition>Scientific evidence supporting the existence of the entity as described.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://www.biopax.org/release/biopax-level2.owl#EVIDENCE"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#extends -->
+
+    <owl:ObjectProperty rdf:about="&panda;extends">
+        <rdfs:label xml:lang="en">extends</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;relationToModel"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasAnnotator -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasAnnotator">
+        <rdfs:label xml:lang="en">has annotator</rdfs:label>
+        <rdfs:comment>an index card has an annotator (computer+machine, human, or both)</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasBody -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasBody">
+        <rdfs:label xml:lang="en">has body</rdfs:label>
+        <hasDefinition>The relationship between oa:Annotation and body. The body is somehow &quot;about&quot; the oa:hasTarget of the annotation.
+
+The Body may be of any media type, and contain any type of content. The Body SHOULD be identified by HTTP URIs unless they are embedded within the Annotation.
+
+Embedded bodies SHOULD be instances of cnt:ContentAsText and embed their content with cnt:chars. They SHOULD declare their media type with dc:format, and MAY indicate their language using dc:language and a RFC-3066 language tag. 
+
+There is no OA class provided for &quot;Body&quot; as a body might be a target of a different annotation. However, there SHOULD be 1 or more content-based classes associated with the body resources of an Annotation, and the dctypes: vocabulary is recommended for this purpose, for instance dctypes:Text to declare textual content.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/oa#"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasCellLine -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasCellLine">
+        <rdfs:label>has cell line</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain cell lines. Hence a statment should be by defeault connected to some cell line via &quot;has cell line&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasFeature -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasFeature">
+        <rdfs:label xml:lang="en">has feature</rdfs:label>
+        <rdfs:comment>values accepted (by DARPA) protein modification; binding; mutation
+
+should be attached to a chemical entity - a participant of an event</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasModificationFeature -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasModificationFeature">
+        <rdfs:label>has modification feature</rdfs:label>
+        <rdfs:comment>A molecular interaction of type adds_modification or inhibits_modification should by default have some modification feature of type protein modification.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasParticipant -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasParticipant">
+        <rdfs:label xml:lang="en">has participant</rdfs:label>
+        <rdfs:isDefinedBy>OBI, IAO</rdfs:isDefinedBy>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasParticipantA -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasParticipantA">
+        <rdfs:label xml:lang="en">has participant A</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;hasParticipant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasParticipantB -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasParticipantB">
+        <rdfs:label xml:lang="en">has participant B</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;hasParticipant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasRelatedExperimentalResults -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasRelatedExperimentalResults">
+        <rdfs:label>has related experimental results</rdfs:label>
+        <rdfs:comment>An event has been evaluated in a wet lab experiment, whose results are reported</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasSubmitter -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasSubmitter">
+        <rdfs:label>has submitter</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasTarget -->
+
+    <owl:ObjectProperty rdf:about="&panda;hasTarget">
+        <rdfs:label xml:lang="en">has target</rdfs:label>
+        <hasDefinition>The relationship between oa:Annotation and target. The target resource is what the oa:hasBody is somewhat &quot;about&quot;.
+
+The target may be of any media type, and contain any type of content. The target SHOULD be identified by HTTP URIs unless they are embedded within the Annotation.
+
+Embedded targets SHOULD be instances of cnt:ContentAsText and embed their content with cnt:chars. They SHOULD declare their media type with dc:format, and MAY indicate their language using dc:language and a RFC-3066 language tag. 
+
+There is no OA class provided for &quot;Target&quot; as a target might be a body in a different annotation. However, there SHOULD be 1 or more content-based classes associated with the target resources of an Annotation, and the dctypes: vocabulary is recommended for this purpose, for instance dctypes:Text to declare textual content.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/oa#"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#isAbout -->
+
+    <owl:ObjectProperty rdf:about="&panda;isAbout">
+        <rdfs:label xml:lang="en">is about</rdfs:label>
+        <hasDefinition>is_about is a (currently) primitive relation that relates an information artifact to an entity. http://purl.obolibrary.org/obo/IAO_0000136 </hasDefinition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#isExtractedFrom -->
+
+    <owl:ObjectProperty rdf:about="&panda;isExtractedFrom">
+        <rdfs:label>is extracted from</rdfs:label>
+        <rdfs:comment xml:lang="en">a statement is extracted from an article</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#isRepresentedBy -->
+
+    <owl:ObjectProperty rdf:about="&panda;isRepresentedBy">
+        <rdfs:label xml:lang="en">is represented by</rdfs:label>
+        <rdfs:comment>an event is represented by a statement</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#partOf -->
+
+    <owl:ObjectProperty rdf:about="&panda;partOf">
+        <rdfs:label>part of</rdfs:label>
+        <rdfs:comment>a core relation that holds between a part and its whole</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#petriNetLabel -->
+
+    <owl:ObjectProperty rdf:about="&panda;petriNetLabel">
+        <rdfs:label>has petri net label</rdfs:label>
+        <rdfs:comment>The nodes of petri net models are labeled with biological entities: places with chemicals or interactions, while transitions with regulation types (classes).</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#publishedIn -->
+
+    <owl:ObjectProperty rdf:about="&panda;publishedIn">
+        <rdfs:label>published in</rdfs:label>
+        <rdfs:comment>A journal article is published in a journal</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#relationToModel -->
+
+    <owl:ObjectProperty rdf:about="&panda;relationToModel">
+        <rdfs:label xml:lang="en">relation to model</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#represents -->
+
+    <owl:ObjectProperty rdf:about="&panda;represents">
+        <rdfs:label>represents</rdfs:label>
+        <rdfs:comment>a statement represents an event</rdfs:comment>
+        <owl:inverseOf rdf:resource="&panda;isRepresentedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#specifies -->
+
+    <owl:ObjectProperty rdf:about="&panda;specifies">
+        <rdfs:label xml:lang="en">specifies</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&panda;relationToModel"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#transitionFrom -->
+
+    <owl:ObjectProperty rdf:about="&panda;transitionFrom">
+        <rdfs:label>transition from</rdfs:label>
+        <rdfs:comment>The transitions in petri net models follow the direction: &apos;transition from&apos; a place; &apos;transition to&apos; a place.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#transitionTo -->
+
+    <owl:ObjectProperty rdf:about="&panda;transitionTo">
+        <rdfs:label>transition to</rdfs:label>
+        <rdfs:comment>The transitions in petri net models follow the direction: &apos;transition from&apos; a place; &apos;transition to&apos; a place.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/hasCellType -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasCellType">
+        <rdfs:label>has cell type</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain cell types. Hence a statment should be by defeault connected to some cell type via &quot;has cell type&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/hasComponent -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasComponent">
+        <rdfs:label>has component</rdfs:label>
+        <rdfs:comment>Complex chemicals conist of (simple) components. </rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/hasTissueType -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasTissueType">
+        <rdfs:label>has tissue type</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain tissue types. Hence a statment should be by defeault connected to some tissue type via &quot;has tissue type&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/inOragnism -->
+
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/inOragnism">
+        <rdfs:label>in organism</rdfs:label>
+        <rdfs:comment>Statements qualify the truth of biological events in the context of certain organisms. Hence a statment should be by defeault connected to some organism via &quot;in organism&quot; property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasEntityId -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasEntityId">
+        <rdfs:label>has entity ID</rdfs:label>
+        <rdfs:comment>associates an  identifier with a chemical entity, e.g.: GAB1_HUMAN, MK03_HUMAN</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasEntityName -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasEntityName">
+        <rdfs:label>has entity name</rdfs:label>
+        <rdfs:comment>entity&apos;s name as accepted in one of the official databases</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasEntityText -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasEntityText">
+        <rdfs:label>has entity text</rdfs:label>
+        <rdfs:comment>associates a chemical entity with its textual representation in the extracted text fragment</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasHindex -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasHindex">
+        <rdfs:label>has H-index</rdfs:label>
+        <rdfs:comment>a journal has an H index</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasISSN -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasISSN">
+        <rdfs:label>has ISSN</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasIndexCardId -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasIndexCardId">
+        <rdfs:label xml:lang="en">has index card ID</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasPmcId -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasPmcId">
+        <rdfs:label xml:lang="en">has PMC ID</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasPublicationYear -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasPublicationYear">
+        <rdfs:label>has publication year</rdfs:label>
+        <rdfs:comment>a publication has publication year</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasSJRscore -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasSJRscore">
+        <rdfs:label>has SJR score</rdfs:label>
+        <hasDefinition>https://en.wikipedia.org/wiki/SCImago_Journal_Rank</hasDefinition>
+        <rdfs:comment>A journal has its SJR score</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasSite -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasSite">
+        <rdfs:label>has site</rdfs:label>
+        <rdfs:comment>Certain interactions, e.g. modificiations or bindings, are additionally qualified by the site (by default of the participant B) where the interaction takes palce. </rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasStartTime -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasStartTime">
+        <rdfs:label xml:lang="en">has start time</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasStopTime -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasStopTime">
+        <rdfs:label xml:lang="en">has stop time</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasSubmitterId -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasSubmitterId">
+        <rdfs:label>has submitter ID</rdfs:label>
+        <rdfs:comment>a submitter has an id</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasTextualEvidence -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasTextualEvidence">
+        <rdfs:label xml:lang="en">has textual evidence</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&owl;topDataProperty"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasTitle -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasTitle">
+        <rdfs:label>has title</rdfs:label>
+        <rdfs:comment>A journal/publication has title.</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasTruthValue -->
+
+    <owl:DatatypeProperty rdf:about="&panda;hasTruthValue">
+        <rdfs:label xml:lang="en">has truth value</rdfs:label>
+        <rdfs:comment>- a statement states the truth value of an event
+- an experimental result states the truth value of the tested hypothesis
+Values: true/false
+</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Abstract -->
+
+    <owl:Class rdf:about="&panda;Abstract">
+        <rdfs:label>abstract</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A summary of the entire document that is substantially smaller than the document it summarizes.  It is about the document it summarizes.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000315"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Acetylation -->
+
+    <owl:Class rdf:about="&panda;Acetylation">
+        <rdfs:label xml:lang="en">acetylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0192</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#AddsModification -->
+
+    <owl:Class rdf:about="&panda;AddsModification">
+        <rdfs:label>adds modification</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;PositiveRegulation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Annotation -->
+
+    <owl:Class rdf:about="&panda;Annotation">
+        <rdfs:label xml:lang="en">annotation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <hasDefinition>Typically an Annotation has a single Body (oa:hasBody), which is the comment or other descriptive resource, and a single Target (oa:hasTarget) that the Body is somehow &quot;about&quot;. The Body provides the information which is annotating the Target. 
+
+This &quot;aboutness&quot; may be further clarified or extended to notions such as classifying or identifying with oa:motivatedBy.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/ns/oa#"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Annotator -->
+
+    <owl:Class rdf:about="&panda;Annotator">
+        <rdfs:label xml:lang="en">annotator</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Role"/>
+        <rdfs:comment>The agent that provided an annotation (extracted a sentence). </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Binding -->
+
+    <owl:Class rdf:about="&panda;Binding">
+        <rdfs:label xml:lang="en">binding</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MolecularInteraction"/>
+        <hasDefinition>The selective, non-covalent, often stoichiometric, interaction of a molecule with one or more specific sites on another molecule.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/GO_0005488"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#CellLine -->
+
+    <owl:Class rdf:about="&panda;CellLine">
+        <rdfs:label>cell line</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Chemical -->
+
+    <owl:Class rdf:about="&panda;Chemical">
+        <rdfs:label xml:lang="en">chemical</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Complex -->
+
+    <owl:Class rdf:about="&panda;Complex">
+        <rdfs:label xml:lang="en">complex</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Computer -->
+
+    <owl:Class rdf:about="&panda;Computer">
+        <rdfs:label xml:lang="en">computer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Annotator"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Deacetylation -->
+
+    <owl:Class rdf:about="&panda;Deacetylation">
+        <rdfs:label xml:lang="en">deacetylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0197</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#DecreasesActivity -->
+
+    <owl:Class rdf:about="&panda;DecreasesActivity">
+        <rdfs:label xml:lang="en">decreases activity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;NegativeRegulation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Defarnesylation -->
+
+    <owl:Class rdf:about="&panda;Defarnesylation">
+        <rdfs:label xml:lang="en">defarnesylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0198</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Deglycosylation -->
+
+    <owl:Class rdf:about="&panda;Deglycosylation">
+        <rdfs:label xml:lang="en">deglycosylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0558</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Demethylation -->
+
+    <owl:Class rdf:about="&panda;Demethylation">
+        <rdfs:label xml:lang="en">demethylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0871</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Dephosphorylation -->
+
+    <owl:Class rdf:about="&panda;Dephosphorylation">
+        <rdfs:label xml:lang="en">dephosphorylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0203</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Desumoylation -->
+
+    <owl:Class rdf:about="&panda;Desumoylation">
+        <rdfs:label xml:lang="en">desumoylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0568</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Deubiquitination -->
+
+    <owl:Class rdf:about="&panda;Deubiquitination">
+        <rdfs:label xml:lang="en">deubiquitination</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0204</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#DiscussionSectionOfaPublication -->
+
+    <owl:Class rdf:about="&panda;DiscussionSectionOfaPublication">
+        <rdfs:label>discussion section of a publication</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A part of a publication about an investigation that is about the study interpretation of the investigation</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000319"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Document -->
+
+    <owl:Class rdf:about="&panda;Document">
+        <rdfs:label>document</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <rdfs:comment>A collection of information content entities intended to be understood together as a whole</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000310"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#DocumentPart -->
+
+    <owl:Class rdf:about="&panda;DocumentPart">
+        <rdfs:label>document part</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;partOf"/>
+                <owl:someValuesFrom rdf:resource="&panda;Document"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment>an information content entity that is part of a document</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000314"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Event -->
+
+    <owl:Class rdf:about="&panda;Event">
+        <rdfs:label xml:lang="en">biological event</rdfs:label>
+        <rdfs:comment>A biological event, such as molecular interaction or gene expression. Events are desccribed in statements. </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#ExperimentalResults -->
+
+    <owl:Class rdf:about="&panda;ExperimentalResults">
+        <rdfs:label>experimental results</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <rdfs:comment>Experimental results are the set of facts and conclusions, obtained as a result of the interpretation of the experimental observations, which increase/decrease the probability of a research hypothesis of the experiment.</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="https://sourceforge.net/projects/expo/files/EXPO-OWL/"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Farnesylation -->
+
+    <owl:Class rdf:about="&panda;Farnesylation">
+        <rdfs:label xml:lang="en">farnesylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0206</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#FigureLegend -->
+
+    <owl:Class rdf:about="&panda;FigureLegend">
+        <rdfs:label>figure legend</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A legend associated with a figure in a document
+</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Gene -->
+
+    <owl:Class rdf:about="&panda;Gene">
+        <rdfs:label xml:lang="en">gene</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#GeneExpression -->
+
+    <owl:Class rdf:about="&panda;GeneExpression">
+        <rdfs:label>gene expression</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Event"/>
+        <rdfs:isDefinedBy>http://purl.obolibrary.org/obo/GO_0010467</rdfs:isDefinedBy>
+        <rdfs:comment>The process in which a gene&apos;s sequence is converted into a mature gene product or products (proteins or RNA). This includes the production of an RNA transcript as well as any processing to produce a mature RNA product or an mRNA (for protein-coding genes) and the translation of that mRNA into protein. Protein maturation is included when required to form an active form of a product from an inactive precursor form.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Glycosylation -->
+
+    <owl:Class rdf:about="&panda;Glycosylation">
+        <rdfs:label xml:lang="en">glycosylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0559</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Human -->
+
+    <owl:Class rdf:about="&panda;Human">
+        <rdfs:label xml:lang="en">human</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Annotator"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#HumanComputer -->
+
+    <owl:Class rdf:about="&panda;HumanComputer">
+        <rdfs:label>human with computer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Annotator"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Hydroxylation -->
+
+    <owl:Class rdf:about="&panda;Hydroxylation">
+        <rdfs:label xml:lang="en">hydroxylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0210</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#IncreasesActivity -->
+
+    <owl:Class rdf:about="&panda;IncreasesActivity">
+        <rdfs:label xml:lang="en">increases activity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;PositiveRegulation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#IndexCard -->
+
+    <owl:Class rdf:about="&panda;IndexCard">
+        <rdfs:label xml:lang="en">index card</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;TextualEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#InformationContentEntity -->
+
+    <owl:Class rdf:about="&panda;InformationContentEntity">
+        <rdfs:label xml:lang="en">information content entity</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#InhibitsModification -->
+
+    <owl:Class rdf:about="&panda;InhibitsModification">
+        <rdfs:label>inhibits modification</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;NegativeRegulation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#IntroductionToaPublication -->
+
+    <owl:Class rdf:about="&panda;IntroductionToaPublication">
+        <rdfs:label>introduction to a publication</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A part of a publication about an investigation that is about the objective specification (why the investigation is being done)</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000316"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Journal -->
+
+    <owl:Class rdf:about="&panda;Journal">
+        <rdfs:label>journal
+</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;TextualEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#JournalArticle -->
+
+    <owl:Class rdf:about="&panda;JournalArticle">
+        <rdfs:label xml:lang="en">journal article</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Publication"/>
+        <hasDefinition>a report that is published in a journal</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000013"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#MaterialEntity -->
+
+    <owl:Class rdf:about="&panda;MaterialEntity">
+        <rdfs:label xml:lang="en">material entity</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#MethodsSection -->
+
+    <owl:Class rdf:about="&panda;MethodsSection">
+        <rdfs:label>methods section</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A part of a publication about an investigation that is about the study design of the investigation</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000317"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Methylation -->
+
+    <owl:Class rdf:about="&panda;Methylation">
+        <rdfs:label xml:lang="en">methylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0213</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Model -->
+
+    <owl:Class rdf:about="&panda;Model">
+        <rdfs:label xml:lang="en">model</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <hasDefinition>defined by BioModels ontology</hasDefinition>
+        <rdfs:isDefinedBy>http://bioonto.de/ro2.owl#Model</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#ModelComponent -->
+
+    <owl:Class rdf:about="&panda;ModelComponent">
+        <rdfs:label xml:lang="en">model component</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;partOf"/>
+                <owl:someValuesFrom rdf:resource="&panda;Model"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <hasDefinition>defined by BioModels ontology</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://bioonto.de/ro2.owl#ModelComponent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#MolecularInteraction -->
+
+    <owl:Class rdf:about="&panda;MolecularInteraction">
+        <rdfs:label xml:lang="en">molecular interaction</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Event"/>
+        <hasDefinition>An interaction in which participants bind physically to each other, directly or indirectly through intermediary molecules.
+
+Rationale: There is a large body of interaction data, mostly produced by high throughput systems, that does not satisfy the level of detail required to model them with ComplexAssembly class. Specifically, what is lacking is the stoichiometric information and completeness (closed-world) of participants required to model them as chemical processes. Nevertheless interaction data is extremely useful and can be captured in BioPAX using this class. 
+ 
+Usage: This class should be used by default for representing molecular interactions such as those defined by PSI-MI level 2.5. The participants in a molecular interaction should be listed in the PARTICIPANT slot. Note that this is one of the few cases in which the PARTICPANT slot should be directly populated with instances (see comments on the PARTICPANTS property in the interaction class description). If all participants are known with exact stoichiometry, ComplexAssembly class should be used instead.
+
+Example: Two proteins observed to interact in a yeast-two-hybrid experiment where there is not enough experimental evidence to suggest that the proteins are forming a complex by themselves without any indirect involvement of other proteins. This is the case for most large-scale yeast two-hybrid screens.</hasDefinition>
+        <rdfs:isDefinedBy>BioPax level3; 2</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Mutation -->
+
+    <owl:Class rdf:about="&panda;Mutation">
+        <rdfs:label xml:lang="en">mutation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MolecularInteraction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#NegativeRegulation -->
+
+    <owl:Class rdf:about="&panda;NegativeRegulation">
+        <rdfs:label xml:lang="en">negative regulation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Regulation"/>
+        <uo:hasSynonym>decreases</uo:hasSynonym>
+        <rdfs:isDefinedBy>GENIA</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Paragraph -->
+
+    <owl:Class rdf:about="&panda;Paragraph">
+        <rdfs:label>paragraph</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A paragraph in a document</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Participant -->
+
+    <owl:Class rdf:about="&panda;Participant">
+        <rdfs:label xml:lang="en">participant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Role"/>
+        <rdfs:comment>Refers to the material entities participating in a biological event</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#PetriNetModel -->
+
+    <owl:Class rdf:about="&panda;PetriNetModel">
+        <rdfs:label>petri net model</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Model"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#PetriNetModelComponent -->
+
+    <owl:Class rdf:about="&panda;PetriNetModelComponent">
+        <rdfs:label>petri net model component</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ModelComponent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Phosphorylation -->
+
+    <owl:Class rdf:about="&panda;Phosphorylation">
+        <rdfs:label xml:lang="en">phosphorylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0217</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Place -->
+
+    <owl:Class rdf:about="&panda;Place">
+        <rdfs:label>place</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;PetriNetModelComponent"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;petriNetLabel"/>
+                <owl:onClass>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&panda;Chemical"/>
+                            <rdf:Description rdf:about="&panda;Event"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:onClass>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#PositiveRegulation -->
+
+    <owl:Class rdf:about="&panda;PositiveRegulation">
+        <rdfs:label xml:lang="en">positive regulation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Regulation"/>
+        <uo:hasSynonym>increases</uo:hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Protein -->
+
+    <owl:Class rdf:about="&panda;Protein">
+        <rdfs:label xml:lang="en">protein</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#ProteinFamily -->
+
+    <owl:Class rdf:about="&panda;ProteinFamily">
+        <rdfs:label xml:lang="en">protein family</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#ProteinModification -->
+
+    <owl:Class rdf:about="&panda;ProteinModification">
+        <rdfs:label xml:lang="en">protein modification</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MolecularInteraction"/>
+        <rdfs:comment>BEL, GRO</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Publication -->
+
+    <owl:Class rdf:about="&panda;Publication">
+        <rdfs:label xml:lang="en">publication</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Document"/>
+        <hasDefinition>A document that has been accepted by a publisher</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Regulation -->
+
+    <owl:Class rdf:about="&panda;Regulation">
+        <rdfs:label xml:lang="en">regulation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MolecularInteraction"/>
+        <rdfs:comment>BEL, BioPax , level 3?, GO: biological regulation</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#ResultsSection -->
+
+    <owl:Class rdf:about="&panda;ResultsSection">
+        <rdfs:label>results section</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;DocumentPart"/>
+        <rdfs:comment>A part of a publication about an investigation that is about a study design execution</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000318"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Ribosylation -->
+
+    <owl:Class rdf:about="&panda;Ribosylation">
+        <rdfs:label xml:lang="en">ribosylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Glycosylation"/>
+        <rdfs:comment>GO</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Role -->
+
+    <owl:Class rdf:about="&panda;Role">
+        <rdfs:label xml:lang="en">role</rdfs:label>
+        <hasDefinition>A realizable entity [snap:RealizableEntity] the manifestation of which brings about some result or end that is not essential to a continuant [snap:Continuant] in virtue of the kind of thing that it is but that can be served or participated in by that kind of continuant [snap:Continuant] in some kinds of natural, social or institutional contexts. Examples: the role of a person as a surgeon, the role of a chemical compound in an experiment, the role of a patient relative as defined by a hospital administrative form, the role of a woman as a legal mother in the context of system of laws, the role of a biological grandfather as legal guardian in the context of a system of laws, the role of ingested matter in digestion, the role of a student in a university</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://www.ifomis.org/bfo/1.1/snap#Role"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Statement -->
+
+    <owl:Class rdf:about="&panda;Statement">
+        <rdfs:label xml:lang="en">statement</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;TextualEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Submitter -->
+
+    <owl:Class rdf:about="&panda;Submitter">
+        <rdfs:label xml:lang="en">submitter</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Role"/>
+        <rdfs:comment>The agent that submitted the annotation to the system.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Sumoylation -->
+
+    <owl:Class rdf:about="&panda;Sumoylation">
+        <rdfs:label xml:lang="en">sumoylation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0566</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Table -->
+
+    <owl:Class rdf:about="&panda;Table">
+        <rdfs:label xml:lang="en">table</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;TextualEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#TextualEntity -->
+
+    <owl:Class rdf:about="&panda;TextualEntity">
+        <rdfs:label xml:lang="en">textual entity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <hasDefinition>A textual entity is a part of a manifestation (FRBR sense), a generically dependent continuant whose concretizations are patterns of glyphs intended to be interpreted as words, formulas, etc.</hasDefinition>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/IAO_0000300"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Transition -->
+
+    <owl:Class rdf:about="&panda;Transition">
+        <rdfs:label>transition</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;PetriNetModelComponent"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;transitionTo"/>
+                <owl:onClass rdf:resource="&panda;Place"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;transitionFrom"/>
+                <owl:onClass rdf:resource="&panda;Place"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&panda;petriNetLabel"/>
+                <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Translocation -->
+
+    <owl:Class rdf:about="&panda;Translocation">
+        <rdfs:label xml:lang="en">translocation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MolecularInteraction"/>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0593</rdfs:isDefinedBy>
+        <rdfs:comment>MI parent class: cross-reference type?</rdfs:comment>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/GO_0021802"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#Ubiquitination -->
+
+    <owl:Class rdf:about="&panda;Ubiquitination">
+        <rdfs:label xml:lang="en">ubiquitination</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;ProteinModification"/>
+        <rdfs:isDefinedBy>MI:0220</rdfs:isDefinedBy>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/CellType -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/CellType">
+        <rdfs:label>cell type</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/ChemicalFamily -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/ChemicalFamily">
+        <rdfs:label>chemical family</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/Organism -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/Organism">
+        <rdfs:label>organism</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda/TissueType -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/TissueType">
+        <rdfs:label>tissue type</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <rdf:Description rdf:about="&owl;Thing">
+        <rdfs:label>entity</rdfs:label>
+        <hasDefinition rdf:resource="http://purl.obolibrary.org/obo/BFO_0000001"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/BFO_0000001"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="&uo;hasGroundingProbability">
+        <rdfs:comment>associates a level of confidence in the correctness of the grounding of entities mentioned in the statement with that statement</rdfs:comment>
+    </rdf:Description>
+    <rdf:Description rdf:about="&uo;ProbabilityRelevantToEntityGrounding">
+        <rdfs:comment>The entities mentioned in a statement are grounded in existing databases with certain confidence. This probability type reflects the level of that confidence.</rdfs:comment>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+

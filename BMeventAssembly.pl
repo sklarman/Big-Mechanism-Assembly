@@ -1,19 +1,8 @@
-%% Program pre-processing an OWL/RDF file for the use in ProbLog
-%%
-%%
-
-
-:- use_module(library(semweb/rdf_db)).
-:- use_module(library(semweb/rdf_http_plugin)).
-:- use_module(library(semweb/rdfs)).
-:- use_module(library(semweb/sparql_client)).
-:- use_module(library(http/json)).
-:- use_module(library(http/http_digest)).
-:- use_module(library(http/http_open)).
 :- use_module(library(gensym)).
 
-:- rdf_reset_db.
 :- reset_gensym.
+
+:- ['BMsemWebTools.pl'].
 
 %:- rdf_load('PAF.owl', [graph(pafOnto)]).
 %:- rdf_load('P.owl', [graph(pOnto)]).
@@ -21,25 +10,10 @@
 %:- rdf_load('journals-scimagojr-xlsx.rdf', [graph(graph2)]).
 %:- rdf_load('C:/chebi.owl', [graph(chebi)]).
 
-%:- rdf_register_prefix(nov, 'http://localhost:3333/').
-%:- rdf_register_prefix(mod, 'http://purl.org/pc2/7/#').
-:- rdf_register_prefix(unprot, 'http://identifiers.org/uniprot/').
-:- rdf_register_prefix(bm, 'http://purl.bioontology.org/net/brunel/bm/').
-:- rdf_register_prefix(bmpaf, 'http://purl.bioontology.org/net/brunel/paf#').
-:- rdf_register_prefix(bmp, 'http://purl.bioontology.org/net/brunel/p#').
-:- rdf_register_prefix(owl, 'http://www.w3.org/2002/07/owl#').
-:- rdf_register_prefix(xsd, 'http://www.w3.org/2001/XMLSchema#').
-:- rdf_register_prefix(rdfs, 'http://www.w3.org/2000/01/rdf-schema#').
-:- rdf_register_prefix(rdf, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#').
-:- rdf_register_prefix(void, 'http://rdfs.org/ns/void#').
-:- rdf_register_prefix(dc, 'http://purl.org/dc/elements/1.1/').
-:- rdf_register_prefix(prov, 'http://www.w3.org/ns/prov-o#').
 :- prolog_load_context(directory, Dir),  asserta(user:file_search_path(my_home, Dir)).
 
 
-
-
-%% Defining an auxiliary predicate
+%% Defining auxiliary predicates
 
 :- dynamic index_graph/1.
 :- dynamic card/2.
@@ -50,30 +24,12 @@
 :- rdf_meta aux(r, r, r).
 :- rdf_meta createFreshObject(r, r).
 :- rdf_meta createIdObject(-, r, -).
-:- rdf_meta sparqlTerm(r, -).
 
-
-%% RDFS materialization:
-
-%%%%%%%%%%%%%%%%% Certainty into table module + test run model for a single file
-
-
-%% seetings
 
 %:- asserta(user:file_search_path(index_data, '//acfs4/cssf/csstssk/desktop/biomaterialy/evaluation/machine_with_ihmc_corrected/corrected_cards')).
-%:- asserta(user:file_search_path(index_data, 'C:/Users/Szymon/Google Drive/Prolog')).
+:- asserta(user:file_search_path(index_data, 'C:/Users/user/Dysk Google/Prolog')).
 %:- asserta(user:file_search_path(index_data, 'C:/Users/csstssk/Google Drive/Prolog')).
-:- asserta(user:file_search_path(index_data, 'C:/Users/Administrators/Desktop/Assembly')).
-
-%sparql_setup('52.26.26.74', 80, '/sparql-auth', authorization(digest('dba', 'Simco1!'))).
-
-sparql_setup('127.0.0.1', 80, '/sparql-auth', authorization(digest('dba', 'Simco1!'))).
-
-paf_graph('http://purl.bioontology.org/net/brunel/paf').
-event_graph('http://purl.bioontology.org/net/brunel/bm/event_data').
-submitter_graph('http://purl.bioontology.org/net/brunel/bm/submitter_data').
-source_graph('http://purl.bioontology.org/net/brunel/bm/source_data').
-journal_graph('http://purl.bioontology.org/net/brunel/bm/journals_2015').
+%:- asserta(user:file_search_path(index_data, 'C:/Users/Administrator/Desktop/Assembly')).
 
 %% top-level control
 
@@ -108,8 +64,10 @@ filecollector(Folder, FileList) :-
     
 translate2rdf([]).
 
-translate2rdf([FileName|Rest]) :-
-    translateCard(FileName),!,
+translate2rdf([FileName|_]) :-
+    translateCard(FileName).
+    
+translate2rdf([_|Rest]) :-
     translate2rdf(Rest).
 
 translateCard(FileName) :- 
@@ -119,7 +77,6 @@ translateCard(FileName) :-
     log_write(BaseName),
     print_count100,
     cardElement(Index, ''), !,
-    findall(_, unexpected_field, _), !,
     (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'))),
     retractall(card(_, _)).
 
@@ -148,7 +105,6 @@ log_write(Content) :-
 log_writeln(Content) :-
     log_stream(Stream),
     writeln(Stream, Content).
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -226,32 +182,46 @@ createRDF(BaseName) :-
     union(BasicTriples, EvidenceTriples, TargetTriples),
     sparqlInsertQuery(TargetTriples, GraphURI),
     write('Created new statement: \t'), writeln(StatLabel),
-    log_write('\nCreated: \t'), log_writeln(StatLabel).
-   % findall(_, probabilityRecord(Statement, GroundingProbList), _).
-    
-    %....checkSite(Event)
+    log_write('\nCreated: \t'), log_writeln(StatLabel),
+    createInputProbabilityGraph(Statement, ProbGraph),
+    writeln('Creating probability input graph...'),
+    findall(_, probabilityInput(Statement, ProbGraph), _),
+    findall(_, probabilityInput(Statement, GroundingProbList, ProbGraph), _).
 
-
-createIndexCardGraph(GraphURI) :-
-    index_graph(GraphURI) -> true;     
+createIndexCardGraph(Graph) :-
+    index_graph(Graph) -> true;     
             (date(date(Y, M, D)),
-            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/index_card_graph_', Y, M, D], GraphURI),
-            addMetaData(indexGraph, GraphURI),
-            asserta(index_graph(GraphURI))).
-    
-addMetaData(indexGraph, Graph) :-
-    date(date(Y, M, D)), 
+            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/index_card_graph_', Y, M, D], Graph), 
+            atomic_list_concat([Y, M, D], '-', Date),
+            TargetTriples = [
+                [Graph, rdf:'type', void:'Dataset'],
+                [Graph, dc:'creator', literal('Big Mechanism')],
+                [Graph, dc:'title', literal('Textual evidence extracted from literature')],
+                [Graph, dc:'description', literal('Data about statements extracted automatically from scientific literature and reported in a collection of index card submitted to the system.')],
+                [Graph, dc:'date', literal(Date)]
+                ],
+            sparqlInsertQuery(TargetTriples, Graph),
+            asserta(index_graph(Graph))).
+
+createInputProbabilityGraph(Statement, Graph) :-
+    createFreshObject('probability_input_graph', Graph),
+    date(date(Y, M, D)),
     atomic_list_concat([Y, M, D], '-', Date),
+    atomic_list_concat([Graph, '.rdf'], GraphDump),
+    atomic_list_concat([Graph, '.graph'], GraphBrowse),
     TargetTriples = [
-        [Graph, rdf:'type', void:'Dataset'],
-        [Graph, dc:'creator', literal('Big Mechanism')],
-        [Graph, dc:'title', literal('Textual evidence extracted from literature.')],
-        [Graph, dc:'description', literal('This dataset contains RDF data about a single statement extracted automatically from scientific literature and reported in a single index card submitted to the system.')],
-        [Graph, dc:'date', literal(Date)]
-        ],
-    sparqlInsertQuery(TargetTriples, Graph).
-
-
+                [Graph, rdf:'type', void:'Dataset'],
+                [Graph, rdf:'type', prov:'Entity'],
+                [Graph, dc:'subject', Statement],
+                [Graph, dc:'creator', literal('Big Mechanism')],
+                [Graph, dc:'title', literal('Prior probabilities')],
+                [Graph, dc:'description', literal('Data about prior probabilities associated with a single statement.')],
+                [Graph, dc:'date', literal(Date)],
+                [Graph, void:'dataDump', GraphDump],
+                [Graph, void:'dataBrowse', GraphBrowse]
+                ],
+            sparqlInsertQuery(TargetTriples, Graph).
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %   Entity creation
@@ -268,7 +238,7 @@ createIdObject(Event, bmpaf:'Event', Path, GroundingProbList) :-
         TripleA = [['?x', bmpaf:'hasParticipantA', ParticipantA]],
         getLabel(ParticipantA, Graph, LabelA)); 
         (GroundingProbListA=[], 
-         TripleA =[not('?x', bmpaf:'hasParticipantA', '?y')],
+         TripleA =[not([['?x', bmpaf:'hasParticipantA', '?y']])],
          LabelA='-')),
     (retriveKeyValue(participantBtype, Path) -> 
         (atomic_list_concat([Path, '/participant_b'], PartBpath),
@@ -276,10 +246,9 @@ createIdObject(Event, bmpaf:'Event', Path, GroundingProbList) :-
         TripleB = [['?x', bmpaf:'hasParticipantB', ParticipantB]],
         getLabel(ParticipantB, Graph, LabelB)); 
         (GroundingProbListB=[], 
-        TripleB =[not('?x', bmpaf:'hasParticipantB', '?z')],
+        TripleB =[not([['?x', bmpaf:'hasParticipantB', '?z']])],
         LabelB='-')),
     BasicTriples = [
-        ['?x', rdf:'type', bmpaf:'Event'],
         ['?x', rdf:'type', EvTypURI]],
     union(TripleA, TripleB, PartTriples),
     \+PartTriples = [],
@@ -313,7 +282,7 @@ createIdObject(SimpleURI, SimpleType, Path, GroundingProbList) :-
     (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
         (Tuple=[SimpleURI],
         log_write('\nMatched '), log_writeln(EntId),
-        write('Matched exist. entity: \t'), writeln(EntId),
+        write('Matched existing entity: \t'), writeln(EntId),
         ExtraTargetTriples=[]);
         (createIdURI(simple, EntId, SimpleURI),
         (identifierResolution(EntId, Name) ->       
@@ -401,13 +370,6 @@ pubmedJournalTitleYear(PmcId, ISSN, Title, Year) :-
     
     
 
-
-%participantType('protein_family', bmpaf:'ProteinFamily').
-%participantType('complex', bmpaf:'Complex').
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%
 %  Info retrieval from the card and mapping to PAF
 %%%%%%%%%%%%%%%%%%%%
@@ -451,6 +413,13 @@ retriveKeyValue(participantBtype, Path) :-
     atomic_list_concat([Path, '/participant_b/entity_type'], Key),
     card(Key, Value),
     participantType(Value, _), !.
+
+retriveKeyValue(extractionAccurracy, Accurracy) :-
+    card('/meta/confidence', Accurracy).
+
+retriveKeyValue(textualUncertainty, Value) :-  
+    card('/meta/speculated_information', SpecInf),
+    speculated(SpecInf, Value).
     
 retriveKeyValue(interactionType, Path, IntType) :-
     atomic_list_concat([Path, '/interaction_type'], Key),
@@ -478,7 +447,7 @@ retriveKeyValue(entityText, Path, EntText) :-
     card(Key, EntText).
     
 
-
+    
 participantType('protein', bmpaf:'Protein').
 participantType('chemical', bmpaf:'Chemical').
 participantType('protein_family', bmpaf:'ProteinFamily').
@@ -514,57 +483,83 @@ readerType(ReaderType, bmpaf:'HumanComputer') :-
 negation(@false, true).
 negation(@true, false).
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%
-%   Statement metadata creation (inc. probabilities)
-%%%%%%%%%%%%%%%%%%%%
-
-probabilityRecord(Statement) :- 
-    card('/certainty_level/certainty_level_predefined', CertLevel),
-    card('/certainty_level/certainty_level_freeform', CertLevelFree), !,
-    createClassedObject('probability', bmp:'ProbabilityRelevantToBiologicalUncertainty', Probability), 
-    writeInTargetGraph(Statement, bmp:'hasBiologicalProbability', Probability),
-    insertDataValue(Probability, bmp:'hasProbabilityLevel', CertLevel),
-    insertDataValue(Probability, bmp:'hasProbabilityLevelDescritpion', CertLevelFree).
-
-probabilityRecord(Statement) :- 
-    card('/meta/speculated_information', SpecInf),
-    createClassedObject('probability', bmp:'ProbabilityRelevantToTextualUncertainty', Probability), 
-    writeInTargetGraph(Statement, bmp:'hasTextualProbability', Probability),
-    speculated(SpecInf, Value),
-    insertDataValue(Probability, bmp:'hasProbabilityLevel', Value).
-    
-probabilityRecord(Statement) :- 
-    card('/meta/confidence', SpecInf),
-    createClassedObject('probability', bmp:'AccuracyOfExtractionFromText', Probability), 
-    writeInTargetGraph(Statement, bmp:'hasExtractionAccurracy', Probability),
-    insertDataValue(Probability, bmp:'hasProbabilityLevel', SpecInf).
-    
 speculated(@false, 'certain').
 speculated(@true, 'uncertain').
 
-assertProbability :- 
-    rdf(X, bmp:'hasSJRscore',  literal(type('http://www.w3.org/2001/XMLSchema#decimal', No))),
-    NormalSjr is sqrt(round((No / 40) * 1000) / 1000),
-    rdf(Art, bmpaf:'publishedIn', X),
-    createClassedObject('probability', bmp:'ProbabilityRelevantToDocumentProvenance', Prob),
-    insertDataValue(Prob, bmp:'hasProbabilityLevel', NormalSjr),
-    rdf(Stat, bmpaf:'isExtractedFrom', Art),    
-    writeInTargetGraph(Stat, bmp:'hasProvenanceProbability', Prob),
-    writeInTargetGraph(Art, bmp:'hasProvenanceProbability', Prob).
+%%%%%%%%%%%%%%%%%%%%%%%
+%   Input probabilities recording
+%%%%%%%%%%%%%%%%%%%%
+
+probabilityInput(Statement, Graph) :- 
+    retriveKeyValue(textualUncertainty, Value),
+    createFreshObject(bmp:'ProbabilityRelevantToTextualUncertainty', Subject),
+    TargetTriples = [
+        [Statement, bmp:'hasTextualProbability', Subject],
+        [Subject, rdf:'type', bmp:'ProbabilityRelevantToTextualUncertainty'],
+        [Subject, bmp:'hasProbabilityLevel', literal(Value)],
+        [Subject, rdfs:'label', literal(Value)]
+        ],
+        sparqlInsertQuery(TargetTriples, Graph).
+
+probabilityInput(Statement, Graph) :- 
+    retriveKeyValue(extractionAccurracy, Accurracy),
+    createFreshObject(bmp:'AccuracyOfExtractionFromText', Subject),
+    TargetTriples = [
+        [Statement, bmp:'hasExtractionAccurracy', Subject],
+        [Subject, rdf:'type', bmp:'AccuracyOfExtractionFromText'],
+        [Subject, bmp:'hasProbabilityLevel', literal(Accurracy)],
+        [Subject, rdfs:'label', literal(Accurracy)]
+        ],
+        sparqlInsertQuery(TargetTriples, Graph).
+
+
+probabilityInput(Statement, Graph) :- 
+    QueryTriples = [
+        [Statement, bmpaf:'isExtractedFrom', '?x'],
+        ['?x', bmpaf:'publishedIn', '?y'],
+        ['?y', bmpaf:'hasSJRscore', '?s']
+        ],
+    sparqlSelectQueryGlobal(QueryTriples, '?s', [Score]),
+    atom_number(Score, ScoreNumber),
+    Prob is sqrt(round((ScoreNumber / 10) * 1000) / 1000),
+    createFreshObject(bmp:'ProbabilityRelevantToDocumentProvenance', Subject),
+    TargetTriples = [
+        [Statement, bmp:'hasProvenanceProbability', Subject],
+        [Subject, rdf:'type', bmp:'ProbabilityRelevantToDocumentProvenance'],
+        [Subject, bmp:'hasProbabilityLevel', literal(Prob)],
+        [Subject, rdfs:'label', literal(Prob)]
+        ],
+        sparqlInsertQuery(TargetTriples, Graph).
+
+probabilityInput(Statement, GroundingProbList, Graph) :-
+    findall(P, member([_, P], GroundingProbList), PList),
+    listProduct(PList, Prob),
+    createFreshObject(bmp:'ProbabilityRelevantToEntityGrounding', Subject),
+    TargetTriples = [
+        [Statement, bmp:'hasGroundingProbability', Subject],
+        [Subject, rdf:'type', bmp:'ProbabilityRelevantToEntityGrounding'],
+        [Subject, bmp:'hasProbabilityLevel', literal(Prob)],
+        [Subject, rdfs:'label', literal(Prob)]
+        ],
+        sparqlInsertQuery(TargetTriples, Graph).
 
 %%%%%%%%%%%%%%%%%%%%
 % generic predicates
 %%%%%%%%%%%%%%%%%%%
 
+upperCase(Value, ValUpper) :-
+    string_upper(Value, ValueUpper),
+    atom_string(ValUpper, ValueUpper).
 
-createFreshObject(TypeUri, Subject) :-
-    uuid(U), 
-    rdf_current_prefix(_, Expansion),
-    atom_concat(Expansion, Local, TypeUri), !,
-    downcase_atom(Local, Name),
-    atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/', Name, '_', U], Subject).
+listProduct([H], H) :- !.
+
+listProduct([H|Rest], Product) :-
+    listProduct(Rest, PartialProduct),
+    Product is PartialProduct*H.
+    
+%%%%%%%%%%%%%%%%%%%%%
+% URI generation
+%%%%%%%%%%%%%%%%%%%%%
 
 createIdURI(simple, Id, IdURI) :-
     string_concat('CHEBI:', Number, Id),
@@ -577,301 +572,22 @@ createIdURI(simple, Id, IdURI) :-
 createIdURI(article, Id, IdURI) :-
     string_concat('http://www.ncbi.nlm.nih.gov/pmc/articles/', Id, IdURI).
 
-    
-upperCase(Value, ValUpper) :-
-    string_upper(Value, ValueUpper),
-    atom_string(ValUpper, ValueUpper).
-
-
-%%%%%%%
-% labeling
-%%%%%%%%%%%%%%%%
-
-
-labelingPart :- 
-    readInTargetGraph(X, bmpaf:'hasEntityId', Label),
-    rdf_literal_value(Label, ProtId),
-    upperCase(ProtId, ProtIDupper),
-    string_concat('CHEBI:', Number, ProtIDupper),
-    string_concat('http://purl.obolibrary.org/obo/CHEBI_', Number, ChebiURI),
-    write(ProtId), write('... '),
-    atom_string(ChebiURIAtom, ChebiURI),
-    rdf(ChebiURIAtom, rdfs:label, Literal),
-    rdf_literal_value(Literal, Name),
-    writeln(Name),
-    insertDataValue(X, bmpaf:'hasEntityName', Name),
-    print_count10.
-
-labelingPart :- 
-    readInTargetGraph(X, bmpaf:'hasEntityId', Label),
-    rdf_literal_value(Label, ProtId),
-    upperCase(ProtId, ProtIDupper),
-    string_concat('UNIPROT', _, ProtIDupper),
-    write(ProtId), write('... '),
-    identifierResolution(ProtId, Name),
-    writeln(Name),
-    insertDataValue(X, bmpaf:'hasEntityName', Name),
-    print_count10.
-
-labelingPart :- 
-    readInTargetGraph(X, bmpaf:'hasEntityName', Label),
-    \+readInTargetGraph(X, rdfs:'label', _),
-    writeInTargetGraph(X, rdfs:'label', Label).
-
-labelingPart :- 
-    readInTargetGraph(X, bmpaf:'hasEntityText', Label),
-    \+readInTargetGraph(X, rdfs:'label', _),
-    writeInTargetGraph(X, rdfs:'label', Label).
-
-labelingEvent :- 
-    readInTargetGraph(X, rdf:'type', bmpaf:'Event'),
-    \+complexPart(X),
-    interactionLab(X, ZVal),
-    partALab(X, AVal),
-    partBLab(X, BVal),
-    atomic_list_concat(['(', AVal, ' ', ZVal, ' ', BVal, ')'], Label),
-    insertDataValue(X, rdfs:'label', Label).
-
-labelingEvent :- 
-    readInTargetGraph(X, rdf:'type', bmpaf:'Event'),
-    complexPart(X), 
-    interactionLab(X, ZVal),
-    partALab(X, AVal),
-    partBLab(X, BVal),
-    atomic_list_concat(['(', AVal, ' ', ZVal, ' ', BVal, ')'], Label),
-    insertDataValue(X, rdfs:'label', Label).
-
-labelingStat :-
-    readInTargetGraph(Statement, rdf:'type', bmpaf:'Statement'),
-    readInTargetGraph(Statement, bmpaf:'represents', Event),
-    readInTargetGraph(Event, rdfs:'label', LabelLiteral),
-    readInTargetGraph(Statement, bmpaf:'hasTruthValue', ValueLiteral),
-    readInTargetGraph(Statement, bmpaf:'isExtractedFrom', Article),
-    readInTargetGraph(Article, rdfs:'label', PMCLiteral),
-    rdf_literal_value(ValueLiteral, Value),
-    rdf_literal_value(LabelLiteral, Label),
-    rdf_literal_value(PMCLiteral, PMC),
-    atomic_list_concat([Label, ' is ', Value, ' in ', PMC], StatementLabel),
-    insertDataValue(Statement, rdfs:'label', StatementLabel).
-
-labeling :- 
-    readInTargetGraph(X, bmpaf:'hasPmcId', Label),
-    writeInTargetGraph(X, rdfs:'label', Label).
-
-labeling :- 
-    readInTargetGraph(X, bmpaf:'hasIndexCardId', Label),
-    writeInTargetGraph(X, rdfs:'label', Label).
-
-labeling :- 
-    readInTargetGraph(X, bmpaf:'hasSubmitterId', Label),
-    writeInTargetGraph(X, rdfs:'label', Label).
-    
-labeling :- 
-    readInTargetGraph(Probability, rdf:'type', X),
-    rdfs_subclass_of(X, bmp:'Probability'),
-    readInTargetGraph(Probability, bmp:'hasProbabilityLevel', Level),
-    rdf_literal_value(Level, LevelLabel),
-    insertDataValue(Probability, rdfs:'label', LevelLabel).
-    
-%labelingP :-
-%    readInTargetGraph(_, bmp:'hasExtractionAccurracy', X),
-%    writeInTargetGraph(X, rdf:type, bmp:'AccuracyOfExtractionFromText').
-
-%labelingP :-
-%    readInTargetGraph(_, bmp:'hasTextualProbability', X),
-%    writeInTargetGraph(X, rdf:type, bmp:'ProbabilityRelevantToTextualUncertainty').
-
-journalLabeling :-
-    readInTargetGraph(Journal, rdf:'type', bmpaf:'Journal'),
-    readInTargetGraph(Journal, bmpaf:'hasTitle', Title),
-    writeInTargetGraph(Journal, rdfs:'label', Title).
-
-interactionLab(X, ZVal) :- 
-    mostSpecificType(X, Z, 'http://purl.bioontology.org/net/brunel/paf#Event'),
-    \+Z = 'http://purl.bioontology.org/net/brunel/paf#Event',
-    rdf(Z, rdfs:'label', ZLabel),
-    rdf_literal_value(ZLabel, ZVal), !.
-    
-interactionLab(_, '-').
-    
-mostSpecificType(X, Y, Z) :-
-    readInTargetGraph(X, rdf:'type', Y), 
-    rdfs_subclass_of(Y, Z),
-    \+rdf_equal(Y, Z),
-    \+mostSpecificType(X, _, Y).
-
-complexPart(X) :- 
-    readInTargetGraph(X, bmpaf:'hasParticipantA', A),
-    readInTargetGraph(A, rdf:type, bmpaf:'Event').
-
-complexPart(X) :- 
-    readInTargetGraph(X, bmpaf:'hasParticipantB', B),
-    readInTargetGraph(B, rdf:type, bmpaf:'Event').
-
-    
-partALab(X, AVal) :-
-    readInTargetGraph(X, bmpaf:'hasParticipantA', A),
-    readInTargetGraph(A, rdfs:'label', ALabel),
-    rdf_literal_value(ALabel, AVal).    
-
-partALab(X, '-') :-
-    \+readInTargetGraph(X, bmpaf:'hasParticipantA', _).
-    
-partBLab(X, BVal) :-
-    readInTargetGraph(X, bmpaf:'hasParticipantB', B),
-    readInTargetGraph(B, rdfs:'label', BLabel),
-    rdf_literal_value(BLabel, BVal).
-
-partBLab(X, '-'):-
-    \+readInTargetGraph(X, bmpaf:'hasParticipantB', _).
-
-checkSite(Event) :-
-    card(Key, Value),
-    string_concat(_, 'site', Key),
-    insertDataValue(Event, bmpaf:'hasSite', Value), !.
-
-checkSite(_).
-    
-unexpected_field :- 
-    card(Key, Value),
-    member(X, ['features', 'modifications']),
-    string_concat(_, X, Key),
-    log_write(Key), 
-    log_write(':'), 
-    log_writeln(Value).
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   RDF graph manager
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-saveGraph(Graph) :- 
-    file_search_path(my_home, Dir),
-    atomic_list_concat([Dir, '/', 'output', '.rdf'], OutputPath),
-    rdf_save(OutputPath, [graph(Graph), encoding(utf8)]), !.
-
-%pushGraph(RDFgraph) :-
-%    findall([X, Y, Z], rdf(X, Y, Z, RDFgraph), GraphPattern),
-%    sparqlInsertQuery(GraphPattern, RDFgraph),
-%    rdf_retractall(_, _, _, RDFgraph).
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SPARQL manager
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-askSparqlQuery(Query, Result) :-
-    sparql_setup(Host, Port, Path, Author),
-    sparql_query(Query, Result, [host(Host), port(Port), path(Path), status_code(_), Author]).
-
-askHttpSparql(Query, Format, Result, Code) :-
-    sparql_setup(Host, Port, Path, Author),
-    http_open([ host(Host), port(Port), path(Path), search([query=Query, format=Format])], Result, [status_code(Code), Author]).
-
-sparqlJsonQuery(Query, Tuple) :-
-    askHttpSparql(Query, 'application/json', JsonStream, Code), 
-    (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage), true); 
-    (json_read(JsonStream, json(Result)),
-    member((results=json(X)),Result), 
-    member((bindings=Z), X),
-    member(json(JsonTup), Z),
-    findall(Val, (member(_=json(Bind), JsonTup),
-                  member(value=Val, Bind)), Tuple))).
-
-sparqlInsertQuery(Graph, RDFgraph) :-  
-    triplePatternGenerator(Graph, TriplePattern), !, 
-    atomic_list_concat(['INSERT {GRAPH <', RDFgraph,'> {', TriplePattern, '}}'], Query),
-    log_writeln(''), log_writeln(Query),
-    sparql_setup(Host, Port, Path, Author),
-    http_open([host(Host), port(Port), path(Path), search([query=Query])], _, [Author]).
-                  
-sparqlSelectQuery(Graph, RDFgraph, Tuple) :-  
-    triplePatternGenerator(Graph, TriplePattern), !, 
-    atomic_list_concat(['SELECT * WHERE {GRAPH <', RDFgraph,'> {', TriplePattern, '}}'], Query),
-    log_writeln(''), log_writeln(Query),
-    sparqlJsonQuery(Query, Tuple).
-
-triplePatternGenerator(Graph, TriplePattern) :-
-    tripleSetGenerator(Graph, TripleSet),   
-    atomic_list_concat(TripleSet, '. ', TriplePattern).    
-    
-tripleSetGenerator([], []) :- !.
-
-tripleSetGenerator([[X, Y, Z]|Rest], [Triple|RestTriples]) :-
-    tripleSetGenerator(Rest, RestTriples),
-    sparqlTerm(X, Xterm),
-    sparqlTerm(Y, Yterm),
-    sparqlTerm(Z, Zterm),
-    atomic_list_concat([Xterm, Yterm, Zterm], ' ', Triple).
-
-tripleSetGenerator([not(X, Y, Z)|Rest], [Triple|RestTriples]) :-
-    tripleSetGenerator(Rest, RestTriples),
-    sparqlTerm(X, Xterm),
-    sparqlTerm(Y, Yterm),
-    sparqlTerm(Z, Zterm),
-    atomic_list_concat(['filter not exists {', Xterm, Yterm, Zterm, '}'], ' ', Triple).
-
-substitute(_, _, [], []) :- !.
-
-substitute(Var, Term, [OldTriple|OldRest], [NewTriple|NewRest]) :-
-    \+OldTriple = not(_, _, _),
-    (member(Var, OldTriple) -> select(Var, OldTriple, Term, NewTriple); NewTriple=OldTriple),
-    substitute(Var, Term, OldRest, NewRest), !.  
-
-substitute(Var, Term, [not(_, _, _)|OldRest], NewRest) :-
-    substitute(Var, Term, OldRest, NewRest), !.
-    
-sparqlTerm(X, X) :-
-    atomic(X),
-    string_concat('?', _, X), !.
-
-sparqlTerm(literal(X), Term) :-
-    makeLiteral(X, Term), !.
-    
-sparqlTerm(X, Term) :-
-    \+X = literal(_),
-    rdf_global_id(X, URI),
-    atomic_list_concat(['<', URI, '>'], Term), !.
-
-makeLiteral(X, RDFLit) :- 
-    atomic_list_concat([Y, M, D], '-', X), 
-    atom_number(Y, Yn), atom_number(M, Mn), atom_number(D, Dn), 
-    1900 < Yn, Yn < 2099, 0 < Mn, Mn < 13, 0< Dn, Dn <32, !,
-    atomic_list_concat(['"', X, '"', '^^xsd:date'], RDFLit).
-makeLiteral(X, RDFLit) :- 
-    integer(X), !,
-    atomic_list_concat(['"', X, '"', '^^xsd:integer'], RDFLit).
-makeLiteral(X, RDFLit) :- 
-    number(X), 
-    \+integer(X), !,
-    atomic_list_concat(['"', X, '"', '^^xsd:double'], RDFLit).
-makeLiteral(X, RDFLit) :- 
-    atomic_list_concat(['"', X, '"'], RDFLit), !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %% SPARQL-based Id resolution
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-sparql_setupy('UNIPROT:', 'SELECT ?x WHERE {<http://purl.uniprot.org/uniprot/', '> <http://purl.uniprot.org/core/mnemonic> ?x}', 'sparql.uniprot.org', '/sparql/').
-%sparql_setupy('UNIPROT:', 'SELECT ?x WHERE {<http://purl.uniprot.org/uniprot/', '> rdfs:label ?x}', 'sparql.uniprot.org', '/sparql/').
-sparql_setupy('CHEBI:', 'SELECT ?x WHERE {<http://purl.obolibrary.org/obo/CHEBI_', '> rdfs:label ?x}', 'chebi.bio2rdf.org', '/sparql').
-sparql_setupy('HGNC:', 'SELECT ?x WHERE { <http://bio2rdf.org/hgnc:', '> <http://bio2rdf.org/hgnc_vocabulary:approved-symbol> ?x}', 'hgnc.bio2rdf.org', '/sparql').
+sparql_params('UNIPROT:', 'SELECT ?x WHERE {<http://purl.uniprot.org/uniprot/', '> <http://purl.uniprot.org/core/mnemonic> ?x}', 'sparql.uniprot.org', '/sparql/').
+%sparql_params('UNIPROT:', 'SELECT ?x WHERE {<http://purl.uniprot.org/uniprot/', '> rdfs:label ?x}', 'sparql.uniprot.org', '/sparql/').
+sparql_params('CHEBI:', 'SELECT ?x WHERE {<http://purl.obolibrary.org/obo/CHEBI_', '> rdfs:label ?x}', 'chebi.bio2rdf.org', '/sparql').
+sparql_params('HGNC:', 'SELECT ?x WHERE { <http://bio2rdf.org/hgnc:', '> <http://bio2rdf.org/hgnc_vocabulary:approved-symbol> ?x}', 'hgnc.bio2rdf.org', '/sparql').
 
 identifierResolution(ProtID, Name) :-
     upperCase(ProtID, ProtIDupper),
-    sparql_setupy(Prefix, QueryFront, QueryBack, Host, Path),
+    sparql_params(Prefix, QueryFront, QueryBack, Host, Path),
     string_concat(Prefix, Number, ProtIDupper),
     atomic_list_concat([QueryFront, Number, QueryBack], Query),
     sparql_query(Query, row(Literal), [host(Host), path(Path), status_code(_)]),
     rdf_literal_value(Literal, Name), !.
-
-
-
-
-
-
-
 
 

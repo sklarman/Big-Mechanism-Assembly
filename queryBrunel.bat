@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\Python 3.5\python.exe" "C:\Users\csstssk\Google Drive\problog2.1\problog-cli.py" -o problogOutput.pl problogInput.pl 

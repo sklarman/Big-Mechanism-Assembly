@@ -1,1 +1,0 @@
-"C:\Users\Szymon\Google Drive\problog2.1\problog-cli.py" -o problogOutput.pl problogInput.pl 
