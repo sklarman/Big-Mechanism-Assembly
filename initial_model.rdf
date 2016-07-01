@@ -1,0 +1,1148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:panda="http://purl.bioontology.org/net/brunel/panda#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:prov="http://www.w3.org/ns/prov-o#"
+	xmlns:bm="http://purl.bioontology.org/net/brunel/bm/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:void="http://rdfs.org/ns/void#">
+
+
+<void:Dataset rdf:about="http://purl.bioontology.org/net/brunel/bm/initial_model_graph">
+  <dc:creator xml:lang="en">M. Carpenter, S. Klarman</dc:creator>
+  <dc:date>2016-05-17</dc:date>
+  <dc:title xml:lang="en">Petri Net model of the RAS regulation network </dc:title>
+  <rdf:type rdf:resource="http://www.w3.org/ns/prov-o#Entity"/>
+  <void:dataBrowse rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model_graph.graph"/>
+  <void:dataDump rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model_graph.rdf"/>
+  <dc:description xml:lang="en">This dataset contains an RDF representation of a Petrin Net model of RAS gene regulation network.</dc:description>
+</void:Dataset>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/initial_model">
+        <rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#PetriNetModel"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_0">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>EGFR</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P00533">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">EGFR_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P00533</panda:hasEntityId>
+	<rdfs:label xml:lang="en">EGFR_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_0">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P00533"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_1">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>SRC</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P12931">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">SRC_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P12931</panda:hasEntityId>
+	<rdfs:label xml:lang="en">SRC_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_1">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P12931"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_2">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>Grb2</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P62993">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">GRBP2_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P62993</panda:hasEntityId>
+	<rdfs:label xml:lang="en">GRBP2_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_2">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P62993"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_3">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>GAB1</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q13480">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">GAB1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q13480</panda:hasEntityId>
+	<rdfs:label xml:lang="en">GAB1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_3">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q13480"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_4">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>PI3K</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P42336">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">PK3CA_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P42336</panda:hasEntityId>
+	<rdfs:label xml:lang="en">PK3CA_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_4">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P42336"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_5">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>Shc</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P29353">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">SHC1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P29353</panda:hasEntityId>
+	<rdfs:label xml:lang="en">SHC1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_5">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P29353"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_6">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>SOS</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q07889">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">SOS1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q07889</panda:hasEntityId>
+	<rdfs:label xml:lang="en">SOS1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_6">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q07889"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_7">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>PTEN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P60484">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">PTEN_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P60484</panda:hasEntityId>
+	<rdfs:label xml:lang="en">PTEN_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_7">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P60484"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_8">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>PDK1</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/O15530">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">PDPK1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:O15530</panda:hasEntityId>
+	<rdfs:label xml:lang="en">PDPK1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_8">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/O15530"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_9">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>Rac</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P63000">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RAC1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P63000 </panda:hasEntityId>
+	<rdfs:label xml:lang="en">RAC1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_9">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P63000"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_10">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>Ras</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q16046">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">Q16046_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q16046</panda:hasEntityId>
+	<rdfs:label xml:lang="en">Q16046_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_10">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q16046"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_11">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>c-Raf</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P04049">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RAF1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P04049</panda:hasEntityId>
+	<rdfs:label xml:lang="en">RAF1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_11">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P04049"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_12">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>AKT</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P31749">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">AKT1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P31749</panda:hasEntityId>
+	<rdfs:label xml:lang="en">AKT1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_12">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P31749"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_13">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MEKK4</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q9Y6R4">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">M3K4_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q9Y6R4</panda:hasEntityId>
+	<rdfs:label xml:lang="en">M3K4_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_13">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q9Y6R4"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_14">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MEKK6</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/O95382">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">M3K6_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:O95382</panda:hasEntityId>
+	<rdfs:label xml:lang="en">M3K6_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_14">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/O95382"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_15">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MEK4</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P45985">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MP2K4_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P45985</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MP2K4_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_15">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P45985"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_16">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MEK6</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P52564">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MP2K6_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P52564</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MP2K6_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_16">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P52564"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_17">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>JNK</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P45983">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MK08_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P45983</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MK08_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_17">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P45983"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_18">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>p38</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q16539">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MK14_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q16539</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MK14_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_18">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q16539"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_19">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>STAT</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P42224">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">STAT1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P42224</panda:hasEntityId>
+	<rdfs:label xml:lang="en">STAT1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_19">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P42224"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_20">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MEK</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q02750">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MP2K1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q02750</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MP2K1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_20">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q02750"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_21">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>RB</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P06400">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RB_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P06400</panda:hasEntityId>
+	<rdfs:label xml:lang="en">RB_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_21">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P06400"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_22">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>ELK</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P19419">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">ELK1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P19419</panda:hasEntityId>
+	<rdfs:label xml:lang="en">ELK1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_22">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P19419"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_23">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>BAD</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q92934">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">BAD_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q92934</panda:hasEntityId>
+	<rdfs:label xml:lang="en">BAD_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_23">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q92934"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_24">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>GSK3β</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P49841">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">GSK3B_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P49841</panda:hasEntityId>
+	<rdfs:label xml:lang="en">GSK3B_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_24">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P49841"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_25">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>RSK</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q15418">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">KS6A1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q15418</panda:hasEntityId>
+	<rdfs:label xml:lang="en">KS6A1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_25">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q15418"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_26">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>TSC2</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P49815">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">TSC2_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P49815</panda:hasEntityId>
+	<rdfs:label xml:lang="en">TSC2_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_26">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P49815"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_27">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>LKB1</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q15831">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">STK11_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q15831</panda:hasEntityId>
+	<rdfs:label xml:lang="en">STK11_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_27">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q15831"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_28">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>AMPK</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P54646">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">AAPK2_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P54646</panda:hasEntityId>
+	<rdfs:label xml:lang="en">AAPK2_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_28">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P54646"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_29">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>Rheb</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q15382">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RHEB_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q15382</panda:hasEntityId>
+	<rdfs:label xml:lang="en">RHEB_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_29">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q15382"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_30">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>mTOR</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P42345">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MTOR_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P42345</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MTOR_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_30">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P42345"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_31">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>4EBP1</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q13541">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">4EBP1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q13541</panda:hasEntityId>
+	<rdfs:label xml:lang="en">4EBP1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_31">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/Q13541"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_32">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>p70S6K</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P23443">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">KS6B1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P23443</panda:hasEntityId>
+	<rdfs:label xml:lang="en">KS6B1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_32">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P23443"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_33">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>pS6</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P62753">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RS6_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P62753</panda:hasEntityId>
+	<rdfs:label xml:lang="en">RS6_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_33">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P62753"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_34">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MAPK1</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P28482">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MK01_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P28482</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MK01_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_34">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P28482"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_35">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+	<rdfs:label>MAPK2</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P49137">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">MAPK2_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P49137</panda:hasEntityId>
+	<rdfs:label xml:lang="en">MAPK2_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_35">
+	<panda:petriNetLabel rdf:resource="http://purl.uniprot.org/uniprot/P49137"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/chemical_PIP3">
+<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Chemical"/>
+<panda:hasEntityName xml:lang="en">PIP3</panda:hasEntityName>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_36">
+    <rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+    <rdfs:label>PIP3</rdfs:label>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/bm/chemical_PIP3"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/complex_NFKB">
+<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Complex"/>
+<panda:hasEntityName xml:lang="en">NFKB</panda:hasEntityName>
+<panda:hasComponent rdf:resource="http://purl.uniprot.org/uniprot/P19838"/>
+<panda:hasComponent rdf:resource="http://purl.uniprot.org/uniprot/Q00653"/>
+<panda:hasComponent rdf:resource="http://purl.uniprot.org/uniprot/Q04206"/>
+<panda:hasComponent rdf:resource="http://purl.uniprot.org/uniprot/Q01201"/>
+<panda:hasComponent rdf:resource="http://purl.uniprot.org/uniprot/Q04864"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/P19838">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">NFKB1_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:P19838</panda:hasEntityId>
+	<rdfs:label xml:lang="en">NFKB1_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q00653">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">NFKB2_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q00653</panda:hasEntityId>
+	<rdfs:label xml:lang="en">NFKB2_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q04206">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">TF65_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q04206</panda:hasEntityId>
+	<rdfs:label xml:lang="en">TF65_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q01201">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">RELB_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q01201</panda:hasEntityId>
+	<rdfs:label xml:lang="en">RELB_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.uniprot.org/uniprot/Q04864">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Protein"/>
+	<panda:hasEntityName xml:lang="en">REL_HUMAN</panda:hasEntityName>
+	<panda:hasEntityId xml:lang="en">UNIPROT:Q04864</panda:hasEntityId>
+	<rdfs:label xml:lang="en">REL_HUMAN</rdfs:label>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_place_37">
+    <rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Place"/>
+    <rdfs:label>NFKB</rdfs:label>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/bm/complex_NFKB"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_0">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_0"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_1"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_1">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_1"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_19"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_2">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_2"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_5"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_3">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_2"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_3"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_4">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_3"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_4"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_5">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_4"/>
+    <panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_36"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_6">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_5"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_6"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_7">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_6"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_10"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_8">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_7"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_9">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+    <panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_36"/>	
+    <panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_8"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_10">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_8"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_11">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_8"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_32"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_12">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_9"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_13"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_13">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_9"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_14"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_14">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_10"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_11"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_15">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_10"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_9"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_16">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_11"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_20"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_17">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_11"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_17">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_37"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_18">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_23"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_19">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_24"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_20">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_21">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_28"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_22">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_23">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_12"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_30"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_24">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_13"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_15"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_25">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_14"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_16"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_26">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_15"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_17"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_27">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_16"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_18"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_28">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_17"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_19"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_29">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_18"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_19"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_30">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_20"/>
+    <panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+    <panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_31">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_21"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_32">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_0"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_33">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_22"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_34">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_19"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_35">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_32"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_36">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_25"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_37">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_34"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_38">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_24"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_39">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_25"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_40">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_29"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_41">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_27"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_28"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_42">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_28"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_43">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_29"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_30"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_44">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_30"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_32"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_45">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_30"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_31"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_46">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_32"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_0"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_47">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_21"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_48">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_0"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_49">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_22"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_50">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_19"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_51">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_32"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_52">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_25"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#PositiveRegulation"/>
+</rdf:Description>
+
+<rdf:Description rdf:about="http://purl.bioontology.org/net/brunel/bm/model_transition_53">
+	<rdf:type rdf:resource="http://purl.bioontology.org/net/brunel/panda#Transition"/>
+	<panda:partOf rdf:resource="http://purl.bioontology.org/net/brunel/bm/initial_model"/>
+	<panda:transitionFrom rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_35"/>
+	<panda:transitionTo rdf:resource="http://purl.bioontology.org/net/brunel/bm/model_place_26"/>
+	<panda:petriNetLabel rdf:resource="http://purl.bioontology.org/net/brunel/panda#NegativeRegulation"/>
+</rdf:Description>
+
+</rdf:RDF>
