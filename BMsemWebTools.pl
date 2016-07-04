@@ -11,7 +11,7 @@
 :- rdf_register_prefix(unprot, 'http://identifiers.org/uniprot/').
 :- rdf_register_prefix(bm, 'http://purl.bioontology.org/net/brunel/bm/').
 :- rdf_register_prefix(panda, 'http://purl.bioontology.org/net/brunel/panda#').
-:- rdf_register_prefix(uo, 'http://purl.bioontology.org/net/brunel/uo#').
+:- rdf_register_prefix(uno, 'http://purl.bioontology.org/net/brunel/uno#').
 :- rdf_register_prefix(owl, 'http://www.w3.org/2002/07/owl#').
 :- rdf_register_prefix(xsd, 'http://www.w3.org/2001/XMLSchema#').
 :- rdf_register_prefix(rdfs, 'http://www.w3.org/2000/01/rdf-schema#').

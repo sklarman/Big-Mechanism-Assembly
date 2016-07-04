@@ -490,22 +490,22 @@ speculated(@true, 'uncertain').
 
 uncertaintyInput(Statement, Graph) :- 
     retriveKeyValue(textualUncertainty, Value),
-    createFreshObject(uo:'TextualUncertainty', Subject),
+    createFreshObject(uno:'TextualUncertainty', Subject),
     TargetTriples = [
-        [Statement, uo:'hasTextualUncertainty', Subject],
-        [Subject, rdf:'type', uo:'TextualUncertainty'],
-        [Subject, uo:'hasUncertaintyLevel', literal(Value)],
+        [Statement, uno:'hasTextualUncertainty', Subject],
+        [Subject, rdf:'type', uno:'TextualUncertainty'],
+        [Subject, uno:'hasUncertaintyLevel', literal(Value)],
         [Subject, rdfs:'label', literal(Value)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
 
 uncertaintyInput(Statement, Graph) :- 
     retriveKeyValue(extractionAccurracy, Accurracy),
-    createFreshObject(uo:'AccuracyOfExtractionFromText', Subject),
+    createFreshObject(uno:'AccuracyOfExtractionFromText', Subject),
     TargetTriples = [
-        [Statement, uo:'hasExtractionAccurracy', Subject],
-        [Subject, rdf:'type', uo:'AccuracyOfExtractionFromText'],
-        [Subject, uo:'hasUncertaintyLevel', literal(Accurracy)],
+        [Statement, uno:'hasExtractionAccurracy', Subject],
+        [Subject, rdf:'type', uno:'AccuracyOfExtractionFromText'],
+        [Subject, uno:'hasUncertaintyLevel', literal(Accurracy)],
         [Subject, rdfs:'label', literal(Accurracy)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
@@ -520,11 +520,11 @@ uncertaintyInput(Statement, Graph) :-
     sparqlSelectQueryGlobal(QueryTriples, '?s', [Score]),
     atom_number(Score, ScoreNumber),
     Prob is sqrt(round((ScoreNumber / 10) * 1000) / 1000),
-    createFreshObject(uo:'UncertaintyRelevantToDocumentProvenance', Subject),
+    createFreshObject(uno:'UncertaintyRelevantToDocumentProvenance', Subject),
     TargetTriples = [
-        [Statement, uo:'hasProvenanceUncertainty', Subject],
-        [Subject, rdf:'type', uo:'UncertaintyRelevantToDocumentProvenance'],
-        [Subject, uo:'hasUncertaintyLevel', literal(Prob)],
+        [Statement, uno:'hasProvenanceUncertainty', Subject],
+        [Subject, rdf:'type', uno:'UncertaintyRelevantToDocumentProvenance'],
+        [Subject, uno:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).
@@ -532,11 +532,11 @@ uncertaintyInput(Statement, Graph) :-
 uncertaintyInput(Statement, GroundingProbList, Graph) :-
     findall(P, member([_, P], GroundingProbList), PList),
     listProduct(PList, Prob),
-    createFreshObject(uo:'UncertaintyRelevantToEntityGrounding', Subject),
+    createFreshObject(uno:'UncertaintyRelevantToEntityGrounding', Subject),
     TargetTriples = [
-        [Statement, uo:'hasGroundingUncertainty', Subject],
-        [Subject, rdf:'type', uo:'UncertaintyRelevantToEntityGrounding'],
-        [Subject, uo:'hasUncertaintyLevel', literal(Prob)],
+        [Statement, uno:'hasGroundingUncertainty', Subject],
+        [Subject, rdf:'type', uno:'UncertaintyRelevantToEntityGrounding'],
+        [Subject, uno:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
         ],
         sparqlInsertQuery(TargetTriples, Graph).

@@ -180,8 +180,8 @@ representingStatement(Ev, Stat, Value, Doc) :-
     
 provenanceUncertainty(Stat, Doc, Stream) :-
     QueryTriples = [
-        [Stat, uo:'hasProvenanceUncertainty', '?prob'],
-        ['?prob',   uo:'hasUncertaintyLevel', '?level']
+        [Stat, uno:'hasProvenanceUncertainty', '?prob'],
+        ['?prob',   uno:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [No]),
     atomic_list_concat(["provenanceProb('", Doc, "',", No, ")."], DataLine),
@@ -189,8 +189,8 @@ provenanceUncertainty(Stat, Doc, Stream) :-
 
 textualUncertainty(Stat, Stream) :-
     QueryTriples = [
-        [Stat, uo:'hasTextualUncertainty', '?prob'],
-        ['?prob',   uo:'hasUncertaintyLevel', '?level']
+        [Stat, uno:'hasTextualUncertainty', '?prob'],
+        ['?prob',   uno:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
     atomic_list_concat(["textProb('", Stat, "',", Level, ")."], DataLine),
@@ -198,8 +198,8 @@ textualUncertainty(Stat, Stream) :-
 
 extractionUncertainty(Stat, Stream) :-
     QueryTriples = [
-        [Stat, uo:'hasExtractionAccurracy', '?prob'],
-        ['?prob',   uo:'hasUncertaintyLevel', '?level']
+        [Stat, uno:'hasExtractionAccurracy', '?prob'],
+        ['?prob',   uno:'hasUncertaintyLevel', '?level']
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
     atomic_list_concat(["extractionProb('", Stat, "',", Level, ")."], DataLine),
@@ -263,7 +263,7 @@ findall(Triple, (
     
 resultTriple(Ev, _, Uncertainty, Property, _, [Ev, Property, Uncertainty]).
 resultTriple(_, Class, Uncertainty, _, _, [Uncertainty, rdf:'type', Class]).
-resultTriple(_, _, Uncertainty, _, P, [Uncertainty, uo:'hasUncertaintyLevel', literal(P)]).
+resultTriple(_, _, Uncertainty, _, P, [Uncertainty, uno:'hasUncertaintyLevel', literal(P)]).
 resultTriple(_, _, Uncertainty, _, P, [Uncertainty, rdfs:'label', literal(P)]).
 
 
