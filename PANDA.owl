@@ -7,7 +7,7 @@
     <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
     <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-    <!ENTITY uo "http://purl.bioontology.org/net/brunel/uo#" >
+    <!ENTITY uno "http://purl.bioontology.org/net/brunel/uno#" >
     <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
     <!ENTITY panda "http://purl.bioontology.org/net/brunel/panda#" >
 ]>
@@ -16,7 +16,7 @@
 <rdf:RDF xmlns="http://purl.bioontology.org/net/brunel/panda#"
      xml:base="http://purl.bioontology.org/net/brunel/panda"
      xmlns:panda="http://purl.bioontology.org/net/brunel/panda#"
-     xmlns:uo="http://purl.bioontology.org/net/brunel/uo#"
+     xmlns:uno="http://purl.bioontology.org/net/brunel/uno#"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
@@ -35,7 +35,7 @@
         <dc:subject xml:lang="en">biological events</dc:subject>
         <dc:subject xml:lang="en">molecular biology</dc:subject>
         <dc:subject xml:lang="en">text mining</dc:subject>
-        <owl:imports rdf:resource="http://purl.bioontology.org/net/brunel/uo"/>
+        <owl:imports rdf:resource="http://purl.bioontology.org/net/brunel/uno"/>
         <void:dataBrowse rdf:resource="http://purl.bioontology.org/net/brunel/panda.graph"/>
         <void:dataDump rdf:resource="http://purl.bioontology.org/net/brunel/panda.owl"/>
     </owl:Ontology>
@@ -1033,7 +1033,7 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
     <owl:Class rdf:about="&panda;NegativeRegulation">
         <rdfs:label xml:lang="en">negative regulation</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;Regulation"/>
-        <uo:hasSynonym>decreases</uo:hasSynonym>
+        <panda:hasSynonym>decreases</panda:hasSynonym>
         <rdfs:isDefinedBy>GENIA</rdfs:isDefinedBy>
     </owl:Class>
     
@@ -1115,7 +1115,7 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
     <owl:Class rdf:about="&panda;PositiveRegulation">
         <rdfs:label xml:lang="en">positive regulation</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;Regulation"/>
-        <uo:hasSynonym>increases</uo:hasSynonym>
+        <panda:hasSynonym>increases</panda:hasSynonym>
     </owl:Class>
     
 
@@ -1347,20 +1347,7 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
     
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Annotations
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
 
-    <rdf:Description rdf:about="&uo;hasGroundingProbability">
-        <rdfs:comment>associates a level of confidence in the correctness of the grounding of entities mentioned in the statement with that statement</rdfs:comment>
-    </rdf:Description>
-    <rdf:Description rdf:about="&uo;ProbabilityRelevantToEntityGrounding">
-        <rdfs:comment>The entities mentioned in a statement are grounded in existing databases with certain confidence. This probability type reflects the level of that confidence.</rdfs:comment>
-    </rdf:Description>
 </rdf:RDF>
 
 

@@ -1,0 +1,576 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY uno "http://purl.bioontology.org/net/brunel/uno#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY panda "http://purl.bioontology.org/net/brunel/panda#" >
+    <!ENTITY void "http://rdfs.org/ns/void#" >
+]>
+
+
+<rdf:RDF xmlns="http://purl.bioontology.org/net/brunel/uno#"
+     xml:base="http://purl.bioontology.org/net/brunel/uno"
+     xmlns:panda="http://purl.bioontology.org/net/brunel/panda#"
+     xmlns:uno="http://purl.bioontology.org/net/brunel/uno#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:void="http://rdfs.org/ns/void#">
+    <owl:Ontology rdf:about="http://purl.bioontology.org/net/brunel/uno">
+        <void:dataBrowse rdf:resource="http://purl.bioontology.org/net/brunel/uno.graph"/>
+        <void:dataDump rdf:resource="http://purl.bioontology.org/net/brunel/uno.owl"/>
+        <dc:description rdf:datatype="&xsd;anyURI">Uncertainty Ontology has been developed in the context of the DARPA&apos;s Big Mechanism research program. It describes different types of uncertainty that are relevant in the process of knowledge assembly of biological models from molecular interactions described in and extracted from scientific texts. </dc:description>
+        <dc:contributor rdf:datatype="&xsd;anyURI">http://klarman.synthasite.com/</dc:contributor>
+        <dc:creator rdf:datatype="&xsd;anyURI">http://www.brunel.ac.uk/people/larisa-soldatova</dc:creator>
+        <owl:versionInfo>2016-03-15</owl:versionInfo>
+        <dc:title xml:lang="en">Uncertainty Ontology</dc:title>
+        <dc:subject xml:lang="en">uncertainty</dc:subject>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasSynonym -->
+
+    <owl:AnnotationProperty rdf:about="&uno;hasSynonym">
+        <rdfs:label xml:lang="en">has synonym</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/contributor -->
+
+    <owl:AnnotationProperty rdf:about="&dc;contributor"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/creator -->
+
+    <owl:AnnotationProperty rdf:about="&dc;creator"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/description -->
+
+    <owl:AnnotationProperty rdf:about="&dc;description"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/subject -->
+
+    <owl:AnnotationProperty rdf:about="&dc;subject"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title -->
+
+    <owl:AnnotationProperty rdf:about="&dc;title"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasAssemblyUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasAssemblyUncertainty">
+        <rdfs:label>has assembly uncertainty</rdfs:label>
+        <rdfs:comment>associates assembly uncertainty degree with an event</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToAssemblyUncertainty"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasBiologicalUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasBiologicalUncertainty">
+        <rdfs:label>has biological uncertainty</rdfs:label>
+        <rdfs:comment>associates biological uncertainty degree with an event</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToBiology"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasDocumentPartUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasDocumentPartUncertainty">
+        <rdfs:label>has document part uncertainty</rdfs:label>
+        <rdfs:comment>associates a score reflecting the uncertainty of the document part from which a statement has been extracted with a given statement</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToDocumentPart"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasExtractionAccurracy -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasExtractionAccurracy">
+        <rdfs:label>has extraction accuracy</rdfs:label>
+        <rdfs:comment>associates extraction accurracy score with an extracted statement</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;AccuracyOfExtractionFromText"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasGroundingUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasGroundingUncertainty">
+        <rdfs:label>has grounding uncertainty</rdfs:label>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToEntityGrounding"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasInternalInconsistency -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasInternalInconsistency">
+        <rdfs:label>has internal inconsistency</rdfs:label>
+        <rdfs:comment>associates the score reflecting inconsistency of supporting/conflicting evidence with an event</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToEvidenceInconsistency"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasModelLinkUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasModelLinkUncertainty">
+        <rdfs:label>has model link uncertainty</rdfs:label>
+        <rdfs:comment>associates uncertainty score reflecting the relation of an event to a model</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasNegativeConflict -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasNegativeConflict">
+        <rdfs:label>has negative conflict</rdfs:label>
+        <rdfs:range rdf:resource="&uno;NegativeConflict"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasNegativeCorroboration -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasNegativeCorroboration">
+        <rdfs:label>has negative corroboration</rdfs:label>
+        <rdfs:range rdf:resource="&uno;NegativeCorroboration"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasPositiveConflict -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasPositiveConflict">
+        <rdfs:label>has positive conflict</rdfs:label>
+        <rdfs:range rdf:resource="&uno;PositiveConflict"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasPositiveCorroboration -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasPositiveCorroboration">
+        <rdfs:label>has positive corroboration</rdfs:label>
+        <rdfs:range rdf:resource="&uno;PositiveCorroboration"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasProvenanceUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasProvenanceUncertainty">
+        <rdfs:label>has provenance uncertainty</rdfs:label>
+        <rdfs:comment>associates provenance uncertainty score with a document from which a statement was extracted</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToDocumentProvenance"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTextualUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasTextualUncertainty">
+        <rdfs:label>has textual uncertainty</rdfs:label>
+        <rdfs:comment>associates textual uncertainty score with an extracted statement</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;TextualUncertainty"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalConflict -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasTotalConflict">
+        <rdfs:label>has total conflict</rdfs:label>
+        <rdfs:range rdf:resource="&uno;TotalConflict"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalCorroboration -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasTotalCorroboration">
+        <rdfs:label>has total corroboration</rdfs:label>
+        <rdfs:range rdf:resource="&uno;TotalCorroboration"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTrustDegree -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasTrustDegree">
+        <rdfs:label>has trust degree</rdfs:label>
+        <rdfs:comment>associates a trust degree with a submitter</rdfs:comment>
+        <rdfs:range rdf:resource="&uno;UncertaintyRelevantToSubmitterTrust"/>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasUncertainty">
+        <rdfs:label>has uncertainty</rdfs:label>
+        <rdfs:comment>associates a uncertainty object with a statement</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasUncertaintyLevel -->
+
+    <owl:DatatypeProperty rdf:about="&uno;hasUncertaintyLevel">
+        <rdfs:label>has uncertainty level</rdfs:label>
+        <rdfs:comment>associates uncertainty level with a uncertainty object</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasUncertaintyLevelDescritpion -->
+
+    <owl:DatatypeProperty rdf:about="&uno;hasUncertaintyLevelDescritpion">
+        <rdfs:label>has uncertainty level descritpion</rdfs:label>
+        <rdfs:comment>associates uncertainty level description (free text form if applicable) with a uncertainty object</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#AccuracyOfExtractionFromText -->
+
+    <owl:Class rdf:about="&uno;AccuracyOfExtractionFromText">
+        <rdfs:label xml:lang="en">accuracy of extraction from text</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <hasSynonym>extraction uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#NegativeConflict -->
+
+    <owl:Class rdf:about="&uno;NegativeConflict">
+        <rdfs:label>negative conflict</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>The event is not in the model but is found to be true in the evidence.
+Suggested action =&gt; add the event to the model if the value is high.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#NegativeCorroboration -->
+
+    <owl:Class rdf:about="&uno;NegativeCorroboration">
+        <rdfs:label>negative corroboration</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>The event is not in the model and is found to be false in the evidence.
+Action is not required.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#PositiveConflict -->
+
+    <owl:Class rdf:about="&uno;PositiveConflict">
+        <rdfs:label>positive conflict</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>The event is in the model but is found to be false in the evidence.
+Suggested action =&gt; remove the event from the model if the value is high.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#PositiveCorroboration -->
+
+    <owl:Class rdf:about="&uno;PositiveCorroboration">
+        <rdfs:label>positive corroboration</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>The event is in the model and is found to be true in the evidence.
+Action is not required.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#TextualUncertainty -->
+
+    <owl:Class rdf:about="&uno;TextualUncertainty">
+        <rdfs:label xml:lang="en">textual uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#TotalConflict -->
+
+    <owl:Class rdf:about="&uno;TotalConflict">
+        <rdfs:label>total conflict</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>A weighted sum of both type of conflict scores.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#TotalCorroboration -->
+
+    <owl:Class rdf:about="&uno;TotalCorroboration">
+        <rdfs:label>total corroboration</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
+        <rdfs:comment>A weighted sum of both type of corroboration scores.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#Uncertainty -->
+
+    <owl:Class rdf:about="&uno;Uncertainty">
+        <rdfs:label xml:lang="en">uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&uno;hasUncertaintyLevel"/>
+                <owl:someValuesFrom rdf:resource="&rdfs;Literal"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToAssemblyUncertainty -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToAssemblyUncertainty">
+        <rdfs:label>uncertainty relevant to assembly process</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToAuthorsIndependence -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToAuthorsIndependence">
+        <rdfs:label xml:lang="en">uncertainty relevant to authors independence</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToTheIndependenceAcrossResearchNetwork"/>
+        <hasSynonym>authors independence uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToBiology -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToBiology">
+        <rdfs:label xml:lang="en">uncertainty relevant to biology</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <hasSynonym>biological uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToDocumentPart -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToDocumentPart">
+        <rdfs:label>uncertainty relevant to document part</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <rdfs:comment>The weight of event extracted from a given document might differ depending on exactly which part of the document it was extracted from (e.g., abstract, results, related work, etc.)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToDocumentProvenance -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToDocumentProvenance">
+        <rdfs:label xml:lang="en">uncertainty relevant to document provenance</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <hasSynonym>provenance uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToEntityGrounding -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToEntityGrounding">
+        <rdfs:label>uncertainty relevant to entity grounding</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToEvidenceInconsistency -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToEvidenceInconsistency">
+        <rdfs:label>uncertainty relevant to evidence inconsistency</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <rdfs:comment>The extracted pieces of evidence can often be inconsistent with each other. This uncertainty type captures such type of inconsistency expressed numerically.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToExperimentalConfirmation -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToExperimentalConfirmation">
+        <rdfs:label xml:lang="en">uncertainty relevant to experimental confirmation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToBiology"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToLinkUncertainty -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToLinkUncertainty">
+        <rdfs:label>uncertainty relevant to link uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <rdfs:comment>The uncertainty scores that quantify the strength and type of relation of an event extracted from text to a model. </rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToMethodsIndependence -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToMethodsIndependence">
+        <rdfs:label xml:lang="en">uncertainty relevant to methods independence</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToTheIndependenceAcrossResearchNetwork"/>
+        <hasSynonym>methods independence uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToPriorBiologicalKnowledge -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToPriorBiologicalKnowledge">
+        <rdfs:label xml:lang="en">uncertainty relevant to prior biological knowledge</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToBiology"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToProvenanceIndependence -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToProvenanceIndependence">
+        <rdfs:label xml:lang="en">uncertainty relevant to provenance independence</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToTheIndependenceAcrossResearchNetwork"/>
+        <hasSynonym>provenance independence uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToSubmitterTrust -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToSubmitterTrust">
+        <rdfs:label>uncertainty relevant to submitter trust</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <rdfs:comment>The degree to which a given submitter is trusted.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToTheIndependenceAcrossResearchNetwork -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToTheIndependenceAcrossResearchNetwork">
+        <rdfs:label xml:lang="en">uncertainty relevant to the independence across research network</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <hasSynonym>independence uncertainty</hasSynonym>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/p/Probability -->
+
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/p/Probability">
+        <rdfs:label>probability</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/panda#InformationContentEntity -->
+
+    <owl:Class rdf:about="&panda;InformationContentEntity"/>
+    
+        <rdf:Description rdf:about="&uno;hasGroundingProbability">
+        <rdfs:comment>associates a level of confidence in the correctness of the grounding of entities mentioned in the statement with that statement</rdfs:comment>
+    </rdf:Description>
+    <rdf:Description rdf:about="&uno;ProbabilityRelevantToEntityGrounding">
+        <rdfs:comment>The entities mentioned in a statement are grounded in existing databases with certain confidence. This probability type reflects the level of that confidence.</rdfs:comment>
+    </rdf:Description>
+    
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
