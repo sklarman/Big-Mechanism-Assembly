@@ -26,7 +26,7 @@
     <owl:Ontology rdf:about="http://purl.bioontology.org/net/brunel/uno">
         <void:dataBrowse rdf:resource="http://purl.bioontology.org/net/brunel/uno.graph"/>
         <void:dataDump rdf:resource="http://purl.bioontology.org/net/brunel/uno.owl"/>
-        <dc:description rdf:datatype="&xsd;anyURI">Uncertainty Ontology has been developed in the context of the DARPA&apos;s Big Mechanism research program. It describes different types of uncertainty that are relevant in the process of knowledge assembly of biological models from molecular interactions described in and extracted from scientific texts. </dc:description>
+        <dc:description rdf:datatype="&xsd;anyURI">Uncertainty Ontology (UNO) has been developed in the context of the DARPA&apos;s Big Mechanism research program. It describes different types of uncertainty that are relevant in the process of knowledge assembly of biological models from molecular interactions described in and extracted from scientific texts. </dc:description>
         <dc:contributor rdf:datatype="&xsd;anyURI">http://klarman.synthasite.com/</dc:contributor>
         <dc:creator rdf:datatype="&xsd;anyURI">http://www.brunel.ac.uk/people/larisa-soldatova</dc:creator>
         <owl:versionInfo>2016-03-15</owl:versionInfo>
