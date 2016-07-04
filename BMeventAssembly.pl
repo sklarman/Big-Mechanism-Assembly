@@ -191,12 +191,16 @@ createIndexCardGraph(Graph) :-
             (date(date(Y, M, D)),
             atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/index_card_graph_', Y, M, D], Graph), 
             atomic_list_concat([Y, M, D], '-', Date),
+    	    atomic_list_concat([Graph, '.rdf'], GraphDump),
+	    atomic_list_concat([Graph, '.graph'], GraphBrowse),
             TargetTriples = [
                 [Graph, rdf:'type', void:'Dataset'],
                 [Graph, dc:'creator', literal('Big Mechanism')],
                 [Graph, dc:'title', literal('Textual evidence extracted from literature')],
                 [Graph, dc:'description', literal('Data about statements extracted automatically from scientific literature and reported in a collection of index card submitted to the system.')],
-                [Graph, dc:'date', literal(Date)]
+                [Graph, dc:'date', literal(Date)],
+		[Graph, void:'dataDump', GraphDump],
+                [Graph, void:'dataBrowse', GraphBrowse]
                 ],
             sparqlInsertQuery(TargetTriples, Graph),
             asserta(index_graph(Graph))).
@@ -213,7 +217,7 @@ createInputUncertaintyGraph(Statement, Graph) :-
                 [Graph, dc:'subject', Statement],
                 [Graph, dc:'creator', literal('Big Mechanism')],
                 [Graph, dc:'title', literal('Prior probabilities')],
-                [Graph, dc:'description', literal('Data about prior probabilities associated with a single statement.')],
+                [Graph, dc:'description', literal('Data about prior probabilities associated with a single statement (in dc:subject property).')],
                 [Graph, dc:'date', literal(Date)],
                 [Graph, void:'dataDump', GraphDump],
                 [Graph, void:'dataBrowse', GraphBrowse]
