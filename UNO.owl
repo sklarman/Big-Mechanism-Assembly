@@ -548,9 +548,9 @@ Action is not required.</rdfs:comment>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/p/Probability -->
+    <!-- http://purl.bioontology.org/net/brunel/uno#Probability -->
 
-    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/p/Probability">
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/uno#Probability">
         <rdfs:label>probability</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;InformationContentEntity"/>
     </owl:Class>
@@ -561,11 +561,11 @@ Action is not required.</rdfs:comment>
 
     <owl:Class rdf:about="&panda;InformationContentEntity"/>
     
-        <rdf:Description rdf:about="&uno;hasGroundingProbability">
+        <rdf:Description rdf:about="&uno;hasGroundingProbabilityUncertainty">
         <rdfs:comment>associates a level of confidence in the correctness of the grounding of entities mentioned in the statement with that statement</rdfs:comment>
     </rdf:Description>
-    <rdf:Description rdf:about="&uno;ProbabilityRelevantToEntityGrounding">
-        <rdfs:comment>The entities mentioned in a statement are grounded in existing databases with certain confidence. This probability type reflects the level of that confidence.</rdfs:comment>
+    <rdf:Description rdf:about="&uno;UncertaintyRelevantToEntityGrounding">
+        <rdfs:comment>The entities mentioned in a statement are grounded in existing databases with certain confidence. This probability uncertainty type reflects the level of that confidence.</rdfs:comment>
     </rdf:Description>
     
 </rdf:RDF>

@@ -360,36 +360,36 @@ There is no OA class provided for &quot;Target&quot; as a target might be a body
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/hasCellType -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasCell -->
 
-    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasCellType">
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda#hasCell">
         <rdfs:label>has cell type</rdfs:label>
         <rdfs:comment>Statements qualify the truth of biological events in the context of certain cell types. Hence a statment should be by defeault connected to some cell type via &quot;has cell type&quot; property.</rdfs:comment>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/hasComponent -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasComponent -->
 
-    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasComponent">
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda#hasComponent">
         <rdfs:label>has component</rdfs:label>
         <rdfs:comment>Complex chemicals conist of (simple) components. </rdfs:comment>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/hasTissueType -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#hasTissue -->
 
-    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/hasTissueType">
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda#hasTissue">
         <rdfs:label>has tissue type</rdfs:label>
         <rdfs:comment>Statements qualify the truth of biological events in the context of certain tissue types. Hence a statment should be by defeault connected to some tissue type via &quot;has tissue type&quot; property.</rdfs:comment>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/inOragnism -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#inOrganism -->
 
-    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda/inOragnism">
+    <owl:ObjectProperty rdf:about="http://purl.bioontology.org/net/brunel/panda#inOrganism">
         <rdfs:label>in organism</rdfs:label>
         <rdfs:comment>Statements qualify the truth of biological events in the context of certain organisms. Hence a statment should be by defeault connected to some organism via &quot;in organism&quot; property.</rdfs:comment>
     </owl:ObjectProperty>
@@ -1301,36 +1301,36 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/CellType -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#Cell -->
 
-    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/CellType">
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda#Cell">
         <rdfs:label>cell type</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
     </owl:Class>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/ChemicalFamily -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#ChemicalFamily -->
 
-    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/ChemicalFamily">
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda#ChemicalFamily">
         <rdfs:label>chemical family</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;Chemical"/>
     </owl:Class>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/Organism -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#Organism -->
 
-    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/Organism">
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda#Organism">
         <rdfs:label>organism</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
     </owl:Class>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/panda/TissueType -->
+    <!-- http://purl.bioontology.org/net/brunel/panda#Tissue -->
 
-    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda/TissueType">
+    <owl:Class rdf:about="http://purl.bioontology.org/net/brunel/panda#Tissue">
         <rdfs:label>tissue type</rdfs:label>
         <rdfs:subClassOf rdf:resource="&panda;MaterialEntity"/>
     </owl:Class>
