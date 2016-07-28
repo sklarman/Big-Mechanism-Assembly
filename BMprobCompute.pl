@@ -18,14 +18,8 @@
 :- dynamic availableThread/1.
 :- dynamic addTotalInput/1.
 
-:- prolog_load_context(directory, Dir),  asserta(user:file_search_path(my_home, Dir)).
-
 
 %% Defining an auxiliary predicate
-
-commandProblog('cmd /c "C:/Users/user/Dysk Google/problog2.1/problog-cli.py"').
-%commandProblog('cmd /c "C:/Users/Szymon/Google Drive/problog2.1/problog-cli.py"').
-%commandProblog('"C:/Program Files (x86)/Python 3.5/python.exe" "C:/Users/csstssk/Google Drive/problog2.1/problog-cli.py"').
 
 
 run :- 
@@ -33,7 +27,7 @@ run :-
     reset_gensym,
     readModel,
     openOutput,
-    generateNthreads(14),
+    generateNthreads(1),
     writeln('Querying ProbLog...'),
     get_time(Time1),
     findall(_, select_read, _), !, 
@@ -57,6 +51,8 @@ freeWhenDead(Alias) :-
 finalize :- 
     outputStream(OutputStream),
     close(OutputStream),
+    log_stream(LogStream),
+    close(LogStream),
     nl,
     modelContent(DataLine),
     open('problogTotalInput.pl', write, Stream2, [encoding(utf8)]),
@@ -83,33 +79,27 @@ generateNthreads(N) :-
 
 selectNextEvent(Event) :- 
     QueryTriples = [
-        ['?ev', rdf:'type', panda:'Event'],
+        ['?ev', rdf:'type', '?direct_type'], 
+        ['?direct_type', 'rdfs:subClassOf*', panda:'Event'],
         ['?st', panda:'represents', '?ev'],
         ['?probInput', dc:'subject', '?st'],
         not([
             ['?probComp', dc:'subject', '?ev'],
-            ['?probComp', rdf:'type', prov:'Entity'],
-            not([['?probComp2', dct:'replaces', '?probComp']]),
-            not([
-                ['?probComp', prov:'wasGeneratedBy', '?aciv1'],
-                ['?aciv1', prov:'used', '?probInput']
-                ])
+            ['?probComp', prov:'wasGeneratedBy', '?activ'],
+            ['?activ', prov:'used', '?probInput']
             ])
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?ev', [Event]).
 
 selectNextEvent(Event) :-
     QueryTriples = [
-        ['?ev', rdf:'type', panda:'Event'],
+        ['?ev', rdf:'type', '?direct_type'], 
+        ['?direct_type', 'rdfs:subClassOf*', panda:'Event'],
         ['?ev', panda:'hasRelatedExperimentalResults', '?res'],
         not([
             ['?probComp', dc:'subject', '?ev'],
-            ['?probComp', rdf:'type', prov:'Entity'],
-            not([['?probComp2', dct:'replaces', '?probComp']]),
-            not([
-                ['?probComp', prov:'wasGeneratedBy', '?aciv1'],
-                ['?aciv1', prov:'used', '?res']
-                ])
+            ['?probComp', prov:'wasGeneratedBy', '?aciv1'],
+            ['?aciv1', prov:'used', '?res']
             ])
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?ev', [Event]).
@@ -117,6 +107,7 @@ selectNextEvent(Event) :-
     
 select_read :-
     selectNextEvent(Event),
+    writeln(Event),
     gensym('', Counter), atom_number(Counter, No), % No<10, 
     writeln(No),
     queue(Event).
@@ -131,7 +122,9 @@ single_run(Ev) :-
     createInputFile(Ev, InputFile, OutputFile),
     commandProblog(ProblogCommand),
     atomic_list_concat([ProblogCommand, ' -o ', OutputFile, ' ', InputFile], Command),
+    writeln(['Querying for: ', Ev]),
     shell(Command),
+    writeln(['Creating output for: ', Ev]),
     readOutput(OutputFile, Output),
     outputStream(OutputStream),
     write(OutputStream, Output),
@@ -157,64 +150,70 @@ createInputFile(Ev, InputFile, OutputFile) :-
     close(Stream3).
    
 inputData(Ev, Stream) :-
-    atomic_list_concat(["event('", Ev, "')."], DataLine),
-    writeln(Stream, DataLine),
-    findall(_, codeRepresentingStatement(Ev, Stream), _).
-    
-codeRepresentingStatement(Ev, Stream) :-
-    representingStatement(Ev, Stat, Value, Doc),
-    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, "')."], DataLine),
-    writeln(Stream, DataLine),
-    findall(_, extractionUncertainty(Stat, Stream), _),
-    findall(_, textualUncertainty(Stat, Stream), _),
-    findall(_, provenanceUncertainty(Stat, Doc, Stream), _),
-    findall(_, experimentUncertainty(Ev, Stream), _).
-    
-representingStatement(Ev, Stat, Value, Doc) :-  
+    atomic_list_concat(["event('", Ev, "')."], DataLine1),
+    writeln(Stream, DataLine1),
+    findall(_, experimentUncertainty(Ev, Stream), _),
+    findall(Tuple, getRepresentingStatements(Ev, Tuple), Tuples),
+    findall(_, (
+    member(Tuple, Tuples),
+    member(stat=Stat, Tuple), 
+    member(doc=Doc, Tuple), 
+    member(value=Value, Tuple), 
+    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, "')."], DataLine2),
+    writeln(Stream, DataLine2),
+    ignore(
+        (member(provlevel=Pl, Tuple), !,
+        atomic_list_concat(["provenanceProb('", Doc, "',", Pl, ")."], DataLine3),
+        writeln(Stream, DataLine3)
+        )),
+    ignore(
+        (member(textlevel=Tl, Tuple), !,
+        atomic_list_concat(["textProb('", Stat, "',", Tl, ")."], DataLine4),
+        writeln(Stream, DataLine4)
+        )),
+    ignore(
+        (member(groundlevel=Gl, Tuple), !,
+        atomic_list_concat(["groundProb('", Stat, "',", Gl, ")."], DataLine5),
+        writeln(Stream, DataLine5)
+        )),
+    ignore(
+        (member(extrlevel=El, Tuple), !,
+        atomic_list_concat(["extractionProb('", Stat, "',", El, ")."], DataLine6),
+        writeln(Stream, DataLine6)
+        ))), _).
+ 
+getRepresentingStatements(Ev, Tuple) :-   
     QueryTriples = [
-        [Ev, panda:'isRepresentedBy', '?stat'],
-        ['?stat',  panda:'hasTruthValue', '?value'],
-        ['?stat', panda:'isExtractedFrom', '?doc']
-        ],
-    sparqlSelectQueryGlobal(QueryTriples, '?stat ?value ?doc', [Stat, Value, Doc]).
-    
-provenanceUncertainty(Stat, Doc, Stream) :-
-    QueryTriples = [
-        [Stat, uno:'hasProvenanceUncertainty', '?prob'],
-        ['?prob',   uno:'hasUncertaintyLevel', '?level']
-        ],
-    sparqlSelectQueryGlobal(QueryTriples, '?level', [No]),
-    atomic_list_concat(["provenanceProb('", Doc, "',", No, ")."], DataLine),
-    writeln(Stream, DataLine).    
-
-textualUncertainty(Stat, Stream) :-
-    QueryTriples = [
-        [Stat, uno:'hasTextualUncertainty', '?prob'],
-        ['?prob',   uno:'hasUncertaintyLevel', '?level']
-        ],
-    sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
-    atomic_list_concat(["textProb('", Stat, "',", Level, ")."], DataLine),
-    writeln(Stream, DataLine).
-
-extractionUncertainty(Stat, Stream) :-
-    QueryTriples = [
-        [Stat, uno:'hasExtractionAccurracy', '?prob'],
-        ['?prob',   uno:'hasUncertaintyLevel', '?level']
-        ],
-    sparqlSelectQueryGlobal(QueryTriples, '?level', [Level]),
-    atomic_list_concat(["extractionProb('", Stat, "',", Level, ")."], DataLine),
-    writeln(Stream, DataLine).
+            [Ev, panda:'isRepresentedBy', '?stat'],
+            ['?stat',  panda:'hasTruthValue', '?value'],
+            ['?stat', panda:'isExtractedFrom', '?doc'],
+            optional([
+                    ['?stat', uno:'hasProvenanceUncertainty', '?prov'],
+                    ['?prov',   uno:'hasUncertaintyLevel', '?provlevel']
+                    ]),
+            optional([
+                    ['?stat', uno:'hasTextualUncertainty', '?text'],
+                    ['?text',   uno:'hasUncertaintyLevel', '?textlevel']
+                    ]),
+            optional([
+                    ['?stat', uno:'hasGroundingUncertainty', '?ground'],
+                    ['?ground',   uno:'hasUncertaintyLevel', '?groundlevel']
+                    ]),
+            optional([
+                    ['?stat', uno:'hasExtractionAccurracy', '?extr'],
+                    ['?extr',   uno:'hasUncertaintyLevel', '?extrlevel']
+                    ])
+            ],
+    sparqlSelectQueryGlobalExplicitVar(QueryTriples, '*', Tuple).
 
 experimentUncertainty(Ev, Stream) :-
     QueryTriples = [
         [Ev, panda:'hasRelatedExperimentalResults', '?exp'],
         ['?exp',   panda:'hasTruthValue', '?value']
         ],
-    sparqlSelectQueryGlobal(QueryTriples, '?value', [Value]),
+    sparqlSelectQueryGlobal(QueryTriples, '?value', [Value]), !,
     atomic_list_concat(["experimentProb('", Ev, "',", Value, ")."], DataLine),
     writeln(Stream, DataLine).
-    
-
     
 %%%%%%%%%%%%%%%%%%%%%%
 % Recording results
@@ -245,20 +244,20 @@ assertProbabilisticFact(Atom, Prob) :-
     FinalTermOut =..FinalTermList,
     asserta(FinalTermOut).
     
-relationType2RDF('negConflict', 'http://purl.bioontology.org/net/brunel/p#NegativeConflict', 'http://purl.bioontology.org/net/brunel/p#hasNegativeConflict').
-relationType2RDF('posConflict', 'http://purl.bioontology.org/net/brunel/p#PositiveConflict', 'http://purl.bioontology.org/net/brunel/p#hasPositiveConflict').
-relationType2RDF('conflict', 'http://purl.bioontology.org/net/brunel/p#TotalConflict', 'http://purl.bioontology.org/net/brunel/p#hasTotalConflict').
-relationType2RDF('negCorroboration', 'http://purl.bioontology.org/net/brunel/p#NegativeCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasNegativeCorroboration').
-relationType2RDF('posCorroboration', 'http://purl.bioontology.org/net/brunel/p#PositiveCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasPositiveCorroboration').
-relationType2RDF('corroboration', 'http://purl.bioontology.org/net/brunel/p#TotalCorroboration', 'http://purl.bioontology.org/net/brunel/p#hasTotalCorroboration').
-relationType2RDF('internalInconsistency', 'http://purl.bioontology.org/net/brunel/p#UncertaintyRelevantToEvidenceInconsistency', 'http://purl.bioontology.org/net/brunel/p#hasInternalInconsistency').
+relationType2RDF('negConflict', 'http://purl.bioontology.org/net/brunel/uno#NegativeConflict', 'http://purl.bioontology.org/net/brunel/uno#hasNegativeConflict').
+relationType2RDF('posConflict', 'http://purl.bioontology.org/net/brunel/uno#PositiveConflict', 'http://purl.bioontology.org/net/brunel/uno#hasPositiveConflict').
+relationType2RDF('conflict', 'http://purl.bioontology.org/net/brunel/uno#TotalConflict', 'http://purl.bioontology.org/net/brunel/uno#hasTotalConflict').
+relationType2RDF('negCorroboration', 'http://purl.bioontology.org/net/brunel/uno#NegativeCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasNegativeCorroboration').
+relationType2RDF('posCorroboration', 'http://purl.bioontology.org/net/brunel/uno#PositiveCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasPositiveCorroboration').
+relationType2RDF('corroboration', 'http://purl.bioontology.org/net/brunel/uno#TotalCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasTotalCorroboration').
+relationType2RDF('internalInconsistency', 'http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToEvidenceInconsistency', 'http://purl.bioontology.org/net/brunel/uno#hasInternalInconsistency').
     
-resultTriples(Triples) :- 
+resultTriples(Event, Triples) :- 
 findall(Triple, (
-                probFact(Type, Ev, P),
+                probFact(Type, Event, P),
                 relationType2RDF(Type, Class, Property),
                 createFreshObject(Class, Uncertainty),
-                resultTriple(Ev, Class, Uncertainty, Property, P, Triple)), 
+                resultTriple(Event, Class, Uncertainty, Property, P, Triple)), 
         Triples).
     
 resultTriple(Ev, _, Uncertainty, Property, _, [Ev, Property, Uncertainty]).
@@ -290,14 +289,14 @@ createUncertaintyInferenceGraph(Event) :-
                 [Activity, prov:'startedAtTime', literal(Date)],
                 [Activity, prov:'endedAtTime', literal(Date)],
                 [Activity, prov:'used', 'http://purl.bioontology.org/net/brunel/problog_model.pl']
-                ],
+                ], !,
     findall([Activity, prov:'used', Used], selectUsedEntitites(Event, Used), UsedTriples),
     findall([Graph, dct:'replaces', Replaced], selectReplaced(Event, Replaced), ReplacedTriples),
-    resultTriples(ResultTriples),
-    union(UsedTriples, ReplacedTriples, Union1),
-    union(ResultTriples, Union1, Union2),
-    union(MetaTriples, Union2, TargetTriples),
-    sparqlInsertQuery(TargetTriples, Graph).
+    union(UsedTriples, ReplacedTriples, ProvTriples),
+    resultTriples(Event, ResultTriples), !,
+    sparqlInsertQuery(MetaTriples, Graph),
+    sparqlInsertQuery(ResultTriples, Graph),
+    (\+ProvTriples = [] -> sparqlInsertQuery(ProvTriples, Graph); true).
 
 
 selectUsedEntitites(Event, Stat) :- 

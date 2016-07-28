@@ -33,6 +33,11 @@ experimentProbDefined(Ev) :- experimentProb(Ev, _).
 0.2::experimentProb(Ev) :- experimentProb(Ev, false).
 0.5::experimentProb(Ev) :- \+experimentProbDefined(Ev).
 
+groundProb(x, 0).
+groundProbDefined(Stat) :- groundProb(Stat, _). 
+P::groundProb(Stat) :- groundProb(Stat, P).
+0.5::groundProb(Stat) :- \+groundProbDefined(Stat).
+
 representingStatement(x, x, x, x).
 somePositiveSupport(Ev) :- representingStatement(Ev, _, true, _).
 someNegativeSupport(Ev) :- representingStatement(Ev, _, false, _).
@@ -54,7 +59,8 @@ someNegativeSupport(Ev) :- representingStatement(Ev, _, false, _).
 0.9::extractionProbWeighted(Stat).
 1::experimentProbWeighted(Stat) :- experimentProb(Stat).
 0::experimentProbWeighted(Stat).
-
+1::groundProbWeighted(Stat) :- groundProb(Stat).
+0.01::groundProbWeighted(Stat).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,8 +68,8 @@ someNegativeSupport(Ev) :- representingStatement(Ev, _, false, _).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-0.9::positiveDocumentSupport(Ev, Doc) :- representingStatement(Ev, Stat, true, Doc), textProbWeighted(Stat), extractionProbWeighted(Stat). 
-0.9::negativeDocumentSupport(Ev, Doc) :- representingStatement(Ev, Stat, false, Doc), textProbWeighted(Stat), extractionProbWeighted(Stat). 
+0.9::positiveDocumentSupport(Ev, Doc) :- representingStatement(Ev, Stat, true, Doc), textProbWeighted(Stat), extractionProbWeighted(Stat), groundProbWeighted(Stat). 
+0.9::negativeDocumentSupport(Ev, Doc) :- representingStatement(Ev, Stat, false, Doc), textProbWeighted(Stat), extractionProbWeighted(Stat), groundProbWeighted(Stat). 
 
 0.3::positiveSupport(Ev) :- positiveDocumentSupport(Ev, Doc), provenanceProbWeighted(Doc). 
 0.3::negativeSupport(Ev) :- negativeDocumentSupport(Ev, Doc), provenanceProbWeighted(Doc).

@@ -23,7 +23,14 @@
 
 :- rdf_meta sparqlTerm(r, -).
 
-:-[BMserverParams.pl].
+:- dynamic log_stream/1.
+
+:- ['BMparams.pl'],
+   file_search_path(my_home, Dir2), !,
+   string_concat(Dir2, '/log_indexCardAssembly.txt', LogFile),
+   open(LogFile, write, Stream),
+   debug(http(_)),
+   asserta(log_stream(Stream)).
 
 panda_graph('http://purl.bioontology.org/net/brunel/panda').
 event_graph('http://purl.bioontology.org/net/brunel/bm/event_graph').
@@ -56,16 +63,29 @@ askSparqlQuery(Query, Result) :-
 
 askHttpSparql(Query, Format, Result, Code) :-
     sparql_setup(Host, Port, Path, Author),
-    http_open([ host(Host), port(Port), path(Path), search([query=Query, format=Format])], Result, [status_code(Code), Author]).
+    http_open([ host(Host), port(Port), path(Path), search([query=Query, format=Format])], Result, [status_code(Code), connection('keep-alive'), Author]),
+    nonvar(Result).
 
 sparqlJsonQuery(Query, Tuple) :-
     askHttpSparql(Query, 'application/json', JsonStream, Code), 
-    (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage), true); 
+    (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage)); 
     (json_read(JsonStream, json(Result)),
     member((results=json(X)),Result), 
     member((bindings=Z), X),
     member(json(JsonTup), Z),
     findall(Val, (member(_=json(Bind), JsonTup),
+                  member(value=Val, Bind)), Tuple))).
+                  %,
+                  %writeln(Tuple).
+
+sparqlJsonQueryExplicitVar(Query, Tuple) :-
+    askHttpSparql(Query, 'application/json', JsonStream, Code), 
+    (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage)); 
+    (json_read(JsonStream, json(Result)),
+    member((results=json(X)),Result), 
+    member((bindings=Z), X),
+    member(json(JsonTup), Z),
+    findall(Ke=Val, (member(Ke=json(Bind), JsonTup),
                   member(value=Val, Bind)), Tuple))).
 
 sparqlInsertQuery(Graph, RDFgraph) :-  
@@ -73,7 +93,7 @@ sparqlInsertQuery(Graph, RDFgraph) :-
     atomic_list_concat(['INSERT {GRAPH <', RDFgraph,'> {', TriplePattern, '}}'], Query),
 %    log_writeln(''), log_writeln(Query),
     sparql_setup(Host, Port, Path, Author),
-    http_open([host(Host), port(Port), path(Path), search([query=Query])], _, [Author]).
+    http_open([host(Host), port(Port), path(Path), search([query=Query])], _, [connection('keep-alive'), Author]).
                   
 sparqlSelectQuery(Graph, RDFgraph, Tuple) :-  
     triplePatternGenerator(Graph, TriplePattern), !, 
@@ -84,14 +104,19 @@ sparqlSelectQuery(Graph, RDFgraph, Tuple) :-
 sparqlSelectQueryGlobal(Graph, QueryVariables, Tuple) :-  
     triplePatternGenerator(Graph, TriplePattern), !, 
     atomic_list_concat(['SELECT DISTINCT ', QueryVariables, ' WHERE {', TriplePattern, '}'], Query),
-%    log_writeln(''), log_writeln(Query),
+%    log_writeln(''), log_writeln(Query), !,
     sparqlJsonQuery(Query, Tuple).
+
+sparqlSelectQueryGlobalExplicitVar(Graph, QueryVariables, Tuple) :-  
+    triplePatternGenerator(Graph, TriplePattern), !, 
+    atomic_list_concat(['SELECT DISTINCT ', QueryVariables, ' WHERE {', TriplePattern, '}'], Query),   
+    sparqlJsonQueryExplicitVar(Query, Tuple).
 
 sparqlClearGraph(Graph) :-
     atomic_list_concat(['CLEAR GRAPH <',Graph,'>'], Query),
     writeln(Query), 
     sparql_setup(Host, Port, Path, Author),
-    http_open([host(Host), port(Port), path(Path), search([query=Query])], _, [status_code(_), Author]).
+    http_open([host(Host), port(Port), path(Path), search([query=Query])], _, [status_code(_), connection('keep-alive'), Author]).
 
 triplePatternGenerator(Graph, TriplePattern) :-
     tripleSetGenerator(Graph, TripleSet),   
@@ -111,6 +136,11 @@ tripleSetGenerator([not(NotTriples)|Rest], [Triple|RestTriples]) :-
     triplePatternGenerator(NotTriples, NotPattern),
     atomic_list_concat(['filter not exists {', NotPattern, '}'], ' ', Triple).
 
+tripleSetGenerator([optional(OptTriples)|Rest], [Triple|RestTriples]) :-
+    tripleSetGenerator(Rest, RestTriples),
+    triplePatternGenerator(OptTriples, OptPattern),
+    atomic_list_concat(['OPTIONAL {', OptPattern, '}'], ' ', Triple).
+
 substitute(_, _, [], []) :- !.
 
 substitute(Var, Term, [OldTriple|OldRest], [NewTriple|NewRest]) :-
@@ -124,7 +154,15 @@ substitute(Var, Term, [not(_)|OldRest], NewRest) :-
 sparqlTerm(X, X) :-
     atomic(X),
     string_concat('?', _, X), !.
+    
+sparqlTerm(X, X) :-
+    atomic(X),
+    string_concat(_, '*', X), !.
 
+sparqlTerm(X, X) :-
+    atomic(X),
+    string_concat(_, '+', X), !.
+    
 sparqlTerm(literal(X), Term) :-
     makeLiteral(X, Term), !.
     
@@ -163,4 +201,16 @@ createFreshObject(Type, Subject) :-
     uuid(U), 
     downcase_atom(Type, Name),
     atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/', Name, '_', U], Subject).
+    
+%%%%%%%%%%%%%%%%%%%%%%%
+% Log
+%%%%%%%%%%%%%%%%%%%%%%%
+
+log_write(Content) :-
+    log_stream(Stream),
+    write(Stream, Content).
+
+log_writeln(Content) :-
+    log_stream(Stream),
+    writeln(Stream, Content).
 
