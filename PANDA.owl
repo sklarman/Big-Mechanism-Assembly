@@ -687,6 +687,15 @@ This &quot;aboutness&quot; may be further clarified or extended to notions such 
     
 
 
+    <!-- http://purl.bioontology.org/net/brunel/panda#Database -->
+
+    <owl:Class rdf:about="&panda;Database">
+        <rdfs:label>database</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&obo;IAO_0000030"/>
+    </owl:Class>
+    
+
+
     <!-- http://purl.bioontology.org/net/brunel/panda#Deacetylation -->
 
     <owl:Class rdf:about="&panda;Deacetylation">
@@ -1274,15 +1283,15 @@ Example: Two proteins observed to interact in a yeast-two-hybrid experiment wher
         <rdfs:subClassOf rdf:resource="&panda;PetriNetModelComponent"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&panda;transitionTo"/>
-                <owl:onClass rdf:resource="&panda;Place"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onProperty rdf:resource="&panda;petriNetLabel"/>
+                <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="&panda;petriNetLabel"/>
-                <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+                <owl:onProperty rdf:resource="&panda;transitionTo"/>
+                <owl:onClass rdf:resource="&panda;Place"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>

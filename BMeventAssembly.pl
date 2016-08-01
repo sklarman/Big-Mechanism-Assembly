@@ -29,14 +29,7 @@ run(N) :-
     close(Stream).
 
 assembleNextFolder(N) :- 
-    member(Folder, [
-        %'/IndexTestNactem/*.*'
-        '/BC_IndexCards_Prelim/*.*'
-        %'/SMALL/*.*'
-        %'/IHMC/*.*',
-        %'/FRIEScards/*.*'
-        %'/USC/*/*.*'
-        ]),
+    indexFolderPath(Folder), !,
     nl, write('Collecting index card files from '), write(Folder), writeln('...'),
     filecollector(Folder, FileList), 
     length(FileList, ListLength),
@@ -56,15 +49,11 @@ translate2rdf(FileList, M) :-
 
 translate2rdf(FileList, N) :-
     nth1(N, FileList, FileName),
-    nl, write('Processing index card: \t'), writeln(FileName),
-    writeln(N),
+    nl, write(N), write(': Processing index card: \t'), writeln(FileName),
     translateCard(FileName),
     M is N+1,
     translate2rdf(FileList, M).
     
-%translate2rdf([_|Rest]) :-
-%    translate2rdf(Rest).
-
 translateCard(FileName) :- 
     retractall(card(_, _)),
     indexCard(Index, FileName),
@@ -131,6 +120,8 @@ cardElement(Key = Value, Branch) :-
 %   Top RDF structure creation
 %%%%%%%%%%%%%%%%%%%%%%%
 
+%from index cards
+
 createRDF(BaseName) :- 
     createIndexCardGraph(GraphURI), 
     createFreshObject(panda:'IndexCard', IndexCard), !,
@@ -152,8 +143,7 @@ createRDF(BaseName) :-
         [IndexCard, panda:'hasStartTime', literal(StartTime)],
         [IndexCard, panda:'hasStopTime', literal(StopTime)],
         [IndexCard, panda:'hasIndexCardId', literal(BaseName)],
-        [IndexCard, panda:'hasAnnotator', ReaderType],
-        [IndexCard, panda:'hasSubmitter', Submitter],
+        [Statement, panda:'hasAnnotator', ReaderType],
         [IndexCard, panda:'containsStatement', Statement],
         [Statement, rdf:'type', panda:'Statement'],
         [Statement, panda:'containedIn', IndexCard],
@@ -161,6 +151,7 @@ createRDF(BaseName) :-
         [Statement, rdfs:'label', literal(StatLabel)],
         [Statement, panda:'hasTruthValue', literal(TruthValue)],
         [Statement, panda:'represents', Event],
+        [Statement, panda:'hasSubmitter', Submitter],
         [Event, panda:'isRepresentedBy', Statement],
         [Statement, panda:'isExtractedFrom', Article]
         ],
@@ -171,8 +162,11 @@ createRDF(BaseName) :-
     log_write('\nCreated: \t'), log_writeln(StatLabel),
     createInputUncertaintyGraph(Statement, ProbGraph),
     writeln('Creating uncertainty input graph...'),
-    findall(_, uncertaintyInput(Statement, ProbGraph), _),
-    findall(_, uncertaintyInput(Statement, GroundingProbList, ProbGraph), _).
+    findall(Triple, (uncertaintyInput(Statement, ProbTriples), member(Triple, ProbTriples)), FirstProbTriples),
+    findall(Triple, (uncertaintyInput(Statement, GroundingProbList, ProbTriples), member(Triple, ProbTriples)), GroundProbTriples),
+    union(FirstProbTriples, GroundProbTriples, TargetProbTriples),
+    sparqlInsertQuery(TargetProbTriples, ProbGraph).
+
 
 createIndexCardGraph(Graph) :-
     index_graph(Graph) -> true;     
@@ -217,12 +211,10 @@ createInputUncertaintyGraph(Statement, Graph) :-
 %   Entity creation
 %%%%%%%%%%%%%%%%%%%%%%%
 
-createIdObject(Event, panda:'Event', Path, GroundingProbList) :-
+createIdObject(Event, panda:'Event', Path, [GroundingProbListA|GroundingProbListB]) :-
     retriveKeyValue(interactionType, Path, EvTypURI),
-    getParticipantInfo(a, Path, TripleA, LabelA, GroundingProbListA),
-    (member(EvTypURI, [panda:'AddsModification', panda:'InhibitsModification']) ->
-        getParticipantInfo(bmod, Path, TripleB, LabelB, GroundingProbListB);
-        getParticipantInfo(b, Path, TripleB, LabelB, GroundingProbListB)),
+    getParticipantInfo(a, EvTypURI, Path, TripleA, LabelA, [GroundingProbListA]),
+    getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB),
     BasicTriples = [
         ['?x', rdf:'type', EvTypURI]],
     union(TripleA, TripleB, PartTriples),
@@ -240,8 +232,7 @@ createIdObject(Event, panda:'Event', Path, GroundingProbList) :-
         LabelTriple=[[Event, rdfs:'label', literal(EventLabel)]],
         substitute('?x', Event, EventTriples, EventTriplesSub),
         union(LabelTriple, EventTriplesSub, AllEventTriples),
-        sparqlInsertQuery(AllEventTriples, Graph))),
-    union(GroundingProbListA, GroundingProbListB, GroundingProbList).
+        sparqlInsertQuery(AllEventTriples, Graph))), !.
 
 createIdObject(Modification, panda:'ProteinModification', Path, GroundingProbListB) :-
     retriveKeyValue(modificationType, Path, ModType),
@@ -265,18 +256,40 @@ createIdObject(Modification, panda:'ProteinModification', Path, GroundingProbLis
                     [Modification, rdfs:'label', literal(EventLabel)]
                     ],
         sparqlInsertQuery(ModificationTriples, Graph))).    
+        
+createIdObject(GeneExpression, panda:'GeneExpression', Path, GroundingProbListB) :-
+    atomic_list_concat([Path, '/participant_b'], PartBpath),
+    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+    QueryTriples = [['?x', panda:'hasParticipantB', ParticipantB],
+                    ['?x', rdf:'type', panda:'GeneExpression']],
+    event_graph(Graph),
+    (sparqlSelectQuery(QueryTriples, Graph, [GeneExpression]) -> 
+        (log_write('\nMatched '), log_writeln(GeneExpression), writeln('Matched existing event...'));
+        (createFreshObject(panda:'GeneExpression', GeneExpression),
+        getLabel(ParticipantB, Graph, LabelB),
+        atomic_list_concat(['gene expression of (', LabelB, ')'], EventLabel),
+        log_write('\nCreated '), log_writeln(EventLabel),
+        write('Created new event: \t'), writeln(EventLabel),
+        ExpressionTriples = [
+                    [GeneExpression, panda:'hasParticipantB', ParticipantB],
+                    [GeneExpression, rdf:'type',  panda:'GeneExpression'],
+                    [GeneExpression, rdfs:'label', literal(EventLabel)]
+                    ],
+        sparqlInsertQuery(ExpressionTriples, Graph))).    
     
 createIdObject(Participant, panda:'Participant', Path, GroundingProbList) :-
     retriveKeyValue(entityType, Path, EntType),
     createIdObject(Participant, EntType, Path, GroundingProbList), !.   
     
-createIdObject(SimpleURI, SimpleType, Path, GroundingProb) :-
+createIdObject(SimpleURI, SimpleType, Path, [GroundingProb]) :-
     member(SimpleType, [panda:'Protein', panda:'Chemical', panda:'Gene']), !,
     retriveKeyValue(entityId, Path, EntId),
     retriveKeyValue(entityText, Path, EntText),
+    retriveKeyValue(grounding, Path, GroundingProb),
+    fixEntId(EntId, FixedEntId), 
     event_graph(Graph),
-    getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, GroundingProb),
-    sparqlInsertQuery(Triples, Graph).
+    getObjectTriples(SimpleURI, FixedEntId, EntText, SimpleType, Triples),
+    sparqlInsertQuery(Triples, Graph), !.
     
 createIdObject(Submitter, panda:'Submitter', '', []) :-
     retriveKeyValue(submitter, SubmitterName),
@@ -343,7 +356,7 @@ pubmedJournalTitleYear(PmcId, ISSN, Title, Year) :-
     clearString(TitleString, Title),
     member(issued=json(['date-parts'=[[Year | _]]]), X), !); (ISSN='', Year='')).
 
-getParticipantInfo(a, Path, TripleA, LabelA, GroundingProbListA) :-
+getParticipantInfo(a, _, Path, TripleA, LabelA, GroundingProbListA) :-
     retriveKeyValue(participantAtype, Path),
     atomic_list_concat([Path, '/participant_a'], PartApath),
     createIdObject(ParticipantA, panda:'Participant', PartApath, GroundingProbListA), 
@@ -351,31 +364,36 @@ getParticipantInfo(a, Path, TripleA, LabelA, GroundingProbListA) :-
     event_graph(Graph),
     getLabel(ParticipantA, Graph, LabelA), !.
 
-getParticipantInfo(a, _, TripleA, '-', []) :-
+getParticipantInfo(a, _, _, TripleA, '-', []) :-
     TripleA =[not([['?x', panda:'hasParticipantA', '?y']])], !.
 
-getParticipantInfo(b, Path, TripleB, LabelB, GroundingProbListB) :-
-    retriveKeyValue(participantBtype, Path),
-    atomic_list_concat([Path, '/participant_b'], PartBpath),
-    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
-    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
-    event_graph(Graph),
-    getLabel(ParticipantB, Graph, LabelB), !.
-
-getParticipantInfo(b, _, TripleB, '-', []) :-
-    TripleB =[not([['?x', panda:'hasParticipantB', '?z']])], !.
-
-getParticipantInfo(bmod, Path, TripleB, LabelB, GroundingProbListB) :-
+getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB) :-
+    member(EvTypURI, [panda:'AddsModification', panda:'InhibitsModification']),
     retriveKeyValue(participantBtype, Path),
     createIdObject(ParticipantB, panda:'ProteinModification', Path, GroundingProbListB), 
     TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
     event_graph(Graph),
     getLabel(ParticipantB, Graph, LabelB), !.
     
-getParticipantInfo(bmod, _, TripleB, '-', []) :- 
+getParticipantInfo(b, panda:'GeneExpression', Path, TripleB, LabelB, GroundingProbListB) :-
+    retriveKeyValue(participantBtype, Path),
+    createIdObject(ParticipantB, panda:'GeneExpression', Path, GroundingProbListB), 
+    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
+    event_graph(Graph),
+    getLabel(ParticipantB, Graph, LabelB), !.
+    
+getParticipantInfo(b, _, Path, TripleB, LabelB, GroundingProbListB) :-
+    retriveKeyValue(participantBtype, Path),
+    atomic_list_concat([Path, '/participant_b'], PartBpath),
+    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
+    event_graph(Graph),
+    getLabel(ParticipantB, Graph, LabelB), !.
+    
+getParticipantInfo(b, _, _, TripleB, '-', []) :-
     TripleB =[not([['?x', panda:'hasParticipantB', '?z']])], !.
 
-getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
     \+EntId = 'GENERIC',
     event_graph(Graph),
     QueryTriples = [['?x', panda:'hasEntityId', literal(EntId)]],
@@ -385,7 +403,7 @@ getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
     Triples = [[SimpleURI, panda:'hasEntityText', literal(EntText)],
                 [SimpleURI, rdf:'type', SimpleType]], !.
 
-getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
     \+EntId = 'GENERIC', 
     identifierResolution(EntId, Name),
     createIdURI(simple, EntId, SimpleURI),
@@ -397,7 +415,7 @@ getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
                 [SimpleURI, panda:'hasEntityName', literal(Name)],
                 [SimpleURI, rdfs:'label', literal(Name)]], !.   
                 
-getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
     \+EntId = 'GENERIC', 
     createIdURI(simple, EntId, SimpleURI),
     log_write('\nCreated '), log_writeln(EntId),
@@ -407,7 +425,7 @@ getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, [1]) :-
                 [SimpleURI, panda:'hasEntityId', literal(EntId)],
                 [SimpleURI, rdfs:'label', literal(EntId)]], !.            
 
-getObjectTriples(SimpleURI, 'GENERIC', EntText, SimpleType, Triples, [0]) :-
+getObjectTriples(SimpleURI, 'GENERIC', EntText, SimpleType, Triples) :-
     createIdURI(simple, 'GENERIC', SimpleURI),
     atomic_list_concat(['no ID', ' [', EntText, ']'], Text),
     log_writeln('\nCreated generic entity'),
@@ -463,7 +481,7 @@ retriveKeyValue(participantAtype, Path) :-
 retriveKeyValue(participantBtype, Path) :-
     atomic_list_concat([Path, '/participant_b/entity_type'], Key),
     card(Key, Value),
-    participantType(Value, _), !.
+    participantType(Value, _), !.  
 
 retriveKeyValue(extractionAccurracy, Accurracy) :-
     card('/meta/confidence', Accurracy).
@@ -502,7 +520,17 @@ retriveKeyValue(modificationType, Path, ModType) :-
     atomic_list_concat([Path, '/modification_type'], Key),
     card(Key, Value),
     modificationType(Value, ModType).
-    
+
+retriveKeyValue(grounding, Path, Value) :-
+     atomic_list_concat([Path, '/grounding_score'], Key),
+     card(Key, Value), !.
+
+retriveKeyValue(grounding, Path, 0) :-
+    retriveKeyValue(entityId, Path, 'GENERIC'); 
+    \+retriveKeyValue(entityId, Path, _), !.
+
+retriveKeyValue(grounding, _, 1).    
+
 participantType('protein', panda:'Protein').
 participantType('chemical', panda:'Chemical').
 participantType('protein_family', panda:'ProteinFamily').
@@ -530,6 +558,7 @@ modificationType('methylation', panda:'Methylation').
 modificationType('ribosylation', panda:'Ribosylation').
 modificationType('sumoylation', panda:'Sumoylation').
 modificationType('ubiquitination', panda:'Ubiquitination').
+modificationType('protein_modification', panda:'ProteinModification').
 
 readerType('human', panda:'Human'). 
 readerType('machine', panda:'Computer').
@@ -546,7 +575,7 @@ speculated(@true, 'uncertain').
 %   Input probabilities recording
 %%%%%%%%%%%%%%%%%%%%
 
-uncertaintyInput(Statement, Graph) :- 
+uncertaintyInput(Statement, TargetTriples) :- 
     retriveKeyValue(textualUncertainty, Value),
     createFreshObject(uno:'TextualUncertainty', Subject),
     TargetTriples = [
@@ -554,10 +583,9 @@ uncertaintyInput(Statement, Graph) :-
         [Subject, rdf:'type', uno:'TextualUncertainty'],
         [Subject, uno:'hasUncertaintyLevel', literal(Value)],
         [Subject, rdfs:'label', literal(Value)]
-        ],
-        sparqlInsertQuery(TargetTriples, Graph).
+        ].
 
-uncertaintyInput(Statement, Graph) :- 
+uncertaintyInput(Statement, TargetTriples) :- 
     retriveKeyValue(extractionAccurracy, Accurracy),
     createFreshObject(uno:'AccuracyOfExtractionFromText', Subject),
     TargetTriples = [
@@ -565,11 +593,10 @@ uncertaintyInput(Statement, Graph) :-
         [Subject, rdf:'type', uno:'AccuracyOfExtractionFromText'],
         [Subject, uno:'hasUncertaintyLevel', literal(Accurracy)],
         [Subject, rdfs:'label', literal(Accurracy)]
-        ],
-        sparqlInsertQuery(TargetTriples, Graph).
+        ].
 
 
-uncertaintyInput(Statement, Graph) :- 
+uncertaintyInput(Statement, TargetTriples) :- 
     QueryTriples = [
         [Statement, panda:'isExtractedFrom', '?x'],
         ['?x', panda:'publishedIn', '?y'],
@@ -584,12 +611,9 @@ uncertaintyInput(Statement, Graph) :-
         [Subject, rdf:'type', uno:'UncertaintyRelevantToDocumentProvenance'],
         [Subject, uno:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
-        ],
-        sparqlInsertQuery(TargetTriples, Graph).
+        ].
 
-uncertaintyInput(Statement, GroundingProbList, Graph) :-
-    %findall(P, member([_, P], GroundingProbList), PList),
-    %listProduct(PList, Prob),
+uncertaintyInput(Statement, GroundingProbList, TargetTriples) :-
     listAverage(GroundingProbList, Prob),
     createFreshObject(uno:'UncertaintyRelevantToEntityGrounding', Subject),
     TargetTriples = [
@@ -597,8 +621,7 @@ uncertaintyInput(Statement, GroundingProbList, Graph) :-
         [Subject, rdf:'type', uno:'UncertaintyRelevantToEntityGrounding'],
         [Subject, uno:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
-        ],
-        sparqlInsertQuery(TargetTriples, Graph).
+        ].
 
 %%%%%%%%%%%%%%%%%%%%
 % generic predicates
@@ -660,14 +683,31 @@ sparql_params('HGNC:', 'SELECT ?x WHERE { <http://bio2rdf.org/hgnc:', '> <http:/
 identifierResolution('GENERIC', 'generic') :-  !.
 
 identifierResolution(ProtID, Name) :-
- %   writeln([ProtID, Name]),
     upperCase(ProtID, ProtIDupper),
     sparql_params(Prefix, QueryFront, QueryBack, Host, Path, Port),
     string_concat(Prefix, Number, ProtIDupper),
     atomic_list_concat([QueryFront, Number, QueryBack], Query),
-%    writeln(Query),
     sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), status_code(_)]),
-%    writeln(Literal),
     rdf_literal_value(Literal, Name), !.
 
 
+
+%%%%%%%%%%%%
+% different submitters submit UNIPROT Ids in different forms: UNIPROT:Q13480 or UNIPROT:GAB1_HUMAN
+% the following predicates makes the representation uniform following the format: UNIPROT:Q13480
+%%%%%%%%%%%%
+
+sparql_uniprot_fix_params('SELECT (STRAFTER(str(?x), "http://purl.uniprot.org/uniprot/") as ?n) WHERE {?x <http://purl.uniprot.org/core/mnemonic> "', '"}', 'sparql.uniprot.org', '/sparql/', 80).
+
+fixEntId(ProtID, AltId) :-
+    upperCase(ProtID, ProtIDupper),
+    string_concat('UNIPROT:', Id, ProtIDupper),
+    string_codes(Id, Codes), 
+    member(95, Codes),
+    sparql_uniprot_fix_params(QueryFront, QueryBack, Host, Path, Port),
+    atomic_list_concat([QueryFront, Id, QueryBack], Query),
+    sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), status_code(_)]),
+    rdf_literal_value(Literal, BasicId), 
+    string_concat('UNIPROT:', BasicId, AltId), !.
+    
+fixEntId(ProtID, ProtID).

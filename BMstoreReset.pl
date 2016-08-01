@@ -22,7 +22,9 @@ resetGraph(submitter) :-
     Graph = 'http://purl.bioontology.org/net/brunel/bm/submitter_graph',
     Triples = [
         [Graph, dc:'title', literal('Submitter data')],
-        [Graph, dc:'description', literal('This dataset contains information about the agents submitting index cards to the system.')]
+        [Graph, dc:'description', literal('This dataset contains information about the agents submitting index cards to the system.')],
+        ['http://purl.bioontology.org/net/brunel/bm/brunel', rdf:'type', panda:'Submitter'],
+        ['http://purl.bioontology.org/net/brunel/bm/brunel', rdfs:'label', literal('Brunel')]
         ],        
     resetGraph(Graph, Triples).
 
@@ -34,11 +36,21 @@ resetGraph(event) :-
         ],        
     resetGraph(Graph, Triples).
     
+resetGraph(strings) :-
+    Graph = 'http://purl.bioontology.org/net/brunel/bm/strings_db_graph',
+    Triples = [
+        [Graph, dc:'title', literal('STRING DB statements')],
+        [Graph, dc:'description', literal('This dataset contains statements extracted from the database STRING DB (see: http://string-db.org/). The statements include protein-protein interactions in the human organism.')]
+        ],        
+    resetGraph(Graph, Triples).
+    
 resetGraph(source) :-
     Graph = 'http://purl.bioontology.org/net/brunel/bm/source_graph',
     Triples = [
         [Graph, dc:'title', literal('Source information data')],
-        [Graph, dc:'description', literal('This dataset contains information about journal articles, bioinformatics databases, and other sources from which statements might have been extracted.')]
+        [Graph, dc:'description', literal('This dataset contains information about journal articles, bioinformatics databases, and other sources from which statements might have been extracted.')],
+        ['http://string-db.org/', rdf:'type', panda:'Database'],
+        ['http://string-db.org/', rdfs:'label', literal('STRING DB')]
         ],        
     resetGraph(Graph, Triples).
 

@@ -158,8 +158,9 @@ inputData(Ev, Stream) :-
     member(Tuple, Tuples),
     member(stat=Stat, Tuple), 
     member(doc=Doc, Tuple), 
+    member(sub=Sub, Tuple),
     member(value=Value, Tuple), 
-    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, "')."], DataLine2),
+    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, ", '", Sub, "')."], DataLine2),
     writeln(Stream, DataLine2),
     ignore(
         (member(provlevel=Pl, Tuple), !,
@@ -187,6 +188,7 @@ getRepresentingStatements(Ev, Tuple) :-
             [Ev, panda:'isRepresentedBy', '?stat'],
             ['?stat',  panda:'hasTruthValue', '?value'],
             ['?stat', panda:'isExtractedFrom', '?doc'],
+            ['?stat', panda:'hasSubmitter', '?sub'],            
             optional([
                     ['?stat', uno:'hasProvenanceUncertainty', '?prov'],
                     ['?prov',   uno:'hasUncertaintyLevel', '?provlevel']
@@ -244,13 +246,10 @@ assertProbabilisticFact(Atom, Prob) :-
     FinalTermOut =..FinalTermList,
     asserta(FinalTermOut).
     
-relationType2RDF('negConflict', 'http://purl.bioontology.org/net/brunel/uno#NegativeConflict', 'http://purl.bioontology.org/net/brunel/uno#hasNegativeConflict').
-relationType2RDF('posConflict', 'http://purl.bioontology.org/net/brunel/uno#PositiveConflict', 'http://purl.bioontology.org/net/brunel/uno#hasPositiveConflict').
-relationType2RDF('conflict', 'http://purl.bioontology.org/net/brunel/uno#TotalConflict', 'http://purl.bioontology.org/net/brunel/uno#hasTotalConflict').
-relationType2RDF('negCorroboration', 'http://purl.bioontology.org/net/brunel/uno#NegativeCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasNegativeCorroboration').
-relationType2RDF('posCorroboration', 'http://purl.bioontology.org/net/brunel/uno#PositiveCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasPositiveCorroboration').
-relationType2RDF('corroboration', 'http://purl.bioontology.org/net/brunel/uno#TotalCorroboration', 'http://purl.bioontology.org/net/brunel/uno#hasTotalCorroboration').
 relationType2RDF('internalInconsistency', 'http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToEvidenceInconsistency', 'http://purl.bioontology.org/net/brunel/uno#hasInternalInconsistency').
+relationType2RDF('totalPositiveUncertainty', 'http://purl.bioontology.org/net/brunel/uno#TotalPositiveUncertainty', 'http://purl.bioontology.org/net/brunel/uno#hasTotalPositiveUncertainty').
+relationType2RDF('totalNegativeUncertainty', 'http://purl.bioontology.org/net/brunel/uno#TotalNegativeUncertainty', 'http://purl.bioontology.org/net/brunel/uno#hasTotalNegativeUncertainty').
+
     
 resultTriples(Event, Triples) :- 
 findall(Triple, (
