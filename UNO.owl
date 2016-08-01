@@ -195,15 +195,6 @@
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#hasNegativeVerisimiltude -->
-
-    <owl:ObjectProperty rdf:about="&uno;hasNegativeVerisimiltude">
-        <rdfs:label>has verisimiltude (positive)</rdfs:label>
-        <rdfs:subPropertyOf rdf:resource="&uno;hasVerisimiltude"/>
-    </owl:ObjectProperty>
-    
-
-
     <!-- http://purl.bioontology.org/net/brunel/uno#hasPositiveConflict -->
 
     <owl:ObjectProperty rdf:about="&uno;hasPositiveConflict">
@@ -220,15 +211,6 @@
         <rdfs:label>has positive corroboration</rdfs:label>
         <rdfs:range rdf:resource="&uno;PositiveCorroboration"/>
         <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://purl.bioontology.org/net/brunel/uno#hasPositiveVerisimiltude -->
-
-    <owl:ObjectProperty rdf:about="&uno;hasPositiveVerisimiltude">
-        <rdfs:label>has verisimiltude (negative)</rdfs:label>
-        <rdfs:subPropertyOf rdf:resource="&uno;hasVerisimiltude"/>
     </owl:ObjectProperty>
     
 
@@ -255,22 +237,30 @@
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalConflict -->
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalNegativeUncertainty -->
 
-    <owl:ObjectProperty rdf:about="&uno;hasTotalConflict">
-        <rdfs:label>has total conflict</rdfs:label>
-        <rdfs:range rdf:resource="&uno;TotalConflict"/>
-        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    <owl:ObjectProperty rdf:about="&uno;hasTotalNegativeUncertainty">
+        <rdfs:label>has total negative uncertainty</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasTotalUncertainty"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalCorroboration -->
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalPositiveUncertainty -->
 
-    <owl:ObjectProperty rdf:about="&uno;hasTotalCorroboration">
-        <rdfs:label>has total corroboration</rdfs:label>
-        <rdfs:range rdf:resource="&uno;TotalCorroboration"/>
-        <rdfs:subPropertyOf rdf:resource="&uno;hasModelLinkUncertainty"/>
+    <owl:ObjectProperty rdf:about="&uno;hasTotalPositiveUncertainty">
+        <rdfs:label>has total positive uncertainty</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasTotalUncertainty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#hasTotalUncertainty -->
+
+    <owl:ObjectProperty rdf:about="&uno;hasTotalUncertainty">
+        <rdfs:label>has total uncertainty</rdfs:label>
+        <rdfs:comment>associates total uncertainty levels with an event</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
     </owl:ObjectProperty>
     
 
@@ -291,16 +281,6 @@
     <owl:ObjectProperty rdf:about="&uno;hasUncertainty">
         <rdfs:label>has uncertainty</rdfs:label>
         <rdfs:comment>associates a uncertainty object with a statement</rdfs:comment>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://purl.bioontology.org/net/brunel/uno#hasVerisimiltude -->
-
-    <owl:ObjectProperty rdf:about="&uno;hasVerisimiltude">
-        <rdfs:label>has verisimiltude</rdfs:label>
-        <rdfs:comment>associates verisimiltude levels with an event</rdfs:comment>
-        <rdfs:subPropertyOf rdf:resource="&uno;hasUncertainty"/>
     </owl:ObjectProperty>
     
 
@@ -361,7 +341,7 @@
         <rdfs:label>negative conflict</rdfs:label>
         <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
         <rdfs:comment>The event is not in the model but is found to be true in the evidence.
-Suggested action =&gt; add the event to the model if the value is high.</rdfs:comment>
+Suggested action =&gt; add the event to the model.</rdfs:comment>
     </owl:Class>
     
 
@@ -377,23 +357,13 @@ Action is not required.</rdfs:comment>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#NegativeVerisimiltude -->
-
-    <owl:Class rdf:about="&uno;NegativeVerisimiltude">
-        <rdfs:label>verisimiltude (negative)</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;Verisimiltude"/>
-        <rdfs:comment>Reflects the verisimiltude of the negation of an event (the probability of all the negative evidence being true and all the positive evidence being false).</rdfs:comment>
-    </owl:Class>
-    
-
-
     <!-- http://purl.bioontology.org/net/brunel/uno#PositiveConflict -->
 
     <owl:Class rdf:about="&uno;PositiveConflict">
         <rdfs:label>positive conflict</rdfs:label>
         <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
         <rdfs:comment>The event is in the model but is found to be false in the evidence.
-Suggested action =&gt; remove the event from the model if the value is high.</rdfs:comment>
+Suggested action =&gt; remove the event from the model.</rdfs:comment>
     </owl:Class>
     
 
@@ -405,16 +375,6 @@ Suggested action =&gt; remove the event from the model if the value is high.</rd
         <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
         <rdfs:comment>The event is in the model and is found to be true in the evidence.
 Action is not required.</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.bioontology.org/net/brunel/uno#PositiveVerisimiltude -->
-
-    <owl:Class rdf:about="&uno;PositiveVerisimiltude">
-        <rdfs:label>verisimiltude (positive)</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;Verisimiltude"/>
-        <rdfs:comment>Reflects the verisimiltude of event (the probability of all the positive evidence being true and all the negative evidence being false).</rdfs:comment>
     </owl:Class>
     
 
@@ -437,22 +397,32 @@ Action is not required.</rdfs:comment>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#TotalConflict -->
+    <!-- http://purl.bioontology.org/net/brunel/uno#TotalNegativeUncertainty -->
 
-    <owl:Class rdf:about="&uno;TotalConflict">
-        <rdfs:label>total conflict</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
-        <rdfs:comment>A weighted sum of both type of conflict scores.</rdfs:comment>
+    <owl:Class rdf:about="&uno;TotalNegativeUncertainty">
+        <rdfs:label>total negative uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;TotalUncertainty"/>
+        <rdfs:comment>Reflects the total uncertainty of the negation of an event being true (the probability of all the negative evidence being true and all the positive evidence being false).</rdfs:comment>
     </owl:Class>
     
 
 
-    <!-- http://purl.bioontology.org/net/brunel/uno#TotalCorroboration -->
+    <!-- http://purl.bioontology.org/net/brunel/uno#TotalPositiveUncertainty -->
 
-    <owl:Class rdf:about="&uno;TotalCorroboration">
-        <rdfs:label>total corroboration</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToLinkUncertainty"/>
-        <rdfs:comment>A weighted sum of both type of corroboration scores.</rdfs:comment>
+    <owl:Class rdf:about="&uno;TotalPositiveUncertainty">
+        <rdfs:label>total positive uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;TotalUncertainty"/>
+        <rdfs:comment>Reflects the total uncertainty of an event being true (the probability of all the positive evidence being true and all the negative evidence being false).</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#TotalUncertainty -->
+
+    <owl:Class rdf:about="&uno;TotalUncertainty">
+        <rdfs:label>total uncertainty</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <rdfs:comment>Captures the apparent truth/falsity of events relative to the entire positive/negative evidence supporting events that has been identified.</rdfs:comment>
     </owl:Class>
     
 
@@ -615,16 +585,6 @@ Action is not required.</rdfs:comment>
         <rdfs:label xml:lang="en">uncertainty relevant to the independence across research network</rdfs:label>
         <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
         <hasSynonym>independence uncertainty</hasSynonym>
-    </owl:Class>
-    
-
-
-    <!-- http://purl.bioontology.org/net/brunel/uno#Verisimiltude -->
-
-    <owl:Class rdf:about="&uno;Verisimiltude">
-        <rdfs:label>verisimiltude</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
-        <rdfs:comment>Captures the apparent truth/falsity of events relative to the entire positive/negative evidence supporting events that has been identified.</rdfs:comment>
     </owl:Class>
     
 
