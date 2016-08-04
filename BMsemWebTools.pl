@@ -25,6 +25,8 @@
 
 :- dynamic log_stream/1.
 
+:- dynamic outStream/2.
+
 :- ['BMparams.pl'],
    file_search_path(my_home, Dir2), !,
    string_concat(Dir2, '/log_indexCardAssembly.txt', LogFile),
@@ -37,6 +39,29 @@ event_graph('http://purl.bioontology.org/net/brunel/bm/event_graph').
 submitter_graph('http://purl.bioontology.org/net/brunel/bm/submitter_graph').
 source_graph('http://purl.bioontology.org/net/brunel/bm/source_graph').
 journal_graph('http://purl.bioontology.org/net/brunel/bm/journal_graph_2015').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% utilities
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+label2URI(Label, URI) :-
+    string_codes(Label, LabCodes),
+    subst([32, 58], LabCodes, 95, NewCodes),
+    string_codes(Local, NewCodes),
+    string_concat('http://purl.bioontology.org/net/brunel/bm/', Local, URIstring),
+    atom_string(URI, URIstring).
+    
+subst(_, [], _, []) :- !.
+
+subst(OldElems, [OldElem|RestOld], NewElem, [NewElem|RestNew]) :-
+    member(OldElem, OldElems),
+    subst(OldElems, RestOld, NewElem, RestNew), !.  
+    
+subst(OldElems, [DiffElem|RestOld], NewElem, [DiffElem|RestNew]) :-
+    \+member(DiffElem, OldElems),
+    subst(OldElems, RestOld, NewElem, RestNew), !.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   RDF graph manager
@@ -52,6 +77,17 @@ saveGraph(Graph) :-
 %    sparqlInsertQuery(GraphPattern, RDFgraph),
 %    rdf_retractall(_, _, _, RDFgraph).
     
+pushTriples(Triples, Graph) :-
+    outStream(Graph, Stream),
+    findall(_, (
+        member([X, Y, Z], Triples),
+        sparqlTerm(X, XTerm),
+        sparqlTerm(Y, YTerm),
+        sparqlTerm(Z, ZTerm),
+        atomic_list_concat([XTerm, YTerm, ZTerm, '.'], ' ', DataLine),
+        writeln(Stream, DataLine)
+        ), _).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SPARQL manager
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,13 +212,13 @@ makeLiteral(X, RDFLit) :-
     atom_number(Y, Yn), atom_number(M, Mn), atom_number(D, Dn), 
     1900 < Yn, Yn < 2099, 0 < Mn, Mn < 13, 0< Dn, Dn <32, !,
     atomic_list_concat(['"', X, '"', '^^xsd:date'], RDFLit).
-makeLiteral(X, RDFLit) :- 
-    integer(X), !,
-    atomic_list_concat(['"', X, '"', '^^xsd:integer'], RDFLit).
-makeLiteral(X, RDFLit) :- 
-    number(X), 
-    \+integer(X), !,
-    atomic_list_concat(['"', X, '"', '^^xsd:double'], RDFLit).
+%makeLiteral(X, RDFLit) :- 
+%    integer(X), !,
+%    atomic_list_concat(['"', X, '"', '^^xsd:integer'], RDFLit).
+%makeLiteral(X, RDFLit) :- 
+%    number(X), 
+%    \+integer(X), !,
+%    atomic_list_concat(['"', X, '"', '^^xsd:double'], RDFLit).
 makeLiteral(X, RDFLit) :- 
     atomic_list_concat(['"', X, '"'], RDFLit), !.
 

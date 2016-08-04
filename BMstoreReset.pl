@@ -40,7 +40,10 @@ resetGraph(strings) :-
     Graph = 'http://purl.bioontology.org/net/brunel/bm/strings_db_graph',
     Triples = [
         [Graph, dc:'title', literal('STRING DB statements')],
-        [Graph, dc:'description', literal('This dataset contains statements extracted from the database STRING DB (see: http://string-db.org/). The statements include protein-protein interactions in the human organism.')]
+        [Graph, dc:'description', literal('This dataset contains statements extracted from the database STRING DB (see: http://string-db.org/). The statements include protein-protein interactions in the human organism.')],
+        ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', rdf:'type', uno:'UncertaintyRelevantToDocumentProvenance'],
+        ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', uno:'hasUncertaintyLevel', literal(0.9)],
+        ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', rdfs:'label', literal(0.9)]
         ],        
     resetGraph(Graph, Triples).
     

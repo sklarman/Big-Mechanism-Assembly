@@ -157,15 +157,16 @@ createRDF(BaseName) :-
         ],
     findall([Statement, panda:'hasTextualEvidence', literal(EvidenceString)], (card('/evidence', Evidence), clearString(Evidence, EvidenceString)), EvidenceTriples),
     union(BasicTriples, EvidenceTriples, TargetTriples),
-    sparqlInsertQuery(TargetTriples, GraphURI),
+   % sparqlInsertQuery(TargetTriples, GraphURI),
     write('Created new statement: \t'), writeln(StatLabel),
     log_write('\nCreated: \t'), log_writeln(StatLabel),
-    createInputUncertaintyGraph(Statement, ProbGraph),
+    %createInputUncertaintyGraph(Statement, ProbGraph),
     writeln('Creating uncertainty input graph...'),
     findall(Triple, (uncertaintyInput(Statement, ProbTriples), member(Triple, ProbTriples)), FirstProbTriples),
     findall(Triple, (uncertaintyInput(Statement, GroundingProbList, ProbTriples), member(Triple, ProbTriples)), GroundProbTriples),
     union(FirstProbTriples, GroundProbTriples, TargetProbTriples),
-    sparqlInsertQuery(TargetProbTriples, ProbGraph).
+    union(TargetTriples, TargetProbTriples, TargetAllTriples),
+    sparqlInsertQuery(TargetAllTriples, GraphURI).
 
 
 createIndexCardGraph(Graph) :-

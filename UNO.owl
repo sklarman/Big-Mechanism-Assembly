@@ -485,8 +485,7 @@ Action is not required.</rdfs:comment>
 
     <owl:Class rdf:about="&uno;UncertaintyRelevantToDocumentProvenance">
         <rdfs:label xml:lang="en">uncertainty relevant to document provenance</rdfs:label>
-        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
-        <hasSynonym>provenance uncertainty</hasSynonym>
+        <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToInformationProvenance"/>
     </owl:Class>
     
 
@@ -526,6 +525,16 @@ Action is not required.</rdfs:comment>
     <owl:Class rdf:about="&uno;UncertaintyRelevantToExperimentalConfirmation">
         <rdfs:label xml:lang="en">uncertainty relevant to experimental confirmation</rdfs:label>
         <rdfs:subClassOf rdf:resource="&uno;UncertaintyRelevantToBiology"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.bioontology.org/net/brunel/uno#UncertaintyRelevantToInformationProvenance -->
+
+    <owl:Class rdf:about="&uno;UncertaintyRelevantToInformationProvenance">
+        <rdfs:label>uncertainty relevant to information provenance</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&uno;Uncertainty"/>
+        <hasSynonym>provenance uncertainty</hasSynonym>
     </owl:Class>
     
 

@@ -301,10 +301,10 @@ createUncertaintyInferenceGraph(Event) :-
 selectUsedEntitites(Event, Stat) :- 
     QueryTriples = [
                 ['?st', panda:'represents', Event],
-                ['?prob', dc:'subject', '?st'],
-                ['?prob', rdf:'type', prov:'Entity']
+%                ['?prob', dc:'subject', '?st'],
+%                ['?prob', rdf:'type', prov:'Entity']
                 ],
-    sparqlSelectQueryGlobal(QueryTriples, '?prob', [Stat]).
+    sparqlSelectQueryGlobal(QueryTriples, '?st', [Stat]).
     
 selectUsedEntitites(Event, Exp) :- 
     QueryTriples = [[Event, panda:'hasRelatedExperimentalResults', '?exp']],
@@ -313,7 +313,6 @@ selectUsedEntitites(Event, Exp) :-
 selectReplaced(Event, Replaced) :-
     QueryTriples = [
                 ['?probComp', dc:'subject', Event],
-                ['?probComp', rdf:'type', prov:'Entity'],
                 not([['?probComp2', dct:'replaces', '?probComp']])
                 ],
     sparqlSelectQueryGlobal(QueryTriples, '?probComp', [Replaced]).
