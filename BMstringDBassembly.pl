@@ -7,14 +7,14 @@
 :- dynamic protein/1.
 
 strings2panda :-
-    open('StringsToPANDA/StringEvents1.nt', write, EvStream),
+    open('StringsToPANDA/StringEvents4.nt', write, EvStream),
     asserta(outStream(eventGraph, EvStream)),
-    open('StringsToPANDA/StringStatements1.nt', write, StatStream),
+    open('StringsToPANDA/StringStatements4.nt', write, StatStream),
     asserta(outStream(statementGraph, StatStream)),
     Triples = [
         ['http://purl.bioontology.org/net/brunel/bm/strings_db_graph', dc:'title', literal('STRING DB statements')],
         ['http://purl.bioontology.org/net/brunel/bm/strings_db_graph', dc:'description', literal('This dataset contains statements extracted from the database STRING DB (see: http://string-db.org/). The statements include protein-protein interactions in the human organism.')],
-        ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', rdf:'type', uno:'UncertaintyRelevantToDocumentProvenance'],
+        ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', rdf:'type', uno:'UncertaintyRelevantToInformationProvenance'],
         ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', uno:'hasUncertaintyLevel', literal(0.9)],
         ['http://purl.bioontology.org/net/brunel/bm/strings_db_provenance_prob', rdfs:'label', literal(0.9)]
         ],        
@@ -36,7 +36,7 @@ load :-
         member(row(X, Y), Rows),
         (\+mnemonic(X, Y) -> assert(mnemonic(X, Y)); true)
         ), _),
-    csv_read_file('StringsToPANDA/action1.tsv', Rows2), 
+    csv_read_file('StringsToPANDA/action4.tsv', Rows2), 
     findall(_, (
         member(row(X, Y, A, B, Dir, D), Rows2),
         string_concat("9606.", StrId1, X),
@@ -229,8 +229,8 @@ statementTriples(URIev1, StatLab, GroundP1, GroundP2, Confidence, StatTriples) :
         [URIev1, panda:'isRepresentedBy', Statement],
         [Statement, panda:'hasSubmitter', 'http://purl.bioontology.org/net/brunel/bm/brunel'],
         [Statement, panda:'isExtractedFrom', 'http://string-db.org/'],
-        [Statement, uno:'hasExtractionAccurracy', Subject1],
-        [Subject1, rdf:'type', uno:'AccuracyOfExtractionFromText'],
+        [Statement, uno:'hasBiologicalUncertainty', Subject1],
+        [Subject1, rdf:'type', uno:'UncertaintyRelevantToBiology'],
         [Subject1, uno:'hasUncertaintyLevel', literal(Confidence)],
         [Subject1, rdfs:'label', literal(Confidence)],
         [Statement, uno:'hasGroundingUncertainty', Subject2],

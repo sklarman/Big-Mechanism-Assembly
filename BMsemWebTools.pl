@@ -5,6 +5,7 @@
 :- use_module(library(http/json)).
 :- use_module(library(http/http_digest)).
 :- use_module(library(http/http_open)).
+:- use_module(library(semweb/rdf_ntriples)).
 
 :- rdf_reset_db.
 
@@ -31,7 +32,7 @@
    file_search_path(my_home, Dir2), !,
    string_concat(Dir2, '/log_indexCardAssembly.txt', LogFile),
    open(LogFile, write, Stream),
-   debug(http(_)),
+   %debug(http(_)),
    asserta(log_stream(Stream)).
 
 panda_graph('http://purl.bioontology.org/net/brunel/panda').
@@ -40,6 +41,36 @@ submitter_graph('http://purl.bioontology.org/net/brunel/bm/submitter_graph').
 source_graph('http://purl.bioontology.org/net/brunel/bm/source_graph').
 journal_graph('http://purl.bioontology.org/net/brunel/bm/journal_graph_2015').
 
+openOutputs :-
+    open('AssembledOutput/events.nt', write, StreamEvent),
+    open('AssembledOutput/statements.nt', write, StreamStats),
+    open('AssembledOutput/submitter.nt', write, StreamSubmit),
+    open('AssembledOutput/journal.nt', write, StreamJournal),
+    open('AssembledOutput/source.nt', write, StreamSource),
+    set_stream(StreamEvent, encoding(utf8)),
+    set_stream(StreamStats, encoding(utf8)),
+    set_stream(StreamSubmit, encoding(utf8)),
+    set_stream(StreamJournal, encoding(utf8)),
+    set_stream(StreamSource, encoding(utf8)),
+    asserta(outStream('http://purl.bioontology.org/net/brunel/bm/event_graph', StreamEvent)),
+    asserta(outStream('http://purl.bioontology.org/net/brunel/bm/index_card_graph', StreamStats)),
+    asserta(outStream('http://purl.bioontology.org/net/brunel/bm/submitter_graph', StreamSubmit)),
+    asserta(outStream('http://purl.bioontology.org/net/brunel/bm/journal_graph_2015', StreamJournal)),
+    asserta(outStream('http://purl.bioontology.org/net/brunel/bm/source_graph', StreamSource)), !.
+    
+closeOutputs :-
+    findall(_, (
+        outStream(Graph, Stream),
+        close(Stream),
+        retract(outStream(Graph, Stream))
+        ), _),
+    convert_ntriples('AssembledOutput/events.nt'),
+    convert_ntriples('AssembledOutput/statements.nt'),
+    convert_ntriples('AssembledOutput/submitter.nt'),
+    convert_ntriples('AssembledOutput/journal.nt'),
+    convert_ntriples('AssembledOutput/source.nt').
+        
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % utilities
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,8 +100,8 @@ subst(OldElems, [DiffElem|RestOld], NewElem, [DiffElem|RestNew]) :-
 
 saveGraph(Graph) :- 
     file_search_path(my_home, Dir),
-    atomic_list_concat([Dir, '/', 'output', '.rdf'], OutputPath),
-    rdf_save(OutputPath, [graph(Graph), encoding(utf8)]), !.
+    atomic_list_concat([Dir, '/', Graph, '.rdf'], OutputPath), !,
+    rdf_save(OutputPath, [encoding(utf8)]).
 
 %pushGraph(RDFgraph) :-
 %    findall([X, Y, Z], rdf(X, Y, Z, RDFgraph), GraphPattern),
@@ -87,6 +118,20 @@ pushTriples(Triples, Graph) :-
         atomic_list_concat([XTerm, YTerm, ZTerm, '.'], ' ', DataLine),
         writeln(Stream, DataLine)
         ), _).
+        
+convert_ntriples(File) :-
+    write('Converting file: '), writeln(File),
+    open(File, read, Stream),
+    assertall(File, Stream).
+    
+assertall(File, Stream) :-
+    read_ntriple(Stream, triple(X, Y, Z)) -> 
+            ((\+rdf(X, Y, Z) -> rdf_assert(X, Y, Z);true),    
+            assertall(File, Stream));
+            (writeln('Saving graph...'),
+            saveGraph(File),
+            rdf_retractall(_, _, _)).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SPARQL manager
@@ -207,11 +252,11 @@ sparqlTerm(X, Term) :-
     rdf_global_id(X, URI),
     atomic_list_concat(['<', URI, '>'], Term), !.
 
-makeLiteral(X, RDFLit) :- 
-    atomic_list_concat([Y, M, D], '-', X), 
-    atom_number(Y, Yn), atom_number(M, Mn), atom_number(D, Dn), 
-    1900 < Yn, Yn < 2099, 0 < Mn, Mn < 13, 0< Dn, Dn <32, !,
-    atomic_list_concat(['"', X, '"', '^^xsd:date'], RDFLit).
+%makeLiteral(X, RDFLit) :- 
+%    atomic_list_concat([Y, M, D], '-', X), 
+%    atom_number(Y, Yn), atom_number(M, Mn), atom_number(D, Dn), 
+%    1900 < Yn, Yn < 2099, 0 < Mn, Mn < 13, 0< Dn, Dn <32, !,
+%    atomic_list_concat(['"', X, '"', '^^xsd:date'], RDFLit).
 %makeLiteral(X, RDFLit) :- 
 %    integer(X), !,
 %    atomic_list_concat(['"', X, '"', '^^xsd:integer'], RDFLit).

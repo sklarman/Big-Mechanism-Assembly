@@ -82,11 +82,10 @@ selectNextEvent(Event) :-
         ['?ev', rdf:'type', '?direct_type'], 
         ['?direct_type', 'rdfs:subClassOf*', panda:'Event'],
         ['?st', panda:'represents', '?ev'],
-        ['?probInput', dc:'subject', '?st'],
         not([
             ['?probComp', dc:'subject', '?ev'],
             ['?probComp', prov:'wasGeneratedBy', '?activ'],
-            ['?activ', prov:'used', '?probInput']
+            ['?activ', prov:'used', '?st']
             ])
         ],
     sparqlSelectQueryGlobal(QueryTriples, '?ev', [Event]).
@@ -157,14 +156,14 @@ inputData(Ev, Stream) :-
     findall(_, (
     member(Tuple, Tuples),
     member(stat=Stat, Tuple), 
-    member(doc=Doc, Tuple), 
+    member(source=Source, Tuple), 
     member(sub=Sub, Tuple),
     member(value=Value, Tuple), 
-    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Doc, ", '", Sub, "')."], DataLine2),
+    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Source, ", '", Sub, "')."], DataLine2),
     writeln(Stream, DataLine2),
     ignore(
         (member(provlevel=Pl, Tuple), !,
-        atomic_list_concat(["provenanceProb('", Doc, "',", Pl, ")."], DataLine3),
+        atomic_list_concat(["provenanceProb('", Source, "',", Pl, ")."], DataLine3),
         writeln(Stream, DataLine3)
         )),
     ignore(
@@ -181,13 +180,18 @@ inputData(Ev, Stream) :-
         (member(extrlevel=El, Tuple), !,
         atomic_list_concat(["extractionProb('", Stat, "',", El, ")."], DataLine6),
         writeln(Stream, DataLine6)
-        ))), _).
+        ))),
+    ignore(
+        (member(biollevel=Bl, Tuple), !,
+        atomic_list_concat(["biolProb('", Stat, "',", Bl, ")."], DataLine7),
+        writeln(Stream, DataLine7)
+        )), _).
  
 getRepresentingStatements(Ev, Tuple) :-   
     QueryTriples = [
             [Ev, panda:'isRepresentedBy', '?stat'],
             ['?stat',  panda:'hasTruthValue', '?value'],
-            ['?stat', panda:'isExtractedFrom', '?doc'],
+            ['?stat', panda:'isExtractedFrom', '?source'],
             ['?stat', panda:'hasSubmitter', '?sub'],            
             optional([
                     ['?stat', uno:'hasProvenanceUncertainty', '?prov'],
@@ -204,6 +208,10 @@ getRepresentingStatements(Ev, Tuple) :-
             optional([
                     ['?stat', uno:'hasExtractionAccurracy', '?extr'],
                     ['?extr',   uno:'hasUncertaintyLevel', '?extrlevel']
+                    ]),
+            optional([
+                    ['?stat', uno:'hasBiologicalUncertainty', '?biol'],
+                    ['?biol',   uno:'hasUncertaintyLevel', '?biollevel']
                     ])
             ],
     sparqlSelectQueryGlobalExplicitVar(QueryTriples, '*', Tuple).
@@ -300,9 +308,7 @@ createUncertaintyInferenceGraph(Event) :-
 
 selectUsedEntitites(Event, Stat) :- 
     QueryTriples = [
-                ['?st', panda:'represents', Event],
-%                ['?prob', dc:'subject', '?st'],
-%                ['?prob', rdf:'type', prov:'Entity']
+                ['?st', panda:'represents', Event]
                 ],
     sparqlSelectQueryGlobal(QueryTriples, '?st', [Stat]).
     
