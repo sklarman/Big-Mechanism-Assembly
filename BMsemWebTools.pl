@@ -32,7 +32,7 @@
    file_search_path(my_home, Dir2), !,
    string_concat(Dir2, '/log_indexCardAssembly.txt', LogFile),
    open(LogFile, write, Stream),
-   %debug(http(_)),
+   debug(http(_)),
    asserta(log_stream(Stream)).
 
 panda_graph('http://purl.bioontology.org/net/brunel/panda').
@@ -58,6 +58,10 @@ openOutputs :-
     asserta(outStream('http://purl.bioontology.org/net/brunel/bm/journal_graph_2015', StreamJournal)),
     asserta(outStream('http://purl.bioontology.org/net/brunel/bm/source_graph', StreamSource)), !.
     
+outStream(Graph, Stream) :-
+    index_graph(Graph),
+    outStream('http://purl.bioontology.org/net/brunel/bm/index_card_graph', Stream), !.
+
 closeOutputs :-
     findall(_, (
         outStream(Graph, Stream),
@@ -69,28 +73,6 @@ closeOutputs :-
     convert_ntriples('AssembledOutput/submitter.nt'),
     convert_ntriples('AssembledOutput/journal.nt'),
     convert_ntriples('AssembledOutput/source.nt').
-        
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% utilities
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-label2URI(Label, URI) :-
-    string_codes(Label, LabCodes),
-    subst([32, 58], LabCodes, 95, NewCodes),
-    string_codes(Local, NewCodes),
-    string_concat('http://purl.bioontology.org/net/brunel/bm/', Local, URIstring),
-    atom_string(URI, URIstring).
-    
-subst(_, [], _, []) :- !.
-
-subst(OldElems, [OldElem|RestOld], NewElem, [NewElem|RestNew]) :-
-    member(OldElem, OldElems),
-    subst(OldElems, RestOld, NewElem, RestNew), !.  
-    
-subst(OldElems, [DiffElem|RestOld], NewElem, [DiffElem|RestNew]) :-
-    \+member(DiffElem, OldElems),
-    subst(OldElems, RestOld, NewElem, RestNew), !.
 
 
 
@@ -149,6 +131,7 @@ askHttpSparql(Query, Format, Result, Code) :-
 
 sparqlJsonQuery(Query, Tuple) :-
     askHttpSparql(Query, 'application/json', JsonStream, Code), 
+    set_stream(JsonStream, encoding(utf8)),
     (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage)); 
     (json_read(JsonStream, json(Result)),
     member((results=json(X)),Result), 
@@ -161,6 +144,7 @@ sparqlJsonQuery(Query, Tuple) :-
 
 sparqlJsonQueryExplicitVar(Query, Tuple) :-
     askHttpSparql(Query, 'application/json', JsonStream, Code), 
+    set_stream(JsonStream, encoding(utf8)),
     (\+Code = 200 -> (Tuple=[], atomic_list_concat(['Error: ', Code, ' on ', Query], ErrorMessage), writeln(ErrorMessage)); 
     (json_read(JsonStream, json(Result)),
     member((results=json(X)),Result), 
@@ -295,3 +279,33 @@ log_writeln(Content) :-
     log_stream(Stream),
     writeln(Stream, Content).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% utilities
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+label2URI(Label, URI) :-
+    string_codes(Label, LabCodes),
+    subst([32, 58], LabCodes, 95, NewCodes),
+    string_codes(Local, NewCodes),
+    string_concat('http://purl.bioontology.org/net/brunel/bm/', Local, URIstring),
+    atom_string(URI, URIstring).
+    
+subst(_, [], _, []) :- !.
+
+subst(OldElems, [OldElem|RestOld], NewElem, [NewElem|RestNew]) :-
+    member(OldElem, OldElems),
+    subst(OldElems, RestOld, NewElem, RestNew), !.  
+    
+subst(OldElems, [DiffElem|RestOld], NewElem, [DiffElem|RestNew]) :-
+    \+member(DiffElem, OldElems),
+    subst(OldElems, RestOld, NewElem, RestNew), !.
+
+print_count100 :-
+    gensym('', Counter), 
+    atom_number(Counter, Number), 
+    0 is mod(Number, 100) -> writeln(Number); true.
+
+print_count10 :-
+    gensym('', Counter), 
+    atom_number(Counter, Number), 
+    0 is mod(Number, 10) -> writeln(Number); true.

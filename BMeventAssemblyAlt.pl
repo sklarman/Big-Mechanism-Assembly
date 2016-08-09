@@ -4,10 +4,6 @@
 
 :- ['BMsemWebTools.pl'].
 
-%:- rdf_load('datasetNactem20160101.rdf', [graph(graph)]).
-%:- rdf_load('journals-scimagojr-xlsx.rdf', [graph(graph2)]).
-%:- rdf_load('C:/chebi.owl', [graph(chebi)]).
-
 
 %% Defining auxiliary predicates
 
@@ -18,10 +14,6 @@
 :- dynamic registeredEvent/4.
 :- rdf_meta aux(r, r, r).
 :- rdf_meta createFreshObject(r, r).
-%:- rdf_meta participantType(-, r).
-%:- rdf_meta interactionType(-, r).
-%:- rdf_meta modificationType(-, r).
-%:- rdf_meta readerType(-, r).
 :- rdf_meta createIdObject(-, r, -).
 
 
@@ -59,7 +51,7 @@ loadAuxiliaryData :-
         ), _).
 
 assembleNextFolder(N) :- 
-    indexFolderPath(Folder), !,
+    indexFolder(Folder, _), !,
     nl, write('Collecting index card files from '), write(Folder), writeln('...'),
     filecollector(Folder, FileList), 
     length(FileList, ListLength),
@@ -91,7 +83,7 @@ translateCard(FileName) :-
     string_concat(BaseName, '.json', Base),
     log_write(BaseName),
     print_count100,
-    cardElement(Index, ''), !, readln(_),
+    cardElement(Index, ''), !,
     (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'), readln(_))).
 
 %% json index card reader
@@ -101,16 +93,6 @@ indexCard(Term, FileName) :-
     json_read(IndexCard, TopTerm),
     TopTerm = json(Term),
     close(IndexCard).
-
-print_count100 :-
-    gensym('', Counter), 
-    atom_number(Counter, Number), 
-    0 is mod(Number, 100) -> writeln(Number); true.
-
-print_count10 :-
-    gensym('', Counter), 
-    atom_number(Counter, Number), 
-    0 is mod(Number, 10) -> writeln(Number); true.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,21 +178,22 @@ createRDF(BaseName) :-
 createIndexCardGraph(Graph) :-
     index_graph(Graph) -> true;     
             (date(date(Y, M, D)),
-            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/index_card_graph'], Graph), 
+            indexFolder(_, GraphName), 
+            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/statements_', GraphName], Graph), 
             atomic_list_concat([Y, M, D], '-', Date),
     	    atomic_list_concat([Graph, '.rdf'], GraphDump),
-	    atomic_list_concat([Graph, '.graph'], GraphBrowse),
+	        atomic_list_concat([Graph, '.graph'], GraphBrowse),
             TargetTriples = [
                 [Graph, rdf:'type', void:'Dataset'],
                 [Graph, dc:'creator', literal('Big Mechanism')],
                 [Graph, dc:'title', literal('Textual evidence extracted from literature')],
                 [Graph, dc:'description', literal('Data about statements extracted automatically from scientific literature and reported in a collection of index card submitted to the system.')],
                 [Graph, dc:'date', literal(Date)],
-		[Graph, void:'dataDump', GraphDump],
+		        [Graph, void:'dataDump', GraphDump],
                 [Graph, void:'dataBrowse', GraphBrowse]
                 ],
-            pushTriples(TargetTriples, Graph),
-            asserta(index_graph(Graph))).
+            asserta(index_graph(Graph)),
+            pushTriples(TargetTriples, Graph)).
 
     
 
@@ -693,6 +676,12 @@ identifierResolution(Id, Id) :- writeln(['not enough data', Id]).
 sparql_uniprot_fix_params('SELECT (STRAFTER(str(?x), "http://purl.uniprot.org/uniprot/") as ?n) WHERE {?x <http://purl.uniprot.org/core/mnemonic> "', '"}', 'sparql.uniprot.org', '/sparql/', 80).
 
 fixEntId(ProtId, AltId) :- name(AltId, ProtId), !.
+
+fixEntId(ProtId, AltId) :- 
+    upperCase(ProtId, ProtIDupper),
+    string_concat('UNIPROT:', Id, ProtIDupper),
+    atom_string(AtomId, Id),
+    name(AltId, AtomId), !.
 
 %fixEntId(ProtID, AltId) :-
 %    upperCase(ProtID, ProtIDupper),

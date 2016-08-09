@@ -159,7 +159,7 @@ inputData(Ev, Stream) :-
     member(source=Source, Tuple), 
     member(sub=Sub, Tuple),
     member(value=Value, Tuple), 
-    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Source, ", '", Sub, "')."], DataLine2),
+    atomic_list_concat(["representingStatement('", Ev, "', '", Stat, "', ", Value, ", '", Source, "', '", Sub, "')."], DataLine2),
     writeln(Stream, DataLine2),
     ignore(
         (member(provlevel=Pl, Tuple), !,
@@ -180,12 +180,12 @@ inputData(Ev, Stream) :-
         (member(extrlevel=El, Tuple), !,
         atomic_list_concat(["extractionProb('", Stat, "',", El, ")."], DataLine6),
         writeln(Stream, DataLine6)
-        ))),
+        )),
     ignore(
         (member(biollevel=Bl, Tuple), !,
         atomic_list_concat(["biolProb('", Stat, "',", Bl, ")."], DataLine7),
         writeln(Stream, DataLine7)
-        )), _).
+        ))), _).
  
 getRepresentingStatements(Ev, Tuple) :-   
     QueryTriples = [

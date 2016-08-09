@@ -19,14 +19,20 @@ P::extractionProb(Stat) :- extractionProb(Stat, P).
 0.6::extractionProb(Stat) :- \+extractionProbDefined(Stat).
 
 provenanceProb(x, 0).
-provenanceProbDefined(Doc) :- provenanceProb(Doc, _). 
-P::provenanceProb(Doc) :- provenanceProb(Doc, P).
-0.1::provenanceProb(Doc) :- \+provenanceProbDefined(Doc).
+provenanceProbDefined(Source) :- provenanceProb(Source, _). 
+P::provenanceProb(Source) :- provenanceProb(Source, P).
+0.1::provenanceProb(Source) :- \+provenanceProbDefined(Source).
 
 groundProb(x, 0).
 groundProbDefined(Stat) :- groundProb(Stat, _). 
 P::groundProb(Stat) :- groundProb(Stat, P).
 0.5::groundProb(Stat) :- \+groundProbDefined(Stat).
+
+biolProb(x, 0).
+biolProbDefined(Stat) :- biolProb(Stat, _). 
+P::biolProb(Stat) :- biolProb(Stat, P).
+0.5::biolProb(Stat) :- \+biolProbDefined(Stat).
+
 
 representingStatement(x, x, x, x, x).
 somePositiveSupport(Ev) :- event(Ev), representingStatement(Ev, _, true, _, _).
@@ -51,48 +57,52 @@ trust(_).
 0.9::extractionProbWeighted(Stat).
 1::groundProbWeighted(Stat) :- groundProb(Stat).
 0.01::groundProbWeighted(Stat).
+1::biolProbWeighted(Stat) :- biolProb(Stat).
+0.01::biolProbWeighted(Stat).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % computing supports, inconsistency, likelihoods
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-0.9::positiveStatementSupport(Ev, Doc, Sub) :- 
-        representingStatement(Ev, Stat, true, Doc, Sub), 
+0.9::positiveStatementSupport(Ev, Source, Sub) :- 
+        representingStatement(Ev, Stat, true, Source, Sub), 
         textProbWeighted(Stat), 
         extractionProbWeighted(Stat), 
-        groundProbWeighted(Stat). 
+        groundProbWeighted(Stat),
+        biolProbWeighted(Stat). 
         
-0.9::negativeStatementSupport(Ev, Doc, Sub) :- 
-        representingStatement(Ev, Stat, false, Doc, Sub), 
+0.9::negativeStatementSupport(Ev, Source, Sub) :- 
+        representingStatement(Ev, Stat, false, Source, Sub), 
         textProbWeighted(Stat), 
         extractionProbWeighted(Stat), 
-        groundProbWeighted(Stat). 
+        groundProbWeighted(Stat),
+        biolProbWeighted(Stat). 
         
-0.8::positiveSubmitterSupport(Ev, Doc) :- 
-        positiveStatementSupport(Ev, Doc, Sub),
+0.8::positiveSubmitterSupport(Ev, Source) :- 
+        positiveStatementSupport(Ev, Source, Sub),
         trust(Sub). 
         
-0.8::negativeSubmitterSupport(Ev, Doc) :- 
-        negativeStatementSupport(Ev, Doc, Sub),
+0.8::negativeSubmitterSupport(Ev, Source) :- 
+        negativeStatementSupport(Ev, Source, Sub),
         trust(Sub). 
 
-0.7::positiveDocumentSupport(Ev) :- 
-        positiveSubmitterSupport(Ev, Doc), 
-        provenanceProbWeighted(Doc). 
+0.7::positiveInformationSourceSupport(Ev) :- 
+        positiveSubmitterSupport(Ev, Source), 
+        provenanceProbWeighted(Source). 
         
-0.7::negativeDocumentSupport(Ev) :- 
-        negativeSubmitterSupport(Ev, Doc), 
-        provenanceProbWeighted(Doc).
+0.7::negativeInformationSourceSupport(Ev) :- 
+        negativeSubmitterSupport(Ev, Source), 
+        provenanceProbWeighted(Source).
 
 0.6::positiveSupport(Ev) :-  
-        positiveDocumentSupport(Ev).
+        positiveInformationSourceSupport(Ev).
 
 0.8::positiveSupport(Ev) :-  
         experimentProb(Ev, true).
 
 0.6::negativeSupport(Ev) :- 
-        negativeDocumentSupport(Ev).
+        negativeInformationSourceSupport(Ev).
        
 0.5::negativeSupport(Ev) :- 
         experimentProb(Ev, false).

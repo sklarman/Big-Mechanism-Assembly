@@ -1,5 +1,5 @@
 :- ['BMsemWebTools.pl'].
-:- ['BMeventAssembly.pl'].
+:- ['BMeventAssemblyAlt.pl'].
 
 :- dynamic mapping/3.
 :- dynamic interaction/5.
@@ -7,9 +7,9 @@
 :- dynamic protein/1.
 
 strings2panda :-
-    open('StringsToPANDA/StringEvents4.nt', write, EvStream),
+    open('StringsToPANDA/StringEvents5.nt', write, EvStream),
     asserta(outStream(eventGraph, EvStream)),
-    open('StringsToPANDA/StringStatements4.nt', write, StatStream),
+    open('StringsToPANDA/StringStatements5.nt', write, StatStream),
     asserta(outStream(statementGraph, StatStream)),
     Triples = [
         ['http://purl.bioontology.org/net/brunel/bm/strings_db_graph', dc:'title', literal('STRING DB statements')],
@@ -20,7 +20,7 @@ strings2panda :-
         ],        
     pushTriples(Triples, statementGraph),
     load,
-    findall(_, iterator, _),
+    forall(iterator, true),
     close(EvStream),
     close(StatStream).
 
@@ -36,7 +36,7 @@ load :-
         member(row(X, Y), Rows),
         (\+mnemonic(X, Y) -> assert(mnemonic(X, Y)); true)
         ), _),
-    csv_read_file('StringsToPANDA/action4.tsv', Rows2), 
+    csv_read_file('StringsToPANDA/action5.tsv', Rows2), 
     findall(_, (
         member(row(X, Y, A, B, Dir, D), Rows2),
         string_concat("9606.", StrId1, X),
@@ -54,7 +54,7 @@ iterator :-
     mapping(UniId1, Id1, GroundP1),
     mapping(UniId2, Id2, GroundP2),
     tripleGenerator(UniId1, Id1, UniId2, Id2, Inter, Action, GroundP1, GroundP2, Confidence),
-    print_count100.
+    print_count100.   
     
     
 tripleGenerator(UniId1, Id1, UniId2, Id2, expression, '', GroundP1, GroundP2, Confidence) :-
@@ -208,7 +208,7 @@ entityTriples(UniId1, IdURI1, Name1, EntityTriples1) :-
         [IdURI1, panda:hasEntityId, literal(UniId1)],
         [IdURI1, panda:hasEntityName, literal(Name1)],
         [IdURI1, rdf:type, panda:'Participant']
-        ], 
+        ],
     asserta(protein(UniId1)), !.
         
 
