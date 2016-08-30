@@ -4,13 +4,17 @@
 
 :- ['BMsemWebTools.pl'].
 
+%:- rdf_load('datasetNactem20160101.rdf', [graph(graph)]).
+%:- rdf_load('journals-scimagojr-xlsx.rdf', [graph(graph2)]).
+%:- rdf_load('C:/chebi.owl', [graph(chebi)]).
+
 
 %% Defining auxiliary predicates
 
 :- dynamic index_graph/1.
 :- dynamic card/2.
 :- dynamic match/3.
-:- dynamic matched/1, journal/1.
+:- dynamic matched/1.
 :- dynamic registeredEvent/4.
 :- rdf_meta aux(r, r, r).
 :- rdf_meta createFreshObject(r, r).
@@ -19,39 +23,13 @@
 
 %% top-level control
 
-run :- 
-    openOutputs,
-    loadAuxiliaryData, writeln('Loaded data!'),
-    run(1), !.
-
 run(N) :-
     log_stream(Stream),
     findall(_, assembleNextFolder(N), _),
-    rdf_retractall(_, _, _),
-    closeOutputs,
     close(Stream).
-    
-loadAuxiliaryData :-
-    rdf_load('journal_graph_2015.rdf', [graph(journals)]),
-    rdf_load('PANDA.OWL', [graph(panda)]),
-    csv_read_file('NameTables/uniprot.csv', Rows1), 
-    findall(_, (
-        member(row(X, Y), Rows1),
-        assert(name(X, Y))
-        ), _),
-    csv_read_file('NameTables/chebi.csv', Rows2), 
-    findall(_, (
-        member(row(X, Y), Rows2),
-        assert(name(X, Y))
-        ), _),
-    csv_read_file('NameTables/hgnc.csv', Rows3), 
-    findall(_, (
-        member(row(X, Y), Rows3),
-        assert(name(X, Y))
-        ), _).
 
 assembleNextFolder(N) :- 
-    indexFolder(Folder, _), !,
+    indexFolderPath(Folder), !,
     nl, write('Collecting index card files from '), write(Folder), writeln('...'),
     filecollector(Folder, FileList), 
     length(FileList, ListLength),
@@ -84,7 +62,7 @@ translateCard(FileName) :-
     log_write(BaseName),
     print_count100,
     cardElement(Index, ''), !,
-    (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'), readln(_))).
+    (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'))).
 
 %% json index card reader
 
@@ -93,6 +71,16 @@ indexCard(Term, FileName) :-
     json_read(IndexCard, TopTerm),
     TopTerm = json(Term),
     close(IndexCard).
+
+print_count100 :-
+    gensym('', Counter), 
+    atom_number(Counter, Number), 
+    0 is mod(Number, 100) -> writeln(Number); true.
+
+print_count10 :-
+    gensym('', Counter), 
+    atom_number(Counter, Number), 
+    0 is mod(Number, 10) -> writeln(Number); true.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,6 +115,7 @@ cardElement(Key = Value, Branch) :-
     assert(card(XBranch, Value)).
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%
 %   Top RDF structure creation
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -136,7 +125,7 @@ cardElement(Key = Value, Branch) :-
 createRDF(BaseName) :- 
     createIndexCardGraph(GraphURI), 
     createFreshObject(panda:'IndexCard', IndexCard), !,
-    createIdObject(Event, panda:'Event', '/interaction', GroundingProbList, EventLabel, _),
+    createIdObject(Event, panda:'Event', '/interaction', GroundingProbList),
     createFreshObject(panda:'Statement', Statement),
     createIdObject(Submitter, panda:'Submitter', '', []),
     createIdObject(Article, panda:'JournalArticle', '', []),
@@ -146,6 +135,8 @@ createRDF(BaseName) :-
     retriveKeyValue(readerType, ReaderType),
     retriveKeyValue(submitter, SubmitLab),
     retriveKeyValue(pmcId, PMCid),
+    event_graph(EventGraph),
+    getLabel(Event, EventGraph, EventLabel),
     atomic_list_concat(['{', EventLabel, '} ', TruthValue, ' in ', PMCid, ' (by ', SubmitLab ,')'], StatLabel),
     BasicTriples = [
         [IndexCard, rdf:'type', panda:'IndexCard'],
@@ -166,101 +157,118 @@ createRDF(BaseName) :-
         ],
     findall([Statement, panda:'hasTextualEvidence', literal(EvidenceString)], (card('/evidence', Evidence), clearString(Evidence, EvidenceString)), EvidenceTriples),
     union(BasicTriples, EvidenceTriples, TargetTriples),
+   % sparqlInsertQuery(TargetTriples, GraphURI),
     write('Created new statement: \t'), writeln(StatLabel),
     log_write('\nCreated: \t'), log_writeln(StatLabel),
+    %createInputUncertaintyGraph(Statement, ProbGraph),
+    writeln('Creating uncertainty input graph...'),
     findall(Triple, (uncertaintyInput(Statement, ProbTriples), member(Triple, ProbTriples)), FirstProbTriples),
     findall(Triple, (uncertaintyInput(Statement, GroundingProbList, ProbTriples), member(Triple, ProbTriples)), GroundProbTriples),
     union(FirstProbTriples, GroundProbTriples, TargetProbTriples),
     union(TargetTriples, TargetProbTriples, TargetAllTriples),
-    pushTriples(TargetAllTriples, GraphURI).
+    sparqlInsertQuery(TargetAllTriples, GraphURI).
 
 
 createIndexCardGraph(Graph) :-
     index_graph(Graph) -> true;     
             (date(date(Y, M, D)),
-            indexFolder(_, GraphName), 
-            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/statements_', GraphName], Graph), 
+            atomic_list_concat(['http://purl.bioontology.org/net/brunel/bm/index_card_graph_', Y, M, D], Graph), 
             atomic_list_concat([Y, M, D], '-', Date),
     	    atomic_list_concat([Graph, '.rdf'], GraphDump),
-	        atomic_list_concat([Graph, '.graph'], GraphBrowse),
+	    atomic_list_concat([Graph, '.graph'], GraphBrowse),
             TargetTriples = [
                 [Graph, rdf:'type', void:'Dataset'],
                 [Graph, dc:'creator', literal('Big Mechanism')],
                 [Graph, dc:'title', literal('Textual evidence extracted from literature')],
                 [Graph, dc:'description', literal('Data about statements extracted automatically from scientific literature and reported in a collection of index card submitted to the system.')],
                 [Graph, dc:'date', literal(Date)],
-		        [Graph, void:'dataDump', GraphDump],
+		[Graph, void:'dataDump', GraphDump],
                 [Graph, void:'dataBrowse', GraphBrowse]
                 ],
-            asserta(index_graph(Graph)),
-            pushTriples(TargetTriples, Graph)).
+            sparqlInsertQuery(TargetTriples, Graph),
+            asserta(index_graph(Graph))).
 
+createInputUncertaintyGraph(Statement, Graph) :-
+    createFreshObject('uncertainty_input_graph', Graph),
+    date(date(Y, M, D)),
+    atomic_list_concat([Y, M, D], '-', Date),
+    atomic_list_concat([Graph, '.rdf'], GraphDump),
+    atomic_list_concat([Graph, '.graph'], GraphBrowse),
+    TargetTriples = [
+                [Graph, rdf:'type', void:'Dataset'],
+                [Graph, rdf:'type', prov:'Entity'],
+                [Graph, dc:'subject', Statement],
+                [Graph, dc:'creator', literal('Big Mechanism')],
+                [Graph, dc:'title', literal('Prior probabilities')],
+                [Graph, dc:'description', literal('Data about prior probabilities associated with a single statement (in dc:subject property).')],
+                [Graph, dc:'date', literal(Date)],
+                [Graph, void:'dataDump', GraphDump],
+                [Graph, void:'dataBrowse', GraphBrowse]
+                ],
+            sparqlInsertQuery(TargetTriples, Graph).
     
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %   Entity creation
 %%%%%%%%%%%%%%%%%%%%%%%
 
-createIdObject(Event, panda:'Event', Path, GroundingProbList, EventLabel, EventURIstr) :-
+createIdObject(Event, panda:'Event', Path, [GroundingProbListA|GroundingProbListB]) :-
     retriveKeyValue(interactionType, Path, EvTypURI),
-    getParticipantInfo(a, EvTypURI, Path, TripleA, LabelA, GroundingProbListA, URIstrA),
-    getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB, URIstrB),
-    append([GroundingProbListA, GroundingProbListB], GroundingProbList),
+    getParticipantInfo(a, EvTypURI, Path, TripleA, LabelA, [GroundingProbListA]),
+    getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB),
     BasicTriples = [
         ['?x', rdf:'type', EvTypURI]],
     union(TripleA, TripleB, PartTriples),
     \+PartTriples = [],
     union(BasicTriples, PartTriples, EventTriples),
     event_graph(Graph),
-    rdf_global_id(EvTypURI, EvTypURIGlob),
-    rdf(EvTypURIGlob, rdfs:'label', EventTypeLabelLiteral),
-    rdf_literal_value(EventTypeLabelLiteral, EventTypeLabel),
-    atomic_list_concat(['(', LabelA, ') ', EventTypeLabel, ' (', LabelB, ')'], EventLabel),
-    (\+member('', [URIstrA,URIstrB]) ->
-         (atomic_list_concat(['(', URIstrA, ') ', EventTypeLabel, ' (', URIstrB, ')'], EventURIstr),
-         label2URI(EventURIstr, Event));
-         (EventURIstr='',
-         createFreshObject(panda:'Event', Event))),
-    log_write('\nCreated '), log_writeln(EventLabel),
-    write('Created new event: \t'), writeln(EventLabel),
-    LabelTriple=[[Event, rdfs:'label', literal(EventLabel)]],
-    substitute('?x', Event, EventTriples, EventTriplesSub),
-    union(LabelTriple, EventTriplesSub, AllEventTriples),
-    pushTriples(AllEventTriples, Graph), !.
+    (sparqlSelectQuery(EventTriples, Graph, [Event]) -> 
+        (log_write('\nMatched '), log_writeln(Event), writeln('Matched existing event...'));
+        (createFreshObject(panda:'Event', Event),
+        panda_graph(Panda),
+        getLabel(EvTypURI, Panda, EventTypeLabel),
+        atomic_list_concat(['(', LabelA, ') ', EventTypeLabel, ' (', LabelB, ')'], EventLabel),
+        log_write('\nCreated '), log_writeln(EventLabel),
+        write('Created new event: \t'), writeln(EventLabel),
+        LabelTriple=[[Event, rdfs:'label', literal(EventLabel)]],
+        substitute('?x', Event, EventTriples, EventTriplesSub),
+        union(LabelTriple, EventTriplesSub, AllEventTriples),
+        sparqlInsertQuery(AllEventTriples, Graph))), !.
 
-createIdObject(Modification, panda:'ProteinModification', Path, GroundingProbListB, EventLabel, EventURIstr) :-
+createIdObject(Modification, panda:'ProteinModification', Path, GroundingProbListB) :-
     retriveKeyValue(modificationType, Path, ModType),
     atomic_list_concat([Path, '/participant_b'], PartBpath),
-    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB, LabelB, PartURIstr), 
-    rdf_global_id(ModType, ModTypeGlob),
-    rdf(ModTypeGlob, rdfs:'label', ModTypeLabelLiteral), 
-    rdf_literal_value(ModTypeLabelLiteral, ModTypeLabel),
-    atomic_list_concat([ModTypeLabel, ' of (', LabelB, ')'], EventLabel),
+    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+    QueryTriples = [['?x', panda:'hasParticipantB', ParticipantB],
+                    ['?x', rdf:'type', ModType]],
     event_graph(Graph),
-    (\+PartURIstr='' ->
-        (atomic_list_concat([ModTypeLabel, ' (', PartURIstr, ')'], EventURIstr),
-        label2URI(EventURIstr, Modification));
-        (EventURIstr='',
-        createFreshObject(panda:'ProteinModification', Modification))),
-    log_write('\nCreated '), log_writeln(EventLabel),
-    write('Created new event: \t'), writeln(EventLabel),
-    ModificationTriples = [
-                 [Modification, panda:'hasParticipantB', ParticipantB],
-                 [Modification, rdf:'type', ModType],
-                 [Modification, rdfs:'label', literal(EventLabel)]
-                 ],
-     pushTriples(ModificationTriples, Graph).    
+    (sparqlSelectQuery(QueryTriples, Graph, [Modification]) -> 
+        (log_write('\nMatched '), log_writeln(Modification), writeln('Matched existing event...'));
+        (createFreshObject(panda:'ProteinModification', Modification),
+        panda_graph(Panda),
+        getLabel(ModType, Panda, ModTypeLabel),
+        getLabel(ParticipantB, Graph, LabelB),
+        atomic_list_concat([ModTypeLabel, ' of (', LabelB, ')'], EventLabel),
+        log_write('\nCreated '), log_writeln(EventLabel),
+        write('Created new event: \t'), writeln(EventLabel),
+        ModificationTriples = [
+                    [Modification, panda:'hasParticipantB', ParticipantB],
+                    [Modification, rdf:'type', ModType],
+                    [Modification, rdfs:'label', literal(EventLabel)]
+                    ],
+        sparqlInsertQuery(ModificationTriples, Graph))).    
         
-createIdObject(GeneExpression, panda:'GeneExpression', Path, GroundingProbListB, EventLabel, EventURIstr) :-
+createIdObject(GeneExpression, panda:'GeneExpression', Path, GroundingProbListB) :-
     atomic_list_concat([Path, '/participant_b'], PartBpath),
-    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB, LabelB, PartURIstr), 
-    atomic_list_concat(['gene expression of (', LabelB, ')'], EventLabel),  
+    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+    QueryTriples = [['?x', panda:'hasParticipantB', ParticipantB],
+                    ['?x', rdf:'type', panda:'GeneExpression']],
     event_graph(Graph),
-    (\+PartURIstr='' ->
-        (atomic_list_concat(['gene expression (', PartURIstr, ')'], EventURIstr),
-        label2URI(EventURIstr, GeneExpression));
-        (EventURIstr='',
-        createFreshObject(panda:'GeneExpression', GeneExpression))),
+    (sparqlSelectQuery(QueryTriples, Graph, [GeneExpression]) -> 
+        (log_write('\nMatched '), log_writeln(GeneExpression), writeln('Matched existing event...'));
+        (createFreshObject(panda:'GeneExpression', GeneExpression),
+        getLabel(ParticipantB, Graph, LabelB),
+        atomic_list_concat(['gene expression of (', LabelB, ')'], EventLabel),
         log_write('\nCreated '), log_writeln(EventLabel),
         write('Created new event: \t'), writeln(EventLabel),
         ExpressionTriples = [
@@ -268,104 +276,136 @@ createIdObject(GeneExpression, panda:'GeneExpression', Path, GroundingProbListB,
                     [GeneExpression, rdf:'type',  panda:'GeneExpression'],
                     [GeneExpression, rdfs:'label', literal(EventLabel)]
                     ],
-        pushTriples(ExpressionTriples, Graph).    
+        sparqlInsertQuery(ExpressionTriples, Graph))).    
     
-createIdObject(Participant, panda:'Participant', Path, GroundingProbList, Label, URIstr) :-
+createIdObject(Participant, panda:'Participant', Path, GroundingProbList) :-
     retriveKeyValue(entityType, Path, EntType),
-    createIdObject(Participant, EntType, Path, GroundingProbList, Label, URIstr), !.   
+    createIdObject(Participant, EntType, Path, GroundingProbList), !.   
     
-createIdObject(SimpleURI, SimpleType, Path, [GroundingProb], Label, URIstr) :-
+createIdObject(SimpleURI, SimpleType, Path, [GroundingProb]) :-
     member(SimpleType, [panda:'Protein', panda:'Chemical', panda:'Gene']), !,
     retriveKeyValue(entityId, Path, EntId),
     retriveKeyValue(entityText, Path, EntText),
     retriveKeyValue(grounding, Path, GroundingProb),
     fixEntId(EntId, FixedEntId), 
     event_graph(Graph),
-    getObjectTriples(SimpleURI, FixedEntId, EntText, SimpleType, Triples, Label, URIstr),
-    pushTriples(Triples, Graph), !.
+    getObjectTriples(SimpleURI, FixedEntId, EntText, SimpleType, Triples),
+    sparqlInsertQuery(Triples, Graph), !.
     
 createIdObject(Submitter, panda:'Submitter', '', []) :-
     retriveKeyValue(submitter, SubmitterName),
+    BasicTriples = [
+        ['?x', panda:'hasSubmitterId', literal(SubmitterName)]
+        ],
     submitter_graph(Graph),
-    createIdURI(submitter, SubmitterName, Submitter),
-    TargetTriples = [
+    (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
+        Tuple=[Submitter];
+        (createFreshObject(panda:'Submitter', Submitter),
+        TargetTriples = [
         [Submitter, panda:'hasSubmitterId', literal(SubmitterName)],
         [Submitter, rdf:'type', panda:'Submitter'],
         [Submitter, rdfs:'label', literal(SubmitterName)]
         ],
-    pushTriples(TargetTriples, Graph).
+        sparqlInsertQuery(TargetTriples, Graph)
+        )).
 
 createIdObject(Article, panda:'JournalArticle', '', []) :-
     retriveKeyValue(pmcId, PmcId),
+    BasicTriples = [
+        ['?x', panda:'hasPMCId', literal(PmcId)]
+        ],
     source_graph(Graph),
-    createIdURI(article, PmcId, Article),
-    pubmedJournalTitleYear(PmcId, ISSN, Title, Year),
-    createIdObject(Journal, panda:'Journal', ISSN, []),
-    asserta(journal(Journal)), 
-    TargetTriples = [
-         [Article, panda:'hasPMCId', literal(PmcId)],
-         [Article, panda:'hasTitle', literal(Title)],
-         [Article, rdfs:'label', literal(Title)],
-         [Article, rdf:'type', panda:'JournalArticle'],
-         [Article, panda:'publishedIn', Journal],
-         [Article, panda:'hasPublicationYear', literal(Year)]
-     ],
-    pushTriples(TargetTriples, Graph).
+    (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
+        Tuple=[Article];
+        (
+        createIdURI(article, PmcId, Article),
+        pubmedJournalTitleYear(PmcId, ISSN, Title, Year),
+        createIdObject(Journal, panda:'Journal', ISSN, []),
+        TargetTriples = [
+            [Article, panda:'hasPMCId', literal(PmcId)],
+            [Article, panda:'hasTitle', literal(Title)],
+            [Article, rdfs:'label', literal(Title)],
+            [Article, rdf:'type', panda:'JournalArticle'],
+            [Article, panda:'publishedIn', Journal],
+            [Article, panda:'hasPublicationYear', literal(Year)]
+        ],
+        sparqlInsertQuery(TargetTriples, Graph)
+        )).
 
 createIdObject(Journal, panda:'Journal', ISSN, []) :-
-    (rdf(X, panda:'hasISSN', literal(ISSN)) -> 
-        X=Journal; 
+    BasicTriples = [
+        ['?x', panda:'hasISSN', literal(ISSN)]
+        ],
+    journal_graph(Graph),
+    (sparqlSelectQuery(BasicTriples, Graph, Tuple) -> 
+        Tuple=[Journal];
         (createFreshObject(panda:'Journal', Journal),
         TargetTriples = [
         [Journal, rdf:'type', panda:'Journal'],
         [Journal, panda:'hasISSN', literal(ISSN)]
         ],
-        journal_graph(Graph),
-        pushTriples(TargetTriples, Graph))).
+        sparqlInsertQuery(TargetTriples, Graph))).
         
 pubmedJournalTitleYear(PmcId, ISSN, Title, Year) :- 
     atomic_list_concat(['http://www.ncbi.nlm.nih.gov/pmc/utils/ctxp/?ids=', PmcId, '&report=citeproc&format=json'], Query),
-    ((http_open(Query, In, [connection('Keep-alive'), status_code(200)]), set_stream(In, encoding(utf8))) ->
+    (http_open(Query, In, []) ->
     (json_read(In, json(X)), 
     member('ISSN'=ISSNproper, X), !,
     atomic_list_concat(List, '-', ISSNproper),
     atomic_list_concat(List, ISSN),
     member('title'=TitleString, X), !,
     clearString(TitleString, Title),
-    member(issued=json(['date-parts'=[[Year | _]]]), X), !); 
-    (write("Problem with http: "), writeln(PmcId),
-    sleep(5),
-    pubmedJournalTitleYear(PmcId, ISSN, Title, Year))).
+    member(issued=json(['date-parts'=[[Year | _]]]), X), !); (ISSN='', Year='')).
 
-getParticipantInfo(a, _, Path, TripleA, LabelA, GroundingProbListA, URIstrA) :-
+getParticipantInfo(a, _, Path, TripleA, LabelA, GroundingProbListA) :-
     retriveKeyValue(participantAtype, Path),
     atomic_list_concat([Path, '/participant_a'], PartApath),
-    createIdObject(ParticipantA, panda:'Participant', PartApath, GroundingProbListA, LabelA, URIstrA), 
-    TripleA = [['?x', panda:'hasParticipantA', ParticipantA]], !.
+    createIdObject(ParticipantA, panda:'Participant', PartApath, GroundingProbListA), 
+    TripleA = [['?x', panda:'hasParticipantA', ParticipantA]],
+    event_graph(Graph),
+    getLabel(ParticipantA, Graph, LabelA), !.
 
-getParticipantInfo(a, _, _, [], '-', [], '-').
+getParticipantInfo(a, _, _, TripleA, '-', []) :-
+    TripleA =[not([['?x', panda:'hasParticipantA', '?y']])], !.
 
-getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB, URIstrB) :-
+getParticipantInfo(b, EvTypURI, Path, TripleB, LabelB, GroundingProbListB) :-
     member(EvTypURI, [panda:'AddsModification', panda:'InhibitsModification']),
     retriveKeyValue(participantBtype, Path),
-    createIdObject(ParticipantB, panda:'ProteinModification', Path, GroundingProbListB, LabelB, URIstrB), 
-    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]], !.
+    createIdObject(ParticipantB, panda:'ProteinModification', Path, GroundingProbListB), 
+    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
+    event_graph(Graph),
+    getLabel(ParticipantB, Graph, LabelB), !.
     
-%getParticipantInfo(b, panda:'GeneExpression', Path, TripleB, LabelB, GroundingProbListB, URIstrB) :-
-%    retriveKeyValue(participantBtype, Path),
-%    createIdObject(ParticipantB, panda:'GeneExpression', Path, GroundingProbListB, LabelB, URIstrB), 
-%    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]], !.
+getParticipantInfo(b, panda:'GeneExpression', Path, TripleB, LabelB, GroundingProbListB) :-
+    retriveKeyValue(participantBtype, Path),
+    createIdObject(ParticipantB, panda:'GeneExpression', Path, GroundingProbListB), 
+    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
+    event_graph(Graph),
+    getLabel(ParticipantB, Graph, LabelB), !.
     
-getParticipantInfo(b, _, Path, TripleB, LabelB, GroundingProbListB, URIstrB) :-
+getParticipantInfo(b, _, Path, TripleB, LabelB, GroundingProbListB) :-
     retriveKeyValue(participantBtype, Path),
     atomic_list_concat([Path, '/participant_b'], PartBpath),
-    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB, LabelB, URIstrB), 
-    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]], !.
+    createIdObject(ParticipantB, panda:'Participant', PartBpath, GroundingProbListB), 
+    TripleB = [['?x', panda:'hasParticipantB', ParticipantB]],
+    event_graph(Graph),
+    getLabel(ParticipantB, Graph, LabelB), !.
     
-getParticipantInfo(b, _, _, [], '-', [], '-').
+getParticipantInfo(b, _, _, TripleB, '-', []) :-
+    TripleB =[not([['?x', panda:'hasParticipantB', '?z']])], !.
 
-getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, Name, EntId) :-
-    \+EntId = 'GENERIC',  
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
+    \+EntId = 'GENERIC',
+    event_graph(Graph),
+    QueryTriples = [['?x', panda:'hasEntityId', literal(EntId)]],
+    sparqlSelectQuery(QueryTriples, Graph, [SimpleURI]),
+    log_write('\nMatched '), log_writeln(EntId),
+    write('Matched exist. entity: \t'), writeln(EntId),
+    Triples = [[SimpleURI, panda:'hasEntityText', literal(EntText)],
+                [SimpleURI, rdf:'type', SimpleType]], !.
+
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
+    \+EntId = 'GENERIC', 
     identifierResolution(EntId, Name),
     createIdURI(simple, EntId, SimpleURI),
     log_write('\nCreated '), log_writeln(EntId),
@@ -376,7 +416,7 @@ getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, Name, EntId) :-
                 [SimpleURI, panda:'hasEntityName', literal(Name)],
                 [SimpleURI, rdfs:'label', literal(Name)]], !.   
                 
-getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, EntId, EntId) :-
+getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples) :-
     \+EntId = 'GENERIC', 
     createIdURI(simple, EntId, SimpleURI),
     log_write('\nCreated '), log_writeln(EntId),
@@ -386,7 +426,7 @@ getObjectTriples(SimpleURI, EntId, EntText, SimpleType, Triples, EntId, EntId) :
                 [SimpleURI, panda:'hasEntityId', literal(EntId)],
                 [SimpleURI, rdfs:'label', literal(EntId)]], !.            
 
-getObjectTriples(SimpleURI, 'GENERIC', EntText, SimpleType, Triples, Text, '') :-
+getObjectTriples(SimpleURI, 'GENERIC', EntText, SimpleType, Triples) :-
     createIdURI(simple, 'GENERIC', SimpleURI),
     atomic_list_concat(['no ID', ' [', EntText, ']'], Text),
     log_writeln('\nCreated generic entity'),
@@ -502,9 +542,6 @@ participantType('event', panda:'Event').
 interactionType('binds', panda:'Binding').
 interactionType('increases', panda:'PositiveRegulation').
 interactionType('decreases', panda:'NegativeRegulation').
-interactionType('positive_regulation', panda:'PositiveRegulation').
-interactionType('negative_regulation', panda:'NegativeRegulation').
-interactionType('regulation', panda:'Regulation').
 interactionType('translocates', panda:'Translocation').
 interactionType('increases_activity', panda:'IncreasesActivity').
 interactionType('decreases_activity', panda:'DecreasesActivity').
@@ -561,15 +598,13 @@ uncertaintyInput(Statement, TargetTriples) :-
 
 
 uncertaintyInput(Statement, TargetTriples) :- 
-    journal(Journal), 
-    rdf(Journal, panda:'hasSJRscore', ScoreLit),
-    rdf_literal_value(ScoreLit, Score),
-    %QueryTriples = [
-    %    [Journal, panda:'hasSJRscore', '?s']
-    %    ],
-    %sparqlSelectQueryGlobal(QueryTriples, '?s', [Score]),
-    retractall(journal(_)),
-    atom_number(Score, ScoreNumber), 
+    QueryTriples = [
+        [Statement, panda:'isExtractedFrom', '?x'],
+        ['?x', panda:'publishedIn', '?y'],
+        ['?y', panda:'hasSJRscore', '?s']
+        ],
+    sparqlSelectQueryGlobal(QueryTriples, '?s', [Score]),
+    atom_number(Score, ScoreNumber),
     Prob is (round(sqrt(sqrt(ScoreNumber / 33)) * 1000) / 1000),
     createFreshObject(uno:'UncertaintyRelevantToDocumentProvenance', Subject),
     TargetTriples = [
@@ -577,7 +612,7 @@ uncertaintyInput(Statement, TargetTriples) :-
         [Subject, rdf:'type', uno:'UncertaintyRelevantToDocumentProvenance'],
         [Subject, uno:'hasUncertaintyLevel', literal(Prob)],
         [Subject, rdfs:'label', literal(Prob)]
-        ], !.
+        ].
 
 uncertaintyInput(Statement, GroundingProbList, TargetTriples) :-
     listAverage(GroundingProbList, Prob),
@@ -609,7 +644,7 @@ listAverage(List, Average) :-
     Average is round((Sum / N) * 100) / 100.
     
 clearString(DirtyString, CleanString) :-
-    split_string(DirtyString, "\n\200\\223\\224\\210\\222\", "", StringList),
+    split_string(DirtyString, "\n", "", StringList),
 	subtract(StringList, [""], StringList2),
     atomics_to_string(StringList2, CleanString).
     
@@ -628,25 +663,12 @@ createIdURI(simple, Id, IdURI) :-
 createIdURI(simple, Id, IdURI) :-
     string_concat('HGNC:', Number, Id),
     string_concat('http://bio2rdf.org/hgnc:', Number, IdURI).
-<<<<<<< HEAD
-
-createIdURI(simple, Id, IdURI) :-
-    string_concat('PUBCHEM:', Number, Id),
-    string_concat('https://pubchem.ncbi.nlm.nih.gov/rest/rdf/compound/CID', Number, IdURI).
-        
-=======
     
->>>>>>> origin/master
 createIdURI(simple, 'GENERIC', URI) :-
     createFreshObject(panda:'Chemical', URI).
 
 createIdURI(article, Id, IdURI) :-
     string_concat('http://www.ncbi.nlm.nih.gov/pmc/articles/', Id, IdURI).
-    
-createIdURI(submitter, SubmitterName, SubmitterURI) :-
-    atom_string(SubmitAtom, SubmitterName),
-    string_concat('http://purl.bioontology.org/net/brunel/bm/submitter_', SubmitAtom, SubmitterURI).
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -661,26 +683,15 @@ sparql_params('HGNC:', 'SELECT ?x WHERE { <http://bio2rdf.org/hgnc:', '> <http:/
 
 identifierResolution('GENERIC', 'generic') :-  !.
 
-identifierResolution(Id, Name) :- name(Id, Name), !.
-    
-identifierResolution(Id, Id) :- writeln(['not enough data', Id]).
+identifierResolution(ProtID, Name) :-
+    upperCase(ProtID, ProtIDupper),
+    sparql_params(Prefix, QueryFront, QueryBack, Host, Path, Port),
+    string_concat(Prefix, Number, ProtIDupper),
+    atomic_list_concat([QueryFront, Number, QueryBack], Query),
+    sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), status_code(_)]),
+    rdf_literal_value(Literal, Name), !.
 
 
-%identifierResolution(ProtID, Name) :-
-%    upperCase(ProtID, ProtIDupper),
-%    sparql_params(Prefix, QueryFront, QueryBack, Host, Path, Port),
-%    string_concat(Prefix, Number, ProtIDupper),
-%    atomic_list_concat([QueryFront, Number, QueryBack], Query),
-%    sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), connection('Keep-alive'), status_code(200)]),
-%    rdf_literal_value(Literal, Name), !.
-
-<<<<<<< HEAD
-%https://pubchem.ncbi.nlm.nih.gov/rest/rdf/descriptor/CID1533_Preferred_IUPAC_Name.json
-%https://pubchem.ncbi.nlm.nih.gov/rest/rdf/compound/CID1533
-%select distinct ?x {SERVICE <http://sparql.uniprot.org/> {select ?x where {?x ((<http://purl.uniprot.org/core/alternativeName>|<http://purl.uniprot.org/core/recommendedName>)/<http://purl.uniprot.org/core/shortName>) ?y . filter (str(?y)="MIR-10")}}}
-=======
-
->>>>>>> origin/master
 
 %%%%%%%%%%%%
 % different submitters submit UNIPROT Ids in different forms: UNIPROT:Q13480 or UNIPROT:GAB1_HUMAN
@@ -689,23 +700,15 @@ identifierResolution(Id, Id) :- writeln(['not enough data', Id]).
 
 sparql_uniprot_fix_params('SELECT (STRAFTER(str(?x), "http://purl.uniprot.org/uniprot/") as ?n) WHERE {?x <http://purl.uniprot.org/core/mnemonic> "', '"}', 'sparql.uniprot.org', '/sparql/', 80).
 
-fixEntId(ProtId, AltId) :- name(AltId, ProtId), !.
-
-fixEntId(ProtId, AltId) :- 
-    upperCase(ProtId, ProtIDupper),
+fixEntId(ProtID, AltId) :-
+    upperCase(ProtID, ProtIDupper),
     string_concat('UNIPROT:', Id, ProtIDupper),
-    atom_string(AtomId, Id),
-    name(AltId, AtomId), !.
-
-%fixEntId(ProtID, AltId) :-
-%    upperCase(ProtID, ProtIDupper),
-%    string_concat('UNIPROT:', Id, ProtIDupper),
-%    string_codes(Id, Codes), 
-%    member(95, Codes),
-%    sparql_uniprot_fix_params(QueryFront, QueryBack, Host, Path, Port),
-%    atomic_list_concat([QueryFront, Id, QueryBack], Query),
-%    sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), connection('Keep-alive'), status_code(_)]),
-%    rdf_literal_value(Literal, BasicId), 
-%    string_concat('UNIPROT:', BasicId, AltId), !.
+    string_codes(Id, Codes), 
+    member(95, Codes),
+    sparql_uniprot_fix_params(QueryFront, QueryBack, Host, Path, Port),
+    atomic_list_concat([QueryFront, Id, QueryBack], Query),
+    sparql_query(Query, row(Literal), [host(Host), port(Port), path(Path), status_code(_)]),
+    rdf_literal_value(Literal, BasicId), 
+    string_concat('UNIPROT:', BasicId, AltId), !.
     
 fixEntId(ProtID, ProtID).

@@ -21,6 +21,7 @@
 
 %% Defining an auxiliary predicate
 
+<<<<<<< HEAD
 
 test(Ev) :-
     retractall(modelContent(_)),
@@ -33,13 +34,19 @@ test(Ev) :-
     outputStream(OutputStream),
     write(OutputStream, Output),
 	close(Output).
+=======
+>>>>>>> origin/master
 
 run :- 
     retractall(probFact(_, _, _)),
     reset_gensym,
     readModel,
     openOutput,
+<<<<<<< HEAD
     generateNthreads(15),
+=======
+    generateNthreads(1),
+>>>>>>> origin/master
     writeln('Querying ProbLog...'),
     get_time(Time1),
     findall(_, select_read, _), !, 
@@ -118,7 +125,13 @@ selectNextEvent(Event) :-
     
 select_read :-
     selectNextEvent(Event),
+<<<<<<< HEAD
     %writeln(Event),
+=======
+    writeln(Event),
+    gensym('', Counter), atom_number(Counter, No), % No<10, 
+    writeln(No),
+>>>>>>> origin/master
     queue(Event).
 
 queue(Ev) :-
@@ -131,9 +144,15 @@ single_run(Ev) :-
     createInputFile(Ev, InputFile, OutputFile),
     commandProblog(ProblogCommand),
     atomic_list_concat([ProblogCommand, ' -o ', OutputFile, ' ', InputFile], Command),
+<<<<<<< HEAD
     %writeln(['Querying for: ', Ev]),
     shell(Command),
     %writeln(['Creating output for: ', Ev]),
+=======
+    writeln(['Querying for: ', Ev]),
+    shell(Command),
+    writeln(['Creating output for: ', Ev]),
+>>>>>>> origin/master
     readOutput(OutputFile, Output),
     outputStream(OutputStream),
     write(OutputStream, Output),
@@ -201,8 +220,13 @@ inputData(Ev, Stream) :-
  
 getRepresentingStatements(Ev, Tuple) :-   
     QueryTriples = [
+<<<<<<< HEAD
             ['?stat', panda:'represents', Ev],
             ['?stat', panda:'hasTruthValue', '?value'],
+=======
+            [Ev, panda:'isRepresentedBy', '?stat'],
+            ['?stat',  panda:'hasTruthValue', '?value'],
+>>>>>>> origin/master
             ['?stat', panda:'isExtractedFrom', '?source'],
             ['?stat', panda:'hasSubmitter', '?sub'],            
             optional([

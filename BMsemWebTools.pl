@@ -32,7 +32,11 @@
    file_search_path(my_home, Dir2), !,
    string_concat(Dir2, '/log_indexCardAssembly.txt', LogFile),
    open(LogFile, write, Stream),
+<<<<<<< HEAD
    %debug(http(_)),
+=======
+   debug(http(_)),
+>>>>>>> origin/master
    asserta(log_stream(Stream)).
 
 panda_graph('http://purl.bioontology.org/net/brunel/panda').
