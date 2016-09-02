@@ -47,16 +47,31 @@ AssembledOutput/source
 BMgeneExpressionAssembly.pl
 ---------------------------
 Generates stuff from index cards, maybe some brand of the NacTem ones? From the name I presume that these are basically the ones that are meant to be gene expression style events.
+
+
 Bmparams.pl
+-----------
 Contains a bunch of parameters – like the password set up to access the triple store etc.
 So very important to actually do anything but also small. Also loads in problog, which needs python so it loads python while its at it :)
+
+
 BmprobCompute.pl
+----------------
 Some fancy tidying of OWL/RDF into the format expected by the Problog. 
+
+
 BmsemWebTools.pl
+----------------
 This thing does quite a lot of things. Precisely what I remain unsure after a quick glance.
+
+
 BmstoreReset.pl
+---------------
 Seemingly self explanatory :) Lots of reset graph functions.
+
+
 BmstringDBassembly.pl
+---------------------
 Something to do with generating triples from strings, precisely what I'm rather unsure.
 
 
