@@ -1,4 +1,5 @@
 :- use_module(library(gensym)).
+:- use_module(library(http/http_client)).
 
 :- reset_gensym.
 
@@ -84,7 +85,7 @@ translateCard(FileName) :-
     log_write(BaseName),
     print_count100,
     cardElement(Index, ''), !,
-    (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'), readln(_))).
+    (createRDF(BaseName) -> (log_writeln('\nSuccess!\n\n'), writeln('Success!'));(log_writeln('\nFail!\n\n'), writeln('Fail!'))).
 
 %% json index card reader
 
@@ -299,7 +300,7 @@ createIdObject(Article, panda:'JournalArticle', '', []) :-
     retriveKeyValue(pmcId, PmcId),
     source_graph(Graph),
     createIdURI(article, PmcId, Article),
-    pubmedJournalTitleYear(PmcId, ISSN, Title, Year),
+    pubmedCheck(PmcId, ISSN, Title, Year),
     createIdObject(Journal, panda:'Journal', ISSN, []),
     asserta(journal(Journal)), 
     TargetTriples = [
@@ -323,9 +324,17 @@ createIdObject(Journal, panda:'Journal', ISSN, []) :-
         journal_graph(Graph),
         pushTriples(TargetTriples, Graph))).
         
+pubmedCheck(PmcId, ISSN, Title, Year) :-
+    catch(pubmedJournalTitleYear(PmcId, ISSN, Title, Year), error(_, _), (write('checking journal again '), writeln(PmcId), http_disconnect(all), pubmedCheck(PmcId, ISSN, Title, Year))).
+
+%,
+%    writeln(G),
+%    (\+G=error(_, _) -> (writeln('ok'), true);
+%		     (writeln('again'), pubmedCheck(PmcId, ISSN, Title, Year))).
+
 pubmedJournalTitleYear(PmcId, ISSN, Title, Year) :- 
     atomic_list_concat(['http://www.ncbi.nlm.nih.gov/pmc/utils/ctxp/?ids=', PmcId, '&report=citeproc&format=json'], Query),
-    ((http_open(Query, In, [connection('Keep-alive'), status_code(200)]), set_stream(In, encoding(utf8))) ->
+    ((http_open(Query, In, [connection('close'), status_code(200)]), set_stream(In, encoding(utf8))) ->
     (json_read(In, json(X)), 
     member('ISSN'=ISSNproper, X), !,
     atomic_list_concat(List, '-', ISSNproper),
