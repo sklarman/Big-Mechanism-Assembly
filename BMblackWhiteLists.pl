@@ -15,5 +15,6 @@ chemicalLists :-
         createIdURI(simple, X, IdURIst),
 	atom_string(IdURI, IdURIst),
         rdf_assert(IdURI, rdf:'type', panda:'WhiteListedChemical')
-        ), _).
+        ), _),
+    rdf_save('ChemicalLists/chemicals.rdf').
  
