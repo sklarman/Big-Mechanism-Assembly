@@ -5,6 +5,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % registering given probability values and fixing defaults
+% E.g. for extractionProb:
+% extractionProb(x, 0).                                     -> a "dummy" fact required by problog to activate predicate extractionProb/2
+% extractionProbDefined(Stat) :- extractionProb(Stat, _).   -> if extraction probabability for statement Stat is present in the data, make extractionProbDefined(Stat) true 
+% P::extractionProb(Stat) :- extractionProb(Stat, P).       -> the probability of extractionProb(Stat) is P, as found in the data.
+% 0.63::extractionProb(Stat) :- \+extractionProbDefined(Stat). -> if extraction probabability is not known fix the default at 0.63 (the average) of all known extraction probabilities on a sample of 12K statements. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 textProb(x, 0).
@@ -33,7 +38,6 @@ biolProbDefined(Stat) :- biolProb(Stat, _).
 P::biolProb(Stat) :- biolProb(Stat, P).
 0.5::biolProb(Stat) :- \+biolProbDefined(Stat).
 
-
 representingStatement(x, x, x, x, x).
 somePositiveSupport(Ev) :- event(Ev), representingStatement(Ev, _, true, _, _).
 someNegativeSupport(Ev) :- event(Ev), representingStatement(Ev, _, false, _, _).
@@ -45,8 +49,11 @@ experimentProb(x, 0).
 trust(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% weighing probabilities
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% defining "weights" of different probabilities, i.e., margins to which different probabilities might affect the overall score.
+% E.g. the probability of textProbWeighted might vary between 1 and 0.76650623, so it won't affect the score as much as e.g. groundProbWeighted. 
+% the lower bound has been derived via ProbLog learning given a set of inital experimental ground truth data. 
+% In case of groundProbWeighted and biolProbWeighted it is only ensured that the probability is greater than 0. 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 1::textProbWeighted(Stat) :- textProb(Stat).
@@ -63,6 +70,10 @@ trust(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % computing supports, inconsistency, likelihoods
+%
+% The weights over the rules reflect the basic strategy of managing the redundancy of statments supporting each event: 
+% statements coming from the same document and the same submitter contribute less to the final score than statments 
+% coming from different documents and submitters. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 0.6::positiveStatementSupport(Ev, Source, Sub) :- 
