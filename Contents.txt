@@ -1,0 +1,105 @@
+The contents of this repository. 
+
+
+BMblackWhiteLists.pl
+--------------------
+A program reading in the chemical black/white lists from csv files and generating their RDF description.
+
+- main predicate:
+
+chemicalLists.
+  
+- input:
+ 
+ChemicalLists/black.csv, ChemicalLists/white.csv
+
+- output: 
+
+ChemicalLists/chemicals.rdf
+
+
+BMeventAssemblyAlt.pl
+---------------------
+The main program for transforming index cards into the PANDA RDF model.
+ 
+- main predicates:
+
+run.
+run(N).
+ 
+where N is the number of the card in the processed collection (see the numbers appearing in the terminal, while running the program). To be used in case of errors, not to redo the entire process from the beginning.  
+
+- input:
+ 
+defined via the assertion in BMparams.pl:
+indexFolder('/FolderWithIndexCards/*.*', 'RDFgraphName).
+
+- output:
+ 
+A sequence of n-triples (nt) and rdf-xml (rdf) files - the latter should be uploaded to the respective RDF graphs in the triple store:
+AssembledOutput/events
+AssembledOutput/statements
+AssembledOutput/submitter
+AssembledOutput/journal
+AssembledOutput/source
+
+
+BMgeneExpressionAssembly.pl
+---------------------------
+Generates stuff from index cards, maybe some brand of the NacTem ones? From the name I presume that these are basically the ones that are meant to be gene expression style events.
+
+
+Bmparams.pl
+-----------
+Contains a bunch of parameters – like the password set up to access the triple store etc.
+So very important to actually do anything but also small. Also loads in problog, which needs python so it loads python while its at it :)
+
+
+BmprobCompute.pl
+----------------
+Some fancy tidying of OWL/RDF into the format expected by the Problog. 
+
+
+BmsemWebTools.pl
+----------------
+This thing does quite a lot of things. Precisely what I remain unsure after a quick glance.
+
+
+BmstoreReset.pl
+---------------
+Seemingly self explanatory :) Lots of reset graph functions.
+
+
+BmstringDBassembly.pl
+---------------------
+Something to do with generating triples from strings, precisely what I'm rather unsure.
+
+
+PANDA.owl 
+---------
+Probabilisitc Knowledge Assembly ontology.
+
+
+UNO.owl
+-------
+Uncertainty ontology.
+
+
+iao_import.owl
+--------------
+Information artifact ontology.
+
+
+initial_model.rdf 
+-----------------
+an encoding of the petri net model
+
+
+journal_graph_2015.rdf 
+----------------------
+The details (including ranking) of journals from SciMago portal (www.scimagojr.com), described in RDF. 
+
+
+problogModel.pl
+---------------
+The problog code/model, which is responsible for assigning probabilities to the events in the knowledge base. A LOT of 'magic' numbers in this code. Many of them are limits to how much a given sort of thing can affect the probability score(s) etc.
